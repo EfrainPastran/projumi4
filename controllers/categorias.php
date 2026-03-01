@@ -1,7 +1,7 @@
 <?php
 use App\Models\CategoriasModel;
 use App\Middleware;
-
+//CATEGORIA
 function index()
 {
     $model = new CategoriasModel();
