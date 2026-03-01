@@ -12,10 +12,20 @@ function index() {
         $cedula = $_SESSION['user']['cedula'];
         $Middleware = new Middleware();
         $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
+
+        $idModuloEmpresa = 18; //Asignación del id del módulo en este caso de "Empresa de envio" en t_modulo
+        
+        // Obtenemos los permisos que el Middleware ya guardó en la sesión
+        // Esto devolverá algo como ['consultar', 'registrar']
+        $listaPermisos = $_SESSION['user']['rol']['permisos'][$idModuloEmpresa] ?? [];
+
+        // Lo convertimos a un formato más cómodo para la vista: ['registrar' => true]
+        $permisosMap = array_fill_keys($listaPermisos, true);
+
     }
     $model = new EmpresaEnvioModel();
     $data = $model->getAll();
-    render('empresa/index', ['data' => $data]);
+    render('empresa/index', ['data' => $data, 'permisos' => $permisosMap]);
 }
 
 function register() {

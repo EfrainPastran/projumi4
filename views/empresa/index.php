@@ -31,9 +31,11 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-4">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarEmpresaModal">
-                                <i class="fas fa-plus me-2"></i>Nueva Empresa
-                            </button>
+                            <?php if (!empty($permisos['registrar'])): ?>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarEmpresaModal">
+                                    <i class="fas fa-plus me-2"></i>Nueva Empresa
+                                </button>
+                            <?php endif; ?>
                             <div class="input-group buscar-input">
                                 <input type="text" class="form-control" placeholder="Buscar empresa..." id="buscarEmpresa">
                                 <button class="btn btn-outline-secondary" type="button" id="btnBuscar">
@@ -72,18 +74,23 @@
                                                     </span>
                                                 </td>
                                                 <td class="acciones-btn">
-                                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarEmpresaModal"
-                                                        data-id="<?php echo $empresa['id_empresa_envio']; ?>"
-                                                        data-nombre="<?php echo htmlspecialchars($empresa['nombre']); ?>"
-                                                        data-telefono="<?php echo htmlspecialchars($empresa['telefono']); ?>"
-                                                        data-direccion="<?php echo htmlspecialchars($empresa['direccion']); ?>"
-                                                        data-estado="<?php echo $empresa['estatus']; ?>">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarEmpresaModal"
-                                                        data-id="<?php echo $empresa['id_empresa_envio']; ?>">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                                    <?php if (!empty($permisos['actualizar'])): ?>
+                                                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarEmpresaModal"
+                                                            data-id="<?php echo $empresa['id_empresa_envio']; ?>"
+                                                            data-nombre="<?php echo htmlspecialchars($empresa['nombre']); ?>"
+                                                            data-telefono="<?php echo htmlspecialchars($empresa['telefono']); ?>"
+                                                            data-direccion="<?php echo htmlspecialchars($empresa['direccion']); ?>"
+                                                            data-estado="<?php echo $empresa['estatus']; ?>">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                    <?php endif; 
+                                                    if (!empty($permisos['eliminar'])):
+                                                    ?>
+                                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarEmpresaModal"
+                                                            data-id="<?php echo $empresa['id_empresa_envio']; ?>">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    <?php endif; ?>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
