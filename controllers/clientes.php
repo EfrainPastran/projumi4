@@ -8,10 +8,29 @@ function index() {
     }
     if (isset($_SESSION['user']['cedula'])) {
         $cedula = $_SESSION['user']['cedula'];
+        $Middleware = new Middleware();
+        $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
     }
+    if ('emprendedor' == $tipoUsuario[0]) {
+        $title = "Mis clientes";
+        $menu = "headerEmprendedor";
+    }
+    if('administrador' == $tipoUsuario[0]) {
+        $title = "Gestión de Clientes";
+        $menu = "headeradmin";
+    }
+    else{
+        $title = "Gestión de Clientes";
+        $menu = "navbar";
+    }
+
     $model = new ClienteModel();
     $data = $model->getAll();
-    render('clientes/index', ['data' => $data]);
+    render('clientes/index', [
+        'data' => $data,
+        'title' => $title,
+        'menu' => $menu
+    ]);
 }
 
 function register() {
