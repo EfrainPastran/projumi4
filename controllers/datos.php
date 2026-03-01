@@ -14,26 +14,42 @@ function index() {
     $DatosCuenta = new DatosModel();
     $getmetodo = new MetodoModel();
 
-    // Obtener id del emprendedor
-    $Usuario = new UserModel();
-    $Emprendedor = new EmprendedorModel();
-    $idUsuario = $_SESSION['user']['id_usuario'];
-    $cedulaUsuario = $Usuario->obtenerCedulaPorId($idUsuario);
-
-    $idEmprendedor = $Emprendedor->obtenerIdEmprendedorPorRif($cedulaUsuario);
-    
-    // Obtener datos
-    $data['datos_cuentas'] = $DatosCuenta->getmetodosemprededor($idEmprendedor);
-    $data['metodo_pago'] = $getmetodo->obtenerMetodos();
     // Verificar tipo de usuario
     $cedula = $_SESSION['user']['cedula'];
     $Middleware = new Middleware(); 
     $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
-    if (!'emprendedor' == $tipoUsuario[0]) {
+    if($tipoUsuario[0] == 'emprendedor') {
+        $Usuario = new UserModel();
+        $Emprendedor = new EmprendedorModel();
+        $idUsuario = $_SESSION['user']['id_usuario'];
+        $cedulaUsuario = $Usuario->obtenerCedulaPorId($idUsuario);
+
+        $idEmprendedor = $Emprendedor->obtenerIdEmprendedorPorRif($cedulaUsuario);
+        
+        // Obtener datos
+        $data['datos_cuentas'] = $DatosCuenta->getmetodosemprededor($idEmprendedor);
+
+        $title = "Mis métodos de pago";
+        $menu = "headerEmprendedor";
+    }
+    if($tipoUsuario[0] == 'super_usuario' || $tipoUsuario[0] == 'administrador') {
+        $data['datos_cuentas'] = $DatosCuenta->getmetodostodos();
+
+        $title = "Mis métodos de pago";
+        $menu = "navbar";
+    } else {
         header('Location: ../home/index');
         exit;
     }
-    render('datos/index', $data);
+
+    // Obtener id del emprendedor
+    
+    $data['metodo_pago'] = $getmetodo->obtenerMetodos();
+
+    render('datos/index', [
+        'datos_cuenta' => $data['datos_cuentas'],
+        'menu' => $menu
+    ]);
 }
 
 /*$cedula = $_SESSION['user']['cedula'];

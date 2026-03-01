@@ -82,6 +82,31 @@ class datosModel extends Model {
         }
     }
 
+    public function getmetodostodos() {
+    try {
+            $sql = "SELECT 
+                    dc.id_datos_cuenta, 
+                    dc.telefono, 
+                    dc.banco, 
+                    dc.correo, 
+                    dc.numero_cuenta, 
+                    mp.id_metodo_pago, 
+                    mp.nombre AS metodo_pago, 
+                    mp.estatus AS estatus_metodo 
+                    FROM t_datos_cuenta dc 
+                    INNER JOIN t_metodo_pago mp 
+                    ON dc.fk_metodo_pago = mp.id_metodo_pago ";
+        
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute();
+        
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch(PDOException $e) {
+            error_log("Error en getCuentasConMetodosPorEmprendedor: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function getByEmprendedor($fk_emprendedor) {
         try {
             $sql = 'SELECT * FROM t_datos_cuenta WHERE fk_emprendedor = :fk_emprendedor';
