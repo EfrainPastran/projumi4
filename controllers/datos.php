@@ -5,50 +5,58 @@ use App\Models\EmprendedorModel;
 use App\Models\UserModel;
 use App\Middleware;
 function index() {
+    // 1. Verificación de sesión básica
     if (!isset($_SESSION['user']['cedula'])) {
         header('Location: ../home/index');
         exit;
     }
     
-    // Cargar modelos
+    // 2. Cargar Modelos y Middleware
     $DatosCuenta = new DatosModel();
     $getmetodo = new MetodoModel();
-
-    // Verificar tipo de usuario
+    $Middleware = new Middleware();
+    
     $cedula = $_SESSION['user']['cedula'];
-    $Middleware = new Middleware(); 
     $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
-    if($tipoUsuario[0] == 'emprendedor') {
-        $Usuario = new UserModel();
+    $rolActual = $tipoUsuario[0]; // Tomamos el primer elemento del array de tipos
+
+    $datos = [];
+    $title = "Métodos de Pago";
+    $menu = "navbar"; // Valor por defecto
+
+    // 3. Lógica de carga de datos según Rol
+    if ($rolActual == 'emprendedor') {
         $Emprendedor = new EmprendedorModel();
-        $idUsuario = $_SESSION['user']['id_usuario'];
-        $cedulaUsuario = $Usuario->obtenerCedulaPorId($idUsuario);
-
-        $idEmprendedor = $Emprendedor->obtenerIdEmprendedorPorRif($cedulaUsuario);
         
-        // Obtener datos
-        $data['datos_cuentas'] = $DatosCuenta->getmetodosemprededor($idEmprendedor);
-
+        // Obtenemos el ID del emprendedor usando la cédula de la sesión
+        $idEmprendedor = $Emprendedor->obtenerIdEmprendedorPorRif($cedula);
+        
+        // Solo sus métodos propios
+        $datos = $DatosCuenta->getmetodosemprededor($idEmprendedor);
+        
         $title = "Mis métodos de pago";
-        $menu = "headerEmprendedor";
-    }
-    if($tipoUsuario[0] == 'super_usuario' || $tipoUsuario[0] == 'administrador') {
-        $data['datos_cuentas'] = $DatosCuenta->getmetodostodos();
-
-        $title = "Mis métodos de pago";
-        $menu = "navbar";
-    } else {
+    } 
+    else if ($rolActual == 'super_usuario' || $rolActual == 'administrador') {
+        // Carga masiva para el administrador
+        $datos = $DatosCuenta->getmetodostodos();
+        
+        $title = "Gestión de Métodos de Pago";
+    } 
+    else {
+        // Si es cliente o visitante, no tiene acceso a esta gestión
         header('Location: ../home/index');
         exit;
     }
 
-    // Obtener id del emprendedor
-    
-    $data['metodo_pago'] = $getmetodo->obtenerMetodos();
+    // 4. Datos comunes para los select o formularios (tipos de métodos: Pago Móvil, Transferencia, etc.)
+    $metodos_pago = $getmetodo->obtenerMetodos();
 
+    // 5. Renderizado único
     render('datos/index', [
-        'datos_cuenta' => $data['datos_cuentas'],
-        'menu' => $menu
+        'datos_cuenta' => $datos,
+        'metodo_pago'  => $metodos_pago,
+        'title'        => $title,
+        'menu'         => $menu
     ]);
 }
 

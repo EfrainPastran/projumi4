@@ -24,8 +24,8 @@
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    include "views/headerEmprendedor.php";
-    
+    include "views/".$menu.".php";
+
     // Mostrar mensajes flash
     if (isset($_SESSION['flash_success'])) {
         echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -82,7 +82,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($datos_cuentas as $cuenta): ?>
+                                        <?php foreach ($datos_cuenta as $cuenta): ?>
                                             <tr>
                                                 <td><?php echo $cuenta['id_datos_cuenta']; ?></td>
                                                 <td><?php echo htmlspecialchars($cuenta['banco']); ?></td>
