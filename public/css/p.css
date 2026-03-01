@@ -1,0 +1,270 @@
+:root {
+    --sky-blue: #87CEEB;
+    --earth-brown: #8B4513;
+    --dark-green: #006400;
+    --yellow: #FFD700;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+/* Navbar */
+/* Navbar */
+.navbar {
+    background: linear-gradient(135deg, var(--sky-blue), var(--dark-green)); /* Degradado verde navidad */
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: fixed; /* Fija la navbar en la parte superior */
+    width: 100%;
+    top: 0;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+
+/* Color de los elementos del navbar */
+.navbar-brand,
+.nav-link {
+    color: #ffffff !important; /* Texto blanco */
+}
+
+.nav-link {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s;
+    position: relative;
+}
+
+/* Efecto hover para los links */
+.nav-link:hover {
+    color: #ffd700 !important; /* Dorado al hacer hover */
+    transform: translateY(-2px);
+}
+
+
+
+.nav-link i {
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+}
+
+.navbar-brand img {
+    border: 2px solid white;
+    border-radius: 50%; /* Opcional: para hacerla circular */
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Sutil sombra dorada */
+}
+
+/* Botón de hamburguesa en móviles */
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Efecto cuando se hace scroll */
+.navbar.scrolled {
+    background: linear-gradient(135deg, #0d300d 0%, #1e5a1e 100%); /* Verde más oscuro al hacer scroll */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Añade un pequeño toque navideño con pseudo-elementos */
+.navbar::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #ff0000, #ffffff, #ff0000, transparent);
+    background-size: 200% auto;
+    animation: shine 3s linear infinite;
+}
+
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
+}
+
+/* Hero section */
+.hero-section {
+    padding: 5rem 0;
+    background-color: var(--sky-blue);
+    color: white;
+    background-image: linear-gradient(135deg, var(--sky-blue), var(--dark-green));
+}
+
+.hero-section h1 {
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Carrusel de productos */
+.carousel-control-prev, .carousel-control-next {
+    width: 5%;
+}
+
+/* Tarjetas de productos */
+.card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: none;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Categorías */
+.category-card {
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.category-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.category-card img {
+    height: 120px;
+    object-fit: cover;
+}
+
+/* Filtros */
+.form-select {
+    border-radius: 20px;
+    border: 1px solid #ddd;
+}
+
+/* Paginación */
+.pagination .page-item.active .page-link {
+    background-color: var(--dark-green);
+    border-color: var(--dark-green);
+}
+
+.pagination .page-link {
+    color: var(--dark-green);
+}
+
+/* Footer */
+footer {
+    background-color: #343a40;
+}
+
+footer a {
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+footer a:hover {
+    color: var(--yellow) !important;
+}
+
+.social-icons a {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.social-icons a:hover {
+    background-color: var(--yellow);
+    color: #000 !important;
+}
+
+/* Modales */
+.modal-content {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.modal-header {
+    background-color: var(--dark-green);
+    color: white;
+}
+
+.btn-close {
+    filter: invert(1);
+}
+
+/* Rating */
+.rating {
+    direction: rtl;
+    unicode-bidi: bidi-override;
+    font-size: 1.5rem;
+}
+
+.rating i {
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.rating i:hover,
+.rating i:hover ~ i,
+.rating i.active,
+.rating i.active ~ i {
+    color: var(--yellow);
+}
+
+/* Badges */
+.badge {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Botones */
+.btn-primary {
+    background-color: var(--dark-green);
+    border-color: var(--dark-green);
+}
+
+.btn-primary:hover {
+    background-color: #005000;
+    border-color: #005000;
+}
+
+.btn-outline-primary {
+    color: var(--dark-green);
+    border-color: var(--dark-green);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--dark-green);
+    border-color: var(--dark-green);
+}
+
+.btn-warning {
+    background-color: var(--yellow);
+    border-color: var(--yellow);
+    color: #000;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-section {
+        text-align: center;
+        padding: 3rem 0;
+    }
+    
+    .hero-section img {
+        margin-top: 2rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+}

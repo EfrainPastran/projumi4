@@ -1,0 +1,221 @@
+<?php 
+if (!isset($_SESSION['user'])) {
+    header('Location: '.APP_URL.'user/sesion');
+    exit();
+}
+
+include "views/headeradmin.php";
+?>
+
+
+
+ Encabezado Específico para Pagos
+
+ <div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2 class="fw-bold"><i class="fas fa-credit-card me-2"></i>Historial de Pagos</h2>
+            <p class="text-muted">Revisa el estado de tus transacciones</p>
+        </div>
+        <div class="col-md-6">
+            <div class="d-flex justify-content-end">
+                <div class="input-group" style="width: 300px;">
+                    <input type="text" class="form-control" placeholder="Buscar pagos...">
+                    <button class="btn btn-primary" type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    Filtros Adaptados para Pagos
+    <div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="statusFilter" class="form-label">Estado</label>
+                        <select id="statusFilter" class="form-select">
+                            <option value="all">Todos</option>
+                            <option value="completed">Completados</option>
+                            <option value="pending">Pendientes</option>
+                            <option value="failed">Fallidos</option>
+                            <option value="refunded">Reembolsados</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="methodFilter" class="form-label">Método</label>
+                        <select id="methodFilter" class="form-select">
+                            <option value="all">Todos</option>
+                            <option value="credit_card">Tarjeta Crédito</option>
+                            <option value="transfer">Transferencia</option>
+                            <option value="cash">Efectivo</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="dateFilter" class="form-label">Fecha</label>
+                        <input type="date" class="form-control" id="dateFilter">
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button class="btn btn-primary w-100" id="applyFilters">
+                            <i class="fas fa-filter me-2"></i>Filtrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ Tabla de Pagos (Modificada)
+
+ <div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Referencia</th>
+                <th>Fecha</th>
+                <th>Método</th>
+                <th>Monto</th>
+                <th>Estado</th>
+                <th>Comprobante</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Ejemplo de fila de pago -->
+            <tr>
+                <td>PAY-2023-001</td>
+                <td>15/05/2023</td>
+                <td><i class="fas fa-credit-card me-1"></i> Tarjeta</td>
+                <td>$120.00</td>
+                <td><span class="badge bg-success">Completado</span></td>
+                <td>
+                    <a href="#" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </a>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#paymentModal">
+                        <i class="fas fa-eye"></i> Detalles
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+. Modal de Detalles de Pago (Actualizado)
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">Detalles de Pago #PAY-2023-001</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <h6>Información de Transacción</h6>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="fw-bold">Referencia:</span>
+                                    <span>PAY-2023-001</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="fw-bold">Fecha/Hora:</span>
+                                    <span>15/05/2023 14:30</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="fw-bold">Método:</span>
+                                    <span>Tarjeta de crédito (VISA ****4242)</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span class="fw-bold">Estado:</span>
+                                    <span><span class="badge bg-success">Completado</span></span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6>Información Bancaria</h6>
+                            <div class="card">
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <i class="fas fa-university me-2"></i> Banco: Mercantil
+                                        </li>
+                                        <li class="list-group-item">
+                                            <i class="fas fa-money-bill-wave me-2"></i> N° Autorización: AUTH-789456
+                                        </li>
+                                        <li class="list-group-item">
+                                            <i class="fas fa-receipt me-2"></i> Código Transacción: TX-963258
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <h6>Resumen de Pago</h6>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Subtotal:</span>
+                                    <span>$110.00</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <span>Impuestos:</span>
+                                    <span>$10.00</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between fw-bold fs-5">
+                                    <span>Total pagado:</span>
+                                    <span>$120.00</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6>Comprobante</h6>
+                            <div class="border p-3 text-center bg-light">
+                                <i class="fas fa-file-pdf display-4 text-danger mb-3"></i>
+                                <p>Comprobante_de_pago_001.pdf</p>
+                                <button class="btn btn-danger">
+                                    <i class="fas fa-download me-2"></i>Descargar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-print me-2"></i>Imprimir
+                </button>
+                <button type="button" class="btn btn-success">
+                    <i class="fas fa-redo me-2"></i>Reversar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+Scripts Específicos para Pagos
+
+<script src="<?php echo APP_URL; ?>/public/js/pagos.js"></script>
+<script>
+// Ejemplo de función para filtrar pagos
+document.getElementById('applyFilters').addEventListener('click', function() {
+    const status = document.getElementById('statusFilter').value;
+    const method = document.getElementById('methodFilter').value;
+    const date = document.getElementById('dateFilter').value;
+    
+    // Lógica para filtrar la tabla de pagos
+    console.log('Filtrar por:', {status, method, date});
+});
+</script>

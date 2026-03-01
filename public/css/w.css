@@ -1,0 +1,60 @@
+:root {
+      --sky-blue: #87CEEB;
+      --earth-brown: #8B4513;
+      --dark-green: #006400;
+      --yellow: #FFD700;
+    }
+
+    .boerror {
+      background: linear-gradient(135deg, var(--sky-blue), var(--dark-green));
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .error-container {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 3rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .error-code {
+      font-size: 6rem;
+      font-weight: 700;
+      color: var(--yellow);
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .error-message {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn-home {
+      background-color: var(--dark-green);
+      border: none;
+      padding: 0.75rem 2rem;
+      font-size: 1.1rem;
+      color: #fff;
+      border-radius: 50px;
+      transition: 0.3s;
+    }
+
+    .btn-home:hover {
+      background-color: #005000;
+      transform: scale(1.05);
+    }
+
+    .error-icon {
+      font-size: 3rem;
+      color: white;
+      margin-bottom: 1rem;
+    }

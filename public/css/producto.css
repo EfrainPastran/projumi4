@@ -1,0 +1,322 @@
+:root {
+    --sky-blue: #87CEEB;
+    --earth-brown: #8B4513;
+    --dark-green: #006400;
+    --sun-yellow: #FFD700;
+    --light-gray: #f8f9fa;
+}
+
+body {
+    background-color: var(--light-gray);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.entrepreneur-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 20px;
+}
+
+.entrepreneur-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(0, 100, 0, 0.05) 0%, rgba(135, 206, 235, 0.05) 100%);
+    border-radius: 10px;
+}
+
+.entrepreneur-header h1 {
+    color: var(--dark-green);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.entrepreneur-header .subtitle {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+.entrepreneur-controls {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 15px 10px 40px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    transition: all 0.3s;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--sky-blue);
+    box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.3);
+}
+
+.form-select {
+    border-radius: 30px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    transition: all 0.3s;
+}
+
+.form-select:focus {
+    border-color: var(--sky-blue);
+    box-shadow: 0 0 0 2px rgba(135, 206, 235, 0.3);
+}
+
+.btn-add-product {
+    background-color: var(--dark-green);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-weight: 500;
+    width: 100%;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-add-product:hover {
+    background-color: #004d00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.products-section {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.product-card {
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s;
+    height: 100%;
+    border: 1px solid #eee;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+    height: 200px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    position: relative;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.product-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: white;
+}
+
+.badge-active {
+    background-color: var(--dark-green);
+}
+
+.badge-inactive {
+    background-color: #6c757d;
+}
+
+.badge-soldout {
+    background-color: #dc3545;
+}
+
+.product-info {
+    padding: 1.5rem;
+}
+
+.product-name {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark-green);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-price {
+    font-weight: 700;
+    color: var(--earth-brown);
+    margin-bottom: 0.5rem;
+}
+
+.product-category {
+    display: inline-block;
+    background-color: rgba(135, 206, 235, 0.2);
+    color: #006400;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.product-stock {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+.product-description {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-edit {
+    background-color: var(--sky-blue);
+    color: #333;
+    border: none;
+    border-radius: 30px;
+    padding: 8px 15px;
+    font-weight: 500;
+    flex: 1;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.btn-edit:hover {
+    background-color: #6cb8e0;
+    transform: translateY(-2px);
+}
+
+.btn-delete {
+    background-color: #f8d7da;
+    color: #dc3545;
+    border: none;
+    border-radius: 30px;
+    padding: 8px 15px;
+    font-weight: 500;
+    flex: 1;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.btn-delete:hover {
+    background-color: #f1b0b7;
+    transform: translateY(-2px);
+}
+
+/* Modal */
+.modal-header {
+    background-color: var(--dark-green);
+    color: white;
+}
+
+.btn-save {
+    background-color: var(--dark-green);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 25px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-save:hover {
+    background-color: #004d00;
+    transform: translateY(-2px);
+}
+
+/* Paginación */
+.pagination .page-item .page-link {
+    color: var(--dark-green);
+    border: 1px solid #dee2e6;
+    margin: 0 5px;
+    border-radius: 50% !important;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--dark-green);
+    border-color: var(--dark-green);
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .entrepreneur-controls .row > div {
+        margin-bottom: 1rem;
+    }
+    
+    .product-actions {
+        flex-direction: column;
+    }
+    
+    .btn-edit, .btn-delete {
+        width: 100%;
+    }
+}

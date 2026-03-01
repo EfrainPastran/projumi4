@@ -1,0 +1,11 @@
+Instalar
+1 composer init # Crear composer.json con datos, autoload y paquetes iniciales
+2 composer require dompdf/dompdf # Instalar Dompdf y agregarlo a composer.json
+3 composer require phpoffice/phpspreadsheet  # Instalar PhpSpreadsheet y agregarlo a composer.json
+4 composer dump-autoload # Regenerar autoload con las clases y namespaces
+
+Reinstalar
+1 rmdir /s /q vendor # Borrar dependencias
+2 del composer.lock # Borrar archivo de bloqueo
+3 composer install # Reinstalar dependencias desde composer.json
+4 composer dump-autoload # Regenerar autoload

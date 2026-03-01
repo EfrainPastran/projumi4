@@ -1,0 +1,32 @@
+.register-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    background-color: #fff;
+}
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.form-header h2 {
+    color: #2c3e50;
+    font-weight: 600;
+}
+.form-section {
+    margin-bottom: 1.5rem;
+}
+.section-title {
+    font-size: 1.1rem;
+    color: #006400;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+.required-field::after {
+    content: " *";
+    color: red;
+}
+
+/* Navbar */

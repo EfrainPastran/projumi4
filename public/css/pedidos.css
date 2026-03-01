@@ -1,0 +1,195 @@
+:root {
+    --sky-blue: #87CEEB;
+    --earth-brown: #8B4513;
+    --dark-green: #006400;
+    --yellow: #FFD700;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.navbar {
+    background: linear-gradient(135deg, var(--sky-blue), var(--dark-green)); /* Degradado verde navidad */
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: fixed; /* Fija la navbar en la parte superior */
+    width: 100%;
+    top: 0;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+
+/* Color de los elementos del navbar */
+.navbar-brand,
+.nav-link {
+    color: #ffffff !important; /* Texto blanco */
+}
+
+.nav-link {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s;
+    position: relative;
+}
+
+/* Efecto hover para los links */
+.nav-link:hover {
+    color: #ffd700 !important; /* Dorado al hacer hover */
+    transform: translateY(-2px);
+}
+
+
+
+.nav-link i {
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+}
+
+.navbar-brand img {
+    border: 2px solid white;
+    border-radius: 50%; /* Opcional: para hacerla circular */
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Sutil sombra dorada */
+}
+
+/* Botón de hamburguesa en móviles */
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Efecto cuando se hace scroll */
+.navbar.scrolled {
+    background: linear-gradient(135deg, #0d300d 0%, #1e5a1e 100%); /* Verde más oscuro al hacer scroll */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Añade un pequeño toque navideño con pseudo-elementos */
+.navbar::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #ff0000, #ffffff, #ff0000, transparent);
+    background-size: 200% auto;
+    animation: shine 3s linear infinite;
+}
+
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    font-weight: 600;
+    background-color: #f8f9fa;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 100, 0, 0.05);
+}
+
+.badge {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+.bg-primary {
+    background-color: var(--dark-green) !important;
+}
+
+.bg-success {
+    background-color: var(--dark-green) !important;
+}
+
+.bg-warning {
+    background-color: var(--yellow) !important;
+    color: #000 !important;
+}
+
+.btn-primary {
+    background-color: var(--dark-green);
+    border-color: var(--dark-green);
+}
+
+.btn-primary:hover {
+    background-color: #005000;
+    border-color: #005000;
+}
+
+.btn-outline-primary {
+    color: var(--dark-green);
+    border-color: var(--dark-green);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--dark-green);
+    border-color: var(--dark-green);
+    color: white;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1.5rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.timeline {
+    position: relative;
+    padding-left: 1rem;
+    margin-left: 1rem;
+    border-left: 2px solid #dee2e6;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 1.5rem;
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-item-marker {
+    position: absolute;
+    left: -1.5rem;
+    top: 0;
+}
+
+.timeline-item-marker-indicator {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    border: 2px solid white;
+    display: block;
+}
+
+.timeline-item-content {
+    padding-left: 1rem;
+}
+
+.modal-header {
+    background-color: var(--dark-green);
+    color: white;
+}
+
+.modal-title {
+    font-weight: 600;
+}

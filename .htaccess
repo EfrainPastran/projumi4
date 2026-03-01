@@ -1,0 +1,30 @@
+<IfModule mod_rewrite.c>
+
+    RewriteEngine On
+    #Redirigir de http a https
+    #RewriteCond %{HTTPS} off
+    #RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # HOST
+    #RewriteBase /
+    # LOCALHOST
+    RewriteBase /projumi/
+    
+    # Redirigir todas las solicitudes al index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+    
+    # Prevenir acceso directo a archivos .php en carpetas
+    RewriteRule ^controllers/ - [F]
+    RewriteRule ^models/ - [F]
+    RewriteRule ^libs/ - [F]
+    RewriteRule ^config/ - [F]
+</IfModule>
+
+# Prevenir listado de directorios
+Options -Indexes
+
+# HOST
+#php_value display_errors On
+#php_value date.timezone America/New_York

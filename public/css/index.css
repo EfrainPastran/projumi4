@@ -1,0 +1,186 @@
+:root {
+    --sky-blue: #87CEEB;
+    --earth-brown: #8B4513;
+    --dark-green: #006400;
+    --yellow: #FFD700;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+.hero-section {
+    background: 
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), /* Degradado para mejorar legibilidad */
+    url('../img/Jovenes-.jpeg') no-repeat center center/cover;
+    background-attachment: fixed;
+    min-height: 80vh; /* Altura mínima del 80% del viewport */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    position: relative;
+    padding: 0;
+    
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-section h1 {
+    font-size: 3.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1rem;
+}
+
+.hero-section .lead {
+    font-size: 1.5rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Botón destacado */
+.hero-section .btn-primary {
+    background-color: var(--yellow);
+    border-color: var(--yellow);
+    color: var(--dark-green);
+    font-weight: bold;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.hero-section .btn-primary:hover {
+    background-color: transparent;
+    color: var(--yellow);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+
+.logo {
+    max-height: 120px;
+}
+
+.rounded-logo {
+    width: 150px; /* Ajusta el tamaño según necesites */
+    height: 150px;
+    border-radius: 50%; /* Esto hace que la imagen sea circular */
+    object-fit: cover; /* Asegura que la imagen mantenga sus proporciones */
+    border: 3px solid white; /* Borde opcional */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra opcional */
+}
+
+.logo-container {
+    display: inline-block; /* Para que el contenedor se ajuste al logo */
+}
+
+/* Si quieres que el logo tenga un fondo circular */
+.logo-container {
+    background-color: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
+    border-radius: 50%;
+    padding: 10px; /* Espacio alrededor del logo */
+}
+
+.btn-primary {
+    background-color: var(--dark-green);
+    border-color: var(--dark-green);
+}
+
+.btn-primary:hover {
+    background-color: #004d00;
+    border-color: #004d00;
+}
+
+.btn-outline-primary {
+    color: var(--dark-green);
+    border-color: var(--dark-green);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--dark-green);
+    color: white;
+}
+
+.card {
+    transition: transform 0.3s ease;
+    border-radius: 10px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+#about, #contact {
+    background-color: #f8f9fa;
+}
+
+#services {
+    background-color: white;
+}
+
+.social-links a {
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--sky-blue) !important;
+}
+
+/* Estilos para los modales */
+.modal-header {
+    background-color: var(--dark-green);
+    color: white;
+}
+
+.modal-footer .btn-primary {
+    background-color: var(--dark-green);
+    border-color: var(--dark-green);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 60px 0;
+        min-height: 60vh;
+    }
+    
+    .display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-section .lead {
+        font-size: 1.2rem;
+    }
+}

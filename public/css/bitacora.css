@@ -1,0 +1,403 @@
+:root {
+    --sky-blue: #87CEEB;
+    --earth-brown: #8B4513;
+    --dark-green: #006400;
+    --sun-yellow: #FFD700;
+    --light-gray: #f8f9fa;
+    --dark-gray: #343a40;
+}
+
+body {
+    background-color: var(--light-gray);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.navbar {
+    background: linear-gradient(135deg, var(--sky-blue), var(--dark-green)); /* Degradado verde navidad */
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: fixed; /* Fija la navbar en la parte superior */
+    width: 100%;
+    top: 0;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+
+/* Color de los elementos del navbar */
+.navbar-brand,
+.nav-link {
+    color: #ffffff !important; /* Texto blanco */
+}
+
+.nav-link {
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s;
+    position: relative;
+}
+
+/* Efecto hover para los links */
+.nav-link:hover {
+    color: #ffd700 !important; /* Dorado al hacer hover */
+    transform: translateY(-2px);
+}
+
+
+
+.nav-link i {
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+}
+
+.navbar-brand img {
+    border: 2px solid white;
+    border-radius: 50%; /* Opcional: para hacerla circular */
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); /* Sutil sombra dorada */
+}
+
+/* Botón de hamburguesa en móviles */
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Efecto cuando se hace scroll */
+.navbar.scrolled {
+    background: linear-gradient(135deg, #0d300d 0%, #1e5a1e 100%); /* Verde más oscuro al hacer scroll */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Añade un pequeño toque navideño con pseudo-elementos */
+.navbar::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #ff0000, #ffffff, #ff0000, transparent);
+    background-size: 200% auto;
+    animation: shine 3s linear infinite;
+}
+
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
+}
+
+.bitacora-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 0 20px;
+}
+
+.bitacora-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    border: none;
+}
+
+.bitacora-header {
+    background: linear-gradient(135deg, var(--dark-green) 0%, #004d00 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.header-content h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-content .subtitle {
+    margin: 5px 0 0;
+    opacity: 0.9;
+    font-size: 0.95rem;
+}
+
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-box {
+    position: relative;
+    flex-grow: 1;
+    max-width: 400px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 15px 10px 40px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: none;
+    border-radius: 30px;
+    color: white;
+    transition: all 0.3s;
+}
+
+.search-box input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-box input:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+.btn-filter {
+    background-color: var(--sun-yellow);
+    color: #333;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.btn-filter:hover {
+    background-color: #e6c200;
+    transform: translateY(-2px);
+}
+
+/* Estilos para la tabla */
+#bitacoraTable {
+    width: 100% !important;
+    margin-top: 0 !important;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+#bitacoraTable thead th {
+    background-color: var(--dark-green);
+    color: white;
+    font-weight: 500;
+    padding: 15px;
+    border: none;
+}
+
+#bitacoraTable tbody tr {
+    transition: all 0.2s;
+}
+
+#bitacoraTable tbody tr:hover {
+    background-color: rgba(135, 206, 235, 0.1);
+}
+
+#bitacoraTable tbody td {
+    padding: 12px 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #eee;
+}
+
+.action-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.action-login {
+    background-color: #e6f7ff;
+    color: #1890ff;
+}
+
+.action-create {
+    background-color: #f6ffed;
+    color: #52c41a;
+}
+
+.action-update {
+    background-color: #fffbe6;
+    color: #faad14;
+}
+
+.action-delete {
+    background-color: #fff2f0;
+    color: #ff4d4f;
+}
+
+.btn-details {
+    background-color: var(--sky-blue);
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    transition: all 0.3s;
+}
+
+.btn-details:hover {
+    background-color: #6cb8e0;
+}
+
+/* Modales */
+.modal-header {
+    background: linear-gradient(135deg, var(--dark-green) 0%, #004d00 100%);
+    color: white;
+}
+
+.modal-title i {
+    margin-right: 10px;
+}
+
+.btn-apply {
+    background-color: var(--dark-green);
+    color: white;
+    border: none;
+}
+
+.btn-apply:hover {
+    background-color: #004d00;
+}
+
+.btn-reset {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+}
+
+.btn-reset:hover {
+    background-color: #5a6268;
+}
+
+.btn-close-modal {
+    background-color: var(--sky-blue);
+    color: #333;
+    border: none;
+}
+
+.btn-close-modal:hover {
+    background-color: #6cb8e0;
+}
+
+/* Detalles del registro */
+.detail-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.detail-item.full-width {
+    grid-column: span 2;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--dark-green);
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    border-left: 3px solid var(--sky-blue);
+}
+
+.detail-value pre {
+    margin: 0;
+    white-space: pre-wrap;
+    font-family: inherit;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* DataTables personalización */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 20px;
+}
+
+.dataTables_length select {
+    border-radius: 5px;
+    padding: 5px;
+    border: 1px solid #ddd;
+}
+
+.dataTables_filter input {
+    border-radius: 5px;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+}
+
+.dataTables_paginate .paginate_button {
+    border-radius: 5px !important;
+    margin: 0 3px;
+    transition: all 0.3s;
+}
+
+.dataTables_paginate .paginate_button.current {
+    background: var(--dark-green) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.dataTables_paginate .paginate_button:hover {
+    background: #e9ecef !important;
+    border-color: #dee2e6 !important;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .bitacora-header {
+        flex-direction: column;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .search-box {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .detail-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-item.full-width {
+        grid-column: span 1;
+    }
+}
