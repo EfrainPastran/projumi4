@@ -46,9 +46,11 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-4">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarCategoriaModal">
-                                <i class="fas fa-plus me-2"></i>Nueva Categoría
-                            </button>
+                            <?php if (isset($permisos['registrar'])): ?>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarCategoriaModal">
+                                    <i class="fas fa-plus me-2"></i>Nueva Categoría
+                                </button>
+                            <?php endif; ?>
                             <div class="input-group buscar-input">
                                 <input type="text" class="form-control" placeholder="Buscar categoría..." id="buscarCategoria">
                                 <button class="btn btn-outline-secondary" type="button" id="btnBuscar">
@@ -86,20 +88,24 @@
                                                     </span>
                                                 </td>
                                                 <td class="acciones-btn">
-                                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarCategoriaModal" 
-                                                        data-id="<?php echo $categoria['id_categoria']; ?>"
-                                                        data-nombre="<?php echo htmlspecialchars($categoria['nombre']); ?>"
-                                                        data-descripcion="<?php echo htmlspecialchars($categoria['descripcion']); ?>"
-                                                        data-estado="<?php echo $categoria['estatus']; ?>">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarCategoriaModal"
-                                                        data-id="<?php echo $categoria['id_categoria']; ?>"
-                                                        data-nombre="<?php echo htmlspecialchars($categoria['nombre']); ?>"
-                                                        data-descripcion="<?php echo htmlspecialchars($categoria['descripcion']); ?>"
-                                                        data-estado="<?php echo ($categoria['estatus']); ?>">
-                                                        <i class="fas fa-trash"></i><div class="3"></div>
-                                                    </button>
+                                                    <?php if (isset($permisos['actualizar'])): ?>
+                                                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarCategoriaModal" 
+                                                            data-id="<?php echo $categoria['id_categoria']; ?>"
+                                                            data-nombre="<?php echo htmlspecialchars($categoria['nombre']); ?>"
+                                                            data-descripcion="<?php echo htmlspecialchars($categoria['descripcion']); ?>"
+                                                            data-estado="<?php echo $categoria['estatus']; ?>">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                    <?php endif; ?>
+                                                    <?php if (isset($permisos['eliminar'])): ?>
+                                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarCategoriaModal"
+                                                            data-id="<?php echo $categoria['id_categoria']; ?>"
+                                                            data-nombre="<?php echo htmlspecialchars($categoria['nombre']); ?>"
+                                                            data-descripcion="<?php echo htmlspecialchars($categoria['descripcion']); ?>"
+                                                            data-estado="<?php echo ($categoria['estatus']); ?>">
+                                                            <i class="fas fa-trash"></i><div class="3"></div>
+                                                        </button>
+                                                    <?php endif; ?>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>

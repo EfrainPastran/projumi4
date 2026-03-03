@@ -4,13 +4,37 @@ use App\Middleware;
 //CATEGORIA
 function index()
 {
-    $model = new CategoriasModel();
-    $data = $model->getCategorias();
+    // 1. Verificación de sesión
+    if (!isset($_SESSION['user']['cedula'])) {
+        header('Location: ../home/index');
+        exit;
+    }
+
     $cedula = $_SESSION['user']['cedula'];
     $middleware = new Middleware();
     $tipoUsuario = $middleware->verificarTipoUsuario($cedula);
+
+    // 2. Control de Permisos para el módulo Categorías
+    // Verifica en tu BD si el ID del módulo categorías es el 19
+    $idModuloCategorias = 19; 
     
-    render('categorias/index', ['data' => $data]);
+    // Extraemos los permisos que el Middleware guardó en la sesión
+    $listaPermisos = $_SESSION['user']['rol']['permisos'][$idModuloCategorias] ?? [];
+
+    // Convertimos a mapa: ['registrar' => true, 'actualizar' => true, etc.]
+    $permisosMap = array_fill_keys($listaPermisos, true);
+
+    // 3. Carga de datos
+    $model = new CategoriasModel();
+    $data = $model->getCategorias();
+
+    // 4. Renderizado con envío de permisos y datos de interfaz
+    render('categorias/index', [
+        'data'     => $data,
+        'permisos' => $permisosMap,
+        'title'    => 'Gestión de Categorías',
+        'menu'     => ('administrador' == $tipoUsuario[0]) ? 'headeradmin' : 'navbar'
+    ]);
 }
 
 function register()

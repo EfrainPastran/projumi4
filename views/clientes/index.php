@@ -14,7 +14,7 @@
 </head>
 <body>
     <?php
-    include "views/".$menu.".php";
+    include "views/navbar.php";
     ?>
     <br>
     <br>
@@ -28,9 +28,11 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-4">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarClienteModal">
-                                <i class="fas fa-plus me-2"></i>Nuevo Cliente
-                            </button>
+                            <?php if (isset($permisos['registrar'])): ?>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarClienteModal">
+                                    <i class="fas fa-plus me-2"></i>Nuevo Cliente
+                                </button>
+                            <?php endif; ?>
                             <div class="input-group buscar-input">
                                 <input type="text" class="form-control" placeholder="Buscar cliente..." id="buscarCliente">
                                 <button class="btn btn-outline-secondary" type="button" id="btnBuscar">
@@ -73,22 +75,26 @@
                                                 </td>
                                                 <td><?php echo date('d/m/Y', strtotime($cliente['fecha_registro'])); ?></td>
                                                 <td class="acciones-btn">
-                                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarClienteModal" 
-                                                        data-id="<?php echo $cliente['id_cliente']; ?>"
-                                                        data-cedula="<?php echo $cliente['cedula']; ?>"
-                                                        data-nombre="<?php echo htmlspecialchars($cliente['nombre']); ?>"
-                                                        data-apellido="<?php echo htmlspecialchars($cliente['apellido']); ?>"
-                                                        data-correo="<?php echo htmlspecialchars($cliente['correo']); ?>"
-                                                        data-telefono="<?php echo htmlspecialchars($cliente['telefono']); ?>"
-                                                        data-fecha_nacimiento="<?php echo $cliente['fecha_nacimiento']; ?>"
-                                                        data-estatus="<?php echo $cliente['estatus']; ?>">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarClienteModal"
-                                                        data-id="<?php echo $cliente['id_cliente']; ?>"
-                                                        data-nombre="<?php echo htmlspecialchars($cliente['nombre'] . ' ' . $cliente['apellido']); ?>">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                                    <?php if (isset($permisos['actualizar'])): ?>
+                                                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarClienteModal" 
+                                                            data-id="<?php echo $cliente['id_cliente']; ?>"
+                                                            data-cedula="<?php echo $cliente['cedula']; ?>"
+                                                            data-nombre="<?php echo htmlspecialchars($cliente['nombre']); ?>"
+                                                            data-apellido="<?php echo htmlspecialchars($cliente['apellido']); ?>"
+                                                            data-correo="<?php echo htmlspecialchars($cliente['correo']); ?>"
+                                                            data-telefono="<?php echo htmlspecialchars($cliente['telefono']); ?>"
+                                                            data-fecha_nacimiento="<?php echo $cliente['fecha_nacimiento']; ?>"
+                                                            data-estatus="<?php echo $cliente['estatus']; ?>">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                    <?php endif; ?>
+                                                    <?php if (isset($permisos['eliminar'])): ?>
+                                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarClienteModal"
+                                                            data-id="<?php echo $cliente['id_cliente']; ?>"
+                                                            data-nombre="<?php echo htmlspecialchars($cliente['nombre'] . ' ' . $cliente['apellido']); ?>">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    <?php endif; ?>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>

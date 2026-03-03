@@ -30,14 +30,18 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-4">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarUsuarioModal">
-                                <i class="fas fa-user-plus me-2"></i>Nuevo Usuario
-                            </button>
+                            <?php if (isset($permisos['registrar'])): ?>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarUsuarioModal">
+                                    <i class="fas fa-user-plus me-2"></i>Nuevo Usuario
+                                </button>
+                            <?php endif; ?>
                             <div class="input-group buscar-input">
                                 <input type="text" class="form-control" placeholder="Buscar usuario..." id="buscarUsuario">
-                                <button class="btn btn-outline-secondary" type="button" id="btnBuscar">
-                                    <i class="fas fa-search"></i>
-                                </button>
+                                <?php if (isset($permisos['consultar'])): ?>
+                                    <button class="btn btn-outline-secondary" type="button" id="btnBuscar">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </div>
 
@@ -75,24 +79,28 @@
                                                     </span>
                                                 </td>
                                                 <td class="acciones-btn">
-                                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarUsuarioModal" 
-                                                        data-id="<?php echo $usuario['id_usuario']; ?>"
-                                                        data-cedula="<?php echo htmlspecialchars($usuario['cedula']); ?>"
-                                                        data-nombre="<?php echo htmlspecialchars($usuario['nombre']); ?>"
-                                                        data-apellido="<?php echo htmlspecialchars($usuario['apellido']); ?>"
-                                                        data-correo="<?php echo htmlspecialchars($usuario['correo']); ?>"
-                                                        data-direccion="<?php echo htmlspecialchars($usuario['direccion']); ?>"
-                                                        data-telefono="<?php echo htmlspecialchars($usuario['telefono']); ?>"
-                                                        data-fecha_nacimiento="<?php echo htmlspecialchars($usuario['fecha_nacimiento']); ?>"
-                                                        data-estatus="<?php echo $usuario['estatus']; ?>"
-                                                        data-fk_rol="<?php echo $usuario['fk_rol']; ?>">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarUsuarioModal"
-                                                        data-id="<?php echo $usuario['id_usuario']; ?>"
-                                                        data-nombre="<?php echo htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']); ?>">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                                    <?php if (isset($permisos['actualizar'])): ?>
+                                                        <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarUsuarioModal" 
+                                                            data-id="<?php echo $usuario['id_usuario']; ?>"
+                                                            data-cedula="<?php echo htmlspecialchars($usuario['cedula']); ?>"
+                                                            data-nombre="<?php echo htmlspecialchars($usuario['nombre']); ?>"
+                                                            data-apellido="<?php echo htmlspecialchars($usuario['apellido']); ?>"
+                                                            data-correo="<?php echo htmlspecialchars($usuario['correo']); ?>"
+                                                            data-direccion="<?php echo htmlspecialchars($usuario['direccion']); ?>"
+                                                            data-telefono="<?php echo htmlspecialchars($usuario['telefono']); ?>"
+                                                            data-fecha_nacimiento="<?php echo htmlspecialchars($usuario['fecha_nacimiento']); ?>"
+                                                            data-estatus="<?php echo $usuario['estatus']; ?>"
+                                                            data-fk_rol="<?php echo $usuario['fk_rol']; ?>">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                    <?php endif; ?>
+                                                    <?php if (isset($permisos['eliminar'])): ?>
+                                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarUsuarioModal"
+                                                            data-id="<?php echo $usuario['id_usuario']; ?>"
+                                                            data-nombre="<?php echo htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']); ?>">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    <?php endif; ?>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>

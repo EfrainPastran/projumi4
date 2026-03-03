@@ -4,22 +4,43 @@ use App\Models\ClienteModel;
 use App\Models\rolesModel;
 use App\Middleware;
 function index() {
+    // 1. Verificar sesión
     if (!isset($_SESSION['user']['cedula'])) {
         header('Location: ../home/index');
         exit;
     }
+
+    // 2. Verificar permisos y tipo de usuario
     $cedula = $_SESSION['user']['cedula'];
     $Middleware = new Middleware();
     $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
+
+    // Bloqueo de acceso para roles no autorizados
     if ('emprendedor' == $tipoUsuario[0] || 'cliente' == $tipoUsuario[0]) {
         header('Location: ../home/index');
         exit;
     }
-    $model = new UsuariosModel();
+
+    // 3. Cargar Permisos del módulo Usuarios
+    // IMPORTANTE: Asegúrate de que el 1 sea el ID real en tu tabla t_modulo
+    $idModuloUsuarios = 12; 
+    $listaPermisos = $_SESSION['user']['rol']['permisos'][$idModuloUsuarios] ?? [];
+    $permisosMap = array_fill_keys($listaPermisos, true);
+
+    // 4. Instanciar Modelos (Corregido el nombre a UsuariosModel)
+    $model = new UsuariosModel(); 
     $rol = new rolesModel();
+    
+    // 5. Obtener Datos
     $roles = $rol->getRoles();
     $data = $model->getUsuarios();
-    render('user/index', ['data' => $data, 'roles' => $roles]);
+
+    // 6. Renderizar enviando permisos
+    render('user/index', [
+        'data'     => $data, 
+        'roles'    => $roles,
+        'permisos' => $permisosMap // <-- Pasamos el mapa de permisos a la vista
+    ]);
 }
 
 function register()

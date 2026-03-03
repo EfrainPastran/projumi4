@@ -24,7 +24,7 @@
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
-    include "views/headerEmprendedor.php";
+    include "views/navbar.php";
     
     // Mostrar mensajes flash
     if (isset($_SESSION['flash_success'])) {

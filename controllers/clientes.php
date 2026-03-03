@@ -2,34 +2,33 @@
 use App\Models\ClienteModel;
 use App\Middleware;
 function index() {
+    // 1. Verificación de sesión
     if (!isset($_SESSION['user']['cedula'])) {
         header('Location: ../home/index');
         exit;
     }
-    if (isset($_SESSION['user']['cedula'])) {
-        $cedula = $_SESSION['user']['cedula'];
-        $Middleware = new Middleware();
-        $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
-    }
-    if ('emprendedor' == $tipoUsuario[0]) {
-        $title = "Mis clientes";
-        $menu = "headerEmprendedor";
-    }
-    if('administrador' == $tipoUsuario[0]) {
-        $title = "Gestión de Clientes";
-        $menu = "headeradmin";
-    }
-    else{
-        $title = "Gestión de Clientes";
-        $menu = "navbar";
-    }
 
+    $cedula = $_SESSION['user']['cedula'];
+    $Middleware = new Middleware();
+    $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
+
+    // 2. Lógica de Permisos para el módulo Cliente (ID: 21)
+    $idModuloCliente = 21; 
+    
+    // Extraemos la lista de la sesión: ['consultar', 'registrar', etc.]
+    $listaPermisos = $_SESSION['user']['rol']['permisos'][$idModuloCliente] ?? [];
+
+    // Convertimos a mapa: ['registrar' => true, 'actualizar' => true]
+    $permisosMap = array_fill_keys($listaPermisos, true);
+
+    // 3. Carga de datos y renderizado
     $model = new ClienteModel();
     $data = $model->getAll();
+
     render('clientes/index', [
-        'data' => $data,
-        'title' => $title,
-        'menu' => $menu
+        'data'     => $data,
+        'title'    => $title,
+        'permisos' => $permisosMap // Pasamos el mapa de permisos a la vista
     ]);
 }
 
