@@ -82,7 +82,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($datos_cuentas as $cuenta): ?>
+                                        <?php foreach ($datos_cuenta as $cuenta): ?>
                                             <tr>
                                                 <td><?php echo $cuenta['id_datos_cuenta']; ?></td>
                                                 <td><?php echo htmlspecialchars($cuenta['banco']); ?></td>

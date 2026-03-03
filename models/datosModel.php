@@ -83,7 +83,7 @@ class datosModel extends Model {
     }
 
     public function getmetodostodos() {
-    try {
+        try {
             $sql = "SELECT 
                     dc.id_datos_cuenta, 
                     dc.telefono, 

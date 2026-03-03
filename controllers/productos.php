@@ -168,17 +168,19 @@ use App\Models\Usermodel;
         $productos = $Producto->getProductos();
 
         $cedula = $_SESSION['user']['cedula'];
+        $rol = $_SESSION['user']['rol'];
         $Middleware = new Middleware();
         $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
-
-        $idModuloProductos = 2; //Asignación del id del módulo en este caso de "Productos" en t_modulo
         
         // Obtenemos los permisos que el Middleware ya guardó en la sesión
         // Esto devolverá algo como ['consultar', 'registrar']
-        $listaPermisos = $_SESSION['user']['rol']['permisos'][$idModuloProductos] ?? [];
+        $permisos = $Middleware->obtenerPermisosDinamicos($rol['rol'], 'Productos');
 
-        // Lo convertimos a un formato más cómodo para la vista: ['registrar' => true]
-        $permisosMap = array_fill_keys($listaPermisos, true);
+        // Si no tiene permiso de consultar, lo sacamos de una vez
+        if (!$permisos['consultar']) {
+            header('Location: ../home/principal');
+            exit;
+        }
 
         if ('emprendedor' == $tipoUsuario[0]) {
             $title = "Pedidos solicitados";
@@ -198,7 +200,7 @@ use App\Models\Usermodel;
             'productos'  => $productos, 
             'title'      => $title, 
             'menu'       => $menu,
-            'permisos'   => $permisosMap // Pasamos el mapa de permisos
+            'permisos'   => $permisos // Pasamos el mapa de permisos
         ]);
     }
 
