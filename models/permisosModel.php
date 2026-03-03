@@ -206,5 +206,34 @@ class permisosModel extends Model {
             return false;
         }
     }
+
+    public function obtenerPermisosPorRolYModulo($nombre_rol, $nombre_modulo) {
+        $sql = "SELECT p.nombre 
+                FROM t_permiso_rol_modulo prm
+                INNER JOIN t_modulo m ON prm.fk_modulo = m.id_modulo
+                INNER JOIN t_permisos p ON prm.fk_permiso = p.id_permisos
+                INNER JOIN t_rol r ON prm.fk_rol = r.id_rol
+                WHERE r.nombre = :rol 
+                AND m.nombre = :modulo 
+                AND prm.estatus = 1";
+                
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute([':rol' => $nombre_rol, ':modulo' => $nombre_modulo]);
+        $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Estructura por defecto
+        $mapa = [
+            'consultar' => false,
+            'registrar' => false,
+            'actualizar' => false,
+            'eliminar'  => false
+        ];
+
+        foreach ($resultados as $row) {
+            $mapa[strtolower($row['nombre'])] = true;
+        }
+
+        return $mapa;
+    }
     
 }

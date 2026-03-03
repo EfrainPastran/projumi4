@@ -1,6 +1,6 @@
 <?php
 namespace App;
-
+use App\Models\permisosModel;
 use Exception;
 use PDO;
 
@@ -185,6 +185,16 @@ class Middleware extends Model
      */
     public function __destruct() {
         Database::closeAll();
+    }
+
+    public function obtenerPermisosDinamicos($nombre_rol, $nombre_modulo) {
+        $model = new permisosModel();
+        // Consultamos a la BD el mapa de permisos activo para este rol en este módulo
+        $permisos = $model->obtenerPermisosPorRolYModulo($nombre_rol, $nombre_modulo);
+        
+        // Retornamos un array asociativo como el que usábamos antes
+        // Ej: ['consultar' => true, 'registrar' => false, ...]
+        return $permisos;
     }
 }
 
