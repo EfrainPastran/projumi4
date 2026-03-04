@@ -28,7 +28,7 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-4">
-                            <?php if (isset($permisos['registrar'])): ?>
+                            <?php if (isset($permisos['registrar']) && $permisos['registrar'] === true): ?>
                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarClienteModal">
                                     <i class="fas fa-plus me-2"></i>Nuevo Cliente
                                 </button>
@@ -75,7 +75,7 @@
                                                 </td>
                                                 <td><?php echo date('d/m/Y', strtotime($cliente['fecha_registro'])); ?></td>
                                                 <td class="acciones-btn">
-                                                    <?php if (isset($permisos['actualizar'])): ?>
+                                                    <?php if (isset($permisos['actualizar']) && $permisos['actualizar'] === true): ?>
                                                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarClienteModal" 
                                                             data-id="<?php echo $cliente['id_cliente']; ?>"
                                                             data-cedula="<?php echo $cliente['cedula']; ?>"
@@ -88,7 +88,7 @@
                                                             <i class="fas fa-edit"></i>
                                                         </button>
                                                     <?php endif; ?>
-                                                    <?php if (isset($permisos['eliminar'])): ?>
+                                                    <?php if (isset($permisos['eliminar']) && $permisos['eliminar'] === true): ?>
                                                         <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarClienteModal"
                                                             data-id="<?php echo $cliente['id_cliente']; ?>"
                                                             data-nombre="<?php echo htmlspecialchars($cliente['nombre'] . ' ' . $cliente['apellido']); ?>">
