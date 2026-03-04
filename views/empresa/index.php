@@ -112,19 +112,24 @@
                     <h5 class="modal-title" id="agregarEmpresaModalLabel">Agregar Nueva Empresa</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="<?php echo APP_URL; ?>/empresa/register" method="post">
+                <form id="formAgregarEmpresa" action="<?php echo APP_URL; ?>/empresa/register" method="post">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="nombreEmpresa" class="form-label">Nombre de la empresa</label>
-                            <input type="text" class="form-control" id="nombreEmpresa" name="nombre" required>
+                            <input type="text" class="form-control" id="nombreEmpresa" name="nombre" 
+                                required data-tipo="letras" data-min="3" data-max="45">
                         </div>
+
                         <div class="mb-3">
                             <label for="telefonoEmpresa" class="form-label">Teléfono</label>
-                            <input type="tel" class="form-control" id="telefonoEmpresa" name="telefono" required>
+                            <input type="tel" class="form-control" id="telefonoEmpresa" name="telefono" 
+                                required data-tipo="numeros" data-min="11" data-max="11">
                         </div>
+
                         <div class="mb-3">
                             <label for="direccionEmpresa" class="form-label">Dirección</label>
-                            <textarea class="form-control" id="direccionEmpresa" name="direccion" rows="3" required></textarea>
+                            <textarea class="form-control" id="direccionEmpresa" name="direccion" rows="3" 
+                                    required data-min="10" data-max="100"></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="estadoEmpresa" class="form-label">Estado</label>
@@ -151,20 +156,20 @@
                     <h5 class="modal-title" id="editarEmpresaModalLabel">Editar Empresa</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="<?php echo APP_URL; ?>/empresa/update" method="post">
+                <form action="<?php echo APP_URL; ?>/empresa/update" method="post" id="formEditarEmpresa">
                     <input type="hidden" id="idEmpresaEditar" name="id">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="nombreEmpresaEditar" class="form-label">Nombre de la empresa</label>
-                            <input type="text" class="form-control" id="nombreEmpresaEditar" name="nombre" required>
+                            <input type="text" class="form-control" id="nombreEmpresaEditar" name="nombre" data-tipo="letras" data-min="3" data-max="45" required>
                         </div>
                         <div class="mb-3">
                             <label for="telefonoEmpresaEditar" class="form-label">Teléfono</label>
-                            <input type="tel" class="form-control" id="telefonoEmpresaEditar" name="telefono" required>
+                            <input type="tel" class="form-control" id="telefonoEmpresaEditar" name="telefono" data-tipo="numeros" data-min="11" data-max="11" required>
                         </div>
                         <div class="mb-3">
                             <label for="direccionEmpresaEditar" class="form-label">Dirección</label>
-                            <textarea class="form-control" id="direccionEmpresaEditar" name="direccion" rows="3" required></textarea>
+                            <textarea class="form-control" id="direccionEmpresaEditar" name="direccion" rows="3" required data-min="10" data-max="100"></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="estadoEmpresaEditar" class="form-label">Estado</label>
@@ -209,6 +214,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="<?php echo APP_URL; ?>/public/js/validaciones.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // Inicializar por ID de formulario
+            Validaciones.init('#formAgregarEmpresa');
+            Validaciones.init('#formEditarEmpresa');
+        });
+    </script>
     <script>
         // Script para manejar los modales de edición y eliminación
         $(document).ready(function() {

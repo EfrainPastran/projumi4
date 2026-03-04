@@ -151,36 +151,38 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form action="<?php echo APP_URL; ?>/eventos/register" method="post"> 
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label for="nombre" class="form-label">Nombre del Evento</label>
-                <input type="text" class="form-control" id="nombre" name="nombre" required>
+          <form id="formAgregarEvento" action="<?php echo APP_URL; ?>/eventos/register" method="post"> 
+              <div class="row g-3">
+                  <div class="col-md-6">
+                      <label for="nombre" class="form-label">Nombre del Evento</label>
+                      <input type="text" class="form-control" id="nombre" name="nombre" 
+                            required data-tipo="letras" data-min="5" data-max="45">
+                  </div>
+                  <div class="col-md-6">
+                      <label for="direccion" class="form-label">Dirección</label>
+                      <input type="text" class="form-control" id="direccion" name="direccion" 
+                            required data-min="10" data-max="100">
+                  </div>
+                  <div class="col-md-6">
+                      <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
+                      <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
+                  </div>
+                  <div class="col-md-6">
+                      <label for="fecha_fin" class="form-label">Fecha Fin</label>
+                      <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
+                  </div>
+                  <div class="col-md-6">
+                      <label for="status" class="form-label">Estado</label>
+                      <select class="form-select" id="status" name="status" required>
+                          <option value="1" selected>Activo</option>
+                          <option value="0">Inactivo</option>
+                      </select>
+                  </div>
               </div>
-              <div class="col-md-6">
-                <label for="direccion" class="form-label">Dirección</label>
-                <input type="text" class="form-control" id="direccion" name="direccion" required>
+              <div class="modal-footer mt-3">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                  <input type="submit" class="btn btn-projumi" value="Registrar Evento">
               </div>
-              <div class="col-md-6">
-                <label for="fecha_inicio" class="form-label">Fecha Inicio</label>
-                <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
-              </div>
-              <div class="col-md-6">
-                <label for="fecha_fin" class="form-label">Fecha Fin</label>
-                <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" required>
-              </div>
-              <div class="col-md-6">
-                <label for="status" class="form-label">Estado</label>
-                <select class="form-select" id="status" name="status" required>
-                  <option value="1" selected>Activo</option>
-                  <option value="0">Inactivo</option>
-                </select>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <input type="submit" class="btn btn-projumi" value="Registrar Evento">
-            </div>
           </form>
         </div>
       </div>
@@ -198,16 +200,16 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form action="<?php echo APP_URL; ?>/eventos/eventos_update" method="post"> 
+          <form id="formEditarEvento" action="<?php echo APP_URL; ?>/eventos/eventos_update" method="post"> 
             <input type="hidden" id="idEventoEditar" name="id_eventos">
             <div class="row g-3">
               <div class="col-md-6">
                 <label for="nombreEditar" class="form-label">Nombre del Evento</label>
-                <input type="text" class="form-control" id="nombreEditar" name="nombre" required>
+                <input type="text" class="form-control" id="nombreEditar" name="nombre" required data-min="5" data-max="45" data-tipo="letras">
               </div>
               <div class="col-md-6">
                 <label for="direccionEditar" class="form-label">Dirección</label>
-                <input type="text" class="form-control" id="direccionEditar" name="direccion" required>
+                <input type="text" class="form-control" id="direccionEditar" name="direccion" required data-min="10" data-max="100" data-tipo="texto">
               </div>
               <div class="col-md-6">
                 <label for="fecha_inicioEditar" class="form-label">Fecha Inicio</label>
@@ -268,6 +270,14 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="<?php echo APP_URL; ?>/public/js/validaciones.js"></script>
+  <script>
+        $(document).ready(function() {
+            // Inicializar por ID de formulario
+            Validaciones.init('#formAgregarEvento');
+            Validaciones.init('#formEditarEvento');
+        });
+  </script>  
   <script>
     $(document).ready(function() {
         // Modal de edición

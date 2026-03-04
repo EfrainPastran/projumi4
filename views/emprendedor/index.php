@@ -166,7 +166,7 @@
     <!-- Modal Agregar Emprendedor -->
     <div class="modal fade" id="modalAgregar" tabindex="-1" aria-labelledby="modalAgregarLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <form action="<?= APP_URL ?>/emprendedor/registrar" method="POST" class="modal-content" enctype="multipart/form-data">
+            <form id="formAgregar" action="<?= APP_URL ?>/emprendedor/registrar" method="POST" class="modal-content" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalAgregarLabel">Agregar Nuevo Emprendedor</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -183,15 +183,15 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="cedula" class="form-label">Cédula*</label>
-                                <input type="text" name="cedula" id="cedula" class="form-control" required>
+                                <input type="text" name="cedula" id="cedula" class="form-control" required data-tipo="numeros" data-min="7" data-max="8">
                             </div>
                             <div class="col-md-6">
                                 <label for="nombre" class="form-label">Nombre*</label>
-                                <input type="text" name="nombre" id="nombre" class="form-control" required>
+                                <input type="text" name="nombre" id="nombre" class="form-control" required data-tipo="letras" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="apellido" class="form-label">Apellido*</label>
-                                <input type="text" name="apellido" id="apellido" class="form-control" required>
+                                <input type="text" name="apellido" id="apellido" class="form-control" required data-tipo="letras" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
@@ -199,7 +199,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="lugar_nacimiento" class="form-label">Lugar de Nacimiento</label>
-                                <input type="text" name="lugar_nacimiento" id="lugar_nacimiento" class="form-control">
+                                <input type="text" name="lugar_nacimiento" id="lugar_nacimiento" class="form-control" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="nacionalidad" class="form-label">Nacionalidad</label>
@@ -219,11 +219,11 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="correo" class="form-label">Correo</label>
-                                <input type="email" name="correo" id="correo" class="form-control">
+                                <input type="email" name="correo" id="correo" class="form-control" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="telefono" class="form-label">Teléfono</label>
-                                <input type="text" name="telefono" id="telefono" class="form-control">
+                                <input type="text" name="telefono" id="telefono" class="form-control" data-tipo="numeros" data-min="11" data-max="11">
                             </div>
                             <div class="col-md-6">
                                 <label for="municipio" class="form-label">Municipio*</label>
@@ -259,11 +259,11 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="cantidad_hijos" class="form-label">Cantidad de Hijos</label>
-                                <input type="number" name="cantidad_hijos" id="cantidad_hijos" class="form-control" min="0">
+                                <input type="number" name="cantidad_hijos" id="cantidad_hijos" class="form-control" min="0" data-tipo="numeros" data-min="0" data-max="3">
                             </div>
                             <div class="col-md-6">
                                 <label for="carga_familiar" class="form-label">Carga Familiar</label>
-                                <input type="number" name="carga_familiar" id="carga_familiar" class="form-control" min="0">
+                                <input type="number" name="carga_familiar" id="carga_familiar" class="form-control" min="0" data-tipo="numeros" data-min="0" data-max="3">
                             </div>
                             <div class="col-md-6">
                                 <label for="casa_propia" class="form-label">¿Casa Propia?</label>
@@ -295,11 +295,11 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="alergia_medicamento" class="form-label">Alergias a medicamentos</label>
-                                <input type="text" name="alergia_medicamento" id="alergia_medicamento" class="form-control">
+                                <input type="text" name="alergia_medicamento" id="alergia_medicamento" class="form-control" data-tipo="texto" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="alergia_alimento" class="form-label">Alergias a alimentos</label>
-                                <input type="text" name="alergia_alimento" id="alergia_alimento" class="form-control">
+                                <input type="text" name="alergia_alimento" id="alergia_alimento" class="form-control" data-tipo="texto" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="operado" class="form-label">¿Ha sido operado?</label>
@@ -317,31 +317,31 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="titulo_academico" class="form-label">Título Académico</label>
-                                <input type="text" name="titulo_academico" id="titulo_academico" class="form-control">
+                                <input type="text" name="titulo_academico" id="titulo_academico" class="form-control" data-tipo="texto" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="profesion" class="form-label">Profesión</label>
-                                <input type="text" name="profesion" id="profesion" class="form-control">
+                                <input type="text" name="profesion" id="profesion" class="form-control" data-tipo="texto" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="oficio" class="form-label">Oficio</label>
-                                <input type="text" name="oficio" id="oficio" class="form-control">
+                                <input type="text" name="oficio" id="oficio" class="form-control" data-tipo="texto" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="hobby" class="form-label">Hobby</label>
-                                <input type="text" name="hobby" id="hobby" class="form-control">
+                                <input type="text" name="hobby" id="hobby" class="form-control" data-tipo="texto" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="religion" class="form-label">Religión</label>
-                                <input type="text" name="religion" id="religion" class="form-control">
+                                <input type="text" name="religion" id="religion" class="form-control" data-tipo="texto" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="sacramento" class="form-label">Sacramentos</label>
-                                <input type="text" name="sacramento" id="sacramento" class="form-control">
+                                <input type="text" name="sacramento" id="sacramento" class="form-control" data-tipo="texto" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="grupo_activo" class="form-label">Grupo Activo</label>
-                                <input type="text" name="grupo_activo" id="grupo_activo" class="form-control">
+                                <input type="text" name="grupo_activo" id="grupo_activo" class="form-control" data-tipo="texto" data-min="4" data-max="45">
                             </div>
                         </div>
                     </div>
@@ -352,7 +352,7 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="emprendimiento" class="form-label">Nombre del Emprendimiento*</label>
-                                <input type="text" name="emprendimiento" id="emprendimiento" class="form-control" required>
+                                <input type="text" name="emprendimiento" id="emprendimiento" class="form-control" required data-tipo="texto" data-min="4" data-max="50">
                             </div>
                             <div class="col-md-6">
                                 <label for="imagen" class="form-label">Imagen del Emprendimiento</label>
@@ -360,15 +360,15 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="conocimiento_projumi" class="form-label">¿Cómo conoció Projumi?</label>
-                                <input type="text" name="conocimiento_projumi" id="conocimiento_projumi" class="form-control">
+                                <input type="text" name="conocimiento_projumi" id="conocimiento_projumi" class="form-control" data-tipo="texto" data-min="4" data-max="60">
                             </div>
                             <div class="col-md-6">
                                 <label for="motivo_projumi" class="form-label">Motivo de unirse</label>
-                                <input type="text" name="motivo_projumi" id="motivo_projumi" class="form-control">
+                                <input type="text" name="motivo_projumi" id="motivo_projumi" class="form-control" data-tipo="texto" data-min="4" data-max="60">
                             </div>
                             <div class="col-md-6">
                                 <label for="aporte_projumi" class="form-label">Aporte a Projumi</label>
-                                <input type="text" name="aporte_projumi" id="aporte_projumi" class="form-control">
+                                <input type="text" name="aporte_projumi" id="aporte_projumi" class="form-control" data-tipo="texto" data-min="4" data-max="60">
                             </div>
                             <div class="col-md-6">
                                 <label for="estatus" class="form-label">Estatus</label>

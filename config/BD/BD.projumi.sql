@@ -367,7 +367,7 @@ CREATE TABLE IF NOT EXISTS `projumi`.`t_empresa_envio` (
   `id_empresa_envio` INT(11) NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `telefono` VARCHAR(45) NOT NULL,
-  `direccion` VARCHAR(45) NOT NULL,
+  `direccion` VARCHAR(100) NOT NULL,
   `estatus` INT(11) NOT NULL,
   PRIMARY KEY (`id_empresa_envio`))
 ENGINE = InnoDB
@@ -409,7 +409,7 @@ CREATE TABLE IF NOT EXISTS `projumi`.`t_evento` (
   `fecha_inicio` DATE NOT NULL,
   `fecha_fin` DATE NULL DEFAULT NULL,
   `nombre` VARCHAR(45) NOT NULL,
-  `direccion` VARCHAR(45) NOT NULL,
+  `direccion` VARCHAR(100) NOT NULL,
   `status` INT(11) NOT NULL,
   PRIMARY KEY (`id_eventos`))
 ENGINE = InnoDB
