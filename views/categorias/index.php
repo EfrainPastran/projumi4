@@ -46,7 +46,7 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-4">
-                            <?php if (isset($permisos['registrar'])): ?>
+                            <?php if (isset($permisos['registrar']) && $permisos['registrar'] === true): ?>
                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarCategoriaModal">
                                     <i class="fas fa-plus me-2"></i>Nueva Categoría
                                 </button>
@@ -88,7 +88,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="acciones-btn">
-                                                    <?php if (isset($permisos['actualizar'])): ?>
+                                                    <?php if (isset($permisos['actualizar']) && $permisos['actualizar'] === true): ?>
                                                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarCategoriaModal" 
                                                             data-id="<?php echo $categoria['id_categoria']; ?>"
                                                             data-nombre="<?php echo htmlspecialchars($categoria['nombre']); ?>"
@@ -97,7 +97,7 @@
                                                             <i class="fas fa-edit"></i>
                                                         </button>
                                                     <?php endif; ?>
-                                                    <?php if (isset($permisos['eliminar'])): ?>
+                                                    <?php if (isset($permisos['eliminar']) && $permisos['eliminar'] === true): ?>
                                                         <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarCategoriaModal"
                                                             data-id="<?php echo $categoria['id_categoria']; ?>"
                                                             data-nombre="<?php echo htmlspecialchars($categoria['nombre']); ?>"

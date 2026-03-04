@@ -14,15 +14,13 @@ function index()
     $middleware = new Middleware();
     $tipoUsuario = $middleware->verificarTipoUsuario($cedula);
 
-    // 2. Control de Permisos para el módulo Categorías
-    // Verifica en tu BD si el ID del módulo categorías es el 19
-    $idModuloCategorias = 19; 
-    
-    // Extraemos los permisos que el Middleware guardó en la sesión
-    $listaPermisos = $_SESSION['user']['rol']['permisos'][$idModuloCategorias] ?? [];
+    $rol = $_SESSION['user']['rol'];
+    $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Categoría');
 
-    // Convertimos a mapa: ['registrar' => true, 'actualizar' => true, etc.]
-    $permisosMap = array_fill_keys($listaPermisos, true);
+    if (!$permisos['consultar']) {
+            header('Location: ../home/principal');
+            exit;
+    }
 
     // 3. Carga de datos
     $model = new CategoriasModel();
@@ -31,7 +29,7 @@ function index()
     // 4. Renderizado con envío de permisos y datos de interfaz
     render('categorias/index', [
         'data'     => $data,
-        'permisos' => $permisosMap,
+        'permisos' => $permisos,
         'title'    => 'Gestión de Categorías',
         'menu'     => ('administrador' == $tipoUsuario[0]) ? 'headeradmin' : 'navbar'
     ]);

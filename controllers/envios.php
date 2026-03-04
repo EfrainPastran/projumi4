@@ -29,7 +29,17 @@ function index() {
         $title = "Gestión de envíos";
     }
 
-    render('envios/index', ['title' => $title]);
+
+    $rol = $_SESSION['user']['rol'];
+    $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Usuarios');
+
+    if (!$permisos['consultar']) {
+            header('Location: ../home/principal');
+            exit;
+    }
+    
+    render('envios/index', ['title' => $title,
+           'permisos' => $permisos]);
 }
 
 // Obtener todos los envíos según tipo de usuario

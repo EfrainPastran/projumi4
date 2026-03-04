@@ -26,6 +26,14 @@ function index() {
         $title = "Gestión de envíos";
         $menu = "headeradmin";
     }*/
+
+    $rol = $_SESSION['user']['rol'];
+    $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Eventos');
+
+    if (!$permisos['consultar']) {
+            header('Location: ../home/principal');
+            exit;
+    }
 $model = new eventosModel();
 
 $data = $model->getAll();

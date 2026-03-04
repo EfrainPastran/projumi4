@@ -9,18 +9,16 @@ function index() {
     }
 
     $cedula = $_SESSION['user']['cedula'];
-    $Middleware = new Middleware();
-    $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
+    $middleware = new Middleware();
+    $tipoUsuario = $middleware->verificarTipoUsuario($cedula);
 
-    // 2. Lógica de Permisos para el módulo Cliente (ID: 21)
-    $idModuloCliente = 21; 
-    
-    // Extraemos la lista de la sesión: ['consultar', 'registrar', etc.]
-    $listaPermisos = $_SESSION['user']['rol']['permisos'][$idModuloCliente] ?? [];
+    $rol = $_SESSION['user']['rol'];
+    $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Clientes');
 
-    // Convertimos a mapa: ['registrar' => true, 'actualizar' => true]
-    $permisosMap = array_fill_keys($listaPermisos, true);
-
+    if (!$permisos['consultar']) {
+            header('Location: ../home/principal');
+            exit;
+    }
     // 3. Carga de datos y renderizado
     $model = new ClienteModel();
     $data = $model->getAll();
@@ -28,7 +26,7 @@ function index() {
     render('clientes/index', [
         'data'     => $data,
         'title'    => $title,
-        'permisos' => $permisosMap // Pasamos el mapa de permisos a la vista
+        'permisos' => $permisos // Pasamos el mapa de permisos a la vista
     ]);
 }
 

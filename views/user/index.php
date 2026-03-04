@@ -30,7 +30,7 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-4">
-                            <?php if (isset($permisos['registrar'])): ?>
+                            <?php if (isset($permisos['registrar']) && $permisos['registrar'] === true): ?>
                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarUsuarioModal">
                                     <i class="fas fa-user-plus me-2"></i>Nuevo Usuario
                                 </button>
@@ -79,7 +79,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="acciones-btn">
-                                                    <?php if (isset($permisos['actualizar'])): ?>
+                                                    <?php if (isset($permisos['actualizar']) && $permisos['actualizar'] === true): ?>
                                                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarUsuarioModal" 
                                                             data-id="<?php echo $usuario['id_usuario']; ?>"
                                                             data-cedula="<?php echo htmlspecialchars($usuario['cedula']); ?>"
@@ -94,7 +94,7 @@
                                                             <i class="fas fa-edit"></i>
                                                         </button>
                                                     <?php endif; ?>
-                                                    <?php if (isset($permisos['eliminar'])): ?>
+                                                    <?php if (isset($permisos['eliminar']) && $permisos['eliminar'] === true): ?>
                                                         <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarUsuarioModal"
                                                             data-id="<?php echo $usuario['id_usuario']; ?>"
                                                             data-nombre="<?php echo htmlspecialchars($usuario['nombre'] . ' ' . $usuario['apellido']); ?>">
