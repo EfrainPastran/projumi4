@@ -31,15 +31,17 @@ function index() {
 
 
     $rol = $_SESSION['user']['rol'];
-    $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Usuarios');
+    $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Envios');
 
     if (!$permisos['consultar']) {
             header('Location: ../home/principal');
             exit;
     }
     
-    render('envios/index', ['title' => $title,
-           'permisos' => $permisos]);
+    render('envios/index', [
+           'title'    => $title,
+           'permisos' => $permisos
+    ]);
 }
 
 // Obtener todos los envíos según tipo de usuario
