@@ -30,11 +30,7 @@ if (session_status() === PHP_SESSION_NONE) {
 ?>
 
 <?php
-
         include "views/navbar.php";
-    
-
-
 ?>
 <br>
 <br>
@@ -93,7 +89,7 @@ if (session_status() === PHP_SESSION_NONE) {
                     <div class="row">
                         <div class="mb-3 col-6">
                             <label for="cedula" class="form-label">Cédula del cliente</label>
-                            <input type="text" class="form-control" id="cedula" name="cedula" placeholder="Ingrese la cédula del cliente" required>
+                            <input type="text" class="form-control" id="cedula" name="cedula" placeholder="Ingrese la cédula del cliente" required data-tipo="numeros" data-min="7" data-max="8">
                             <span id="cedulaError" class="text-danger"></span>
                         </div>
                         <div class="mb-3 col-6" id="mensaje">
@@ -104,27 +100,27 @@ if (session_status() === PHP_SESSION_NONE) {
                         <div class="row">
                             <div class="mb-3 col-md-6">
                             <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                            <input type="text" class="form-control" id="nombre" name="nombre" required data-tipo="letras" data-min="5" data-max="45">
                             <span id="nombreError" class="text-danger"></span>
                             </div>
                             <div class="mb-3 col-md-6">
                             <label for="apellido" class="form-label">Apellido</label>
-                            <input type="text" class="form-control" id="apellido" name="apellido" required>
+                            <input type="text" class="form-control" id="apellido" name="apellido" required data-tipo="letras" data-min="5" data-max="45">
                             <span id="apellidoError" class="text-danger"></span>
                             </div>
                             <div class="mb-3 col-md-6">
                             <label for="correo" class="form-label">Correo electrónico</label>
-                            <input type="email" class="form-control" id="correo" name="correo" required>
+                            <input type="email" class="form-control" id="correo" name="correo" required data-tipo="letras" data-min="5" data-max="45">
                             <span id="correoError" class="text-danger"></span>
                             </div>
                             <div class="mb-3 col-md-6">
                             <label for="telefono" class="form-label">Teléfono</label>
-                            <input type="text" class="form-control" id="telefono" name="telefono" required>
+                            <input type="text" class="form-control" id="telefono" name="telefono" required data-tipo="numeros" data-min="11" data-max="11">
                             <span id="telefonoError" class="text-danger"></span>
                             </div>
                             <div class="mb-3 col-md-6">
                             <label for="direccion" class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="direccion" name="direccion" required>
+                            <input type="text" class="form-control" id="direccion" name="direccion" required data-min="5" data-max="100">
                             <span id="direccionError" class="text-danger"></span>
                             </div>
                             <div class="mb-3 col-md-6">
@@ -258,5 +254,14 @@ if (session_status() === PHP_SESSION_NONE) {
         <script src="<?php echo APP_URL; ?>/public/js/alertas.js" type="module"></script>  
     <script src="<?php echo APP_URL; ?>/public/js/ventaspresencial.js" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo APP_URL; ?>/public/js/validaciones.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Validaciones !== 'undefined') {
+                Validaciones.init('#formRegistrarVenta');
+                Validaciones.limitarCalendario('#fecha_nacimiento');
+            }
+        });
+    </script> 
 </body>
 </html>

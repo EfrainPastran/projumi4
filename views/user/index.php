@@ -128,45 +128,37 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="cedula" class="form-label">Cédula</label>
-                                    <input type="number" class="form-control" id="cedula" name="cedula" required>
-                                    <div id="error-cedula" class="invalid-feedback"></div>
+                                    <input type="number" class="form-control" id="cedula" name="cedula" required data-tipo="numeros" data-min="7" data-max="8">                                    
                                 </div>
                                 <div class="mb-3">
                                     <label for="nombre" class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" id="nombre" name="nombre" required>
-                                    <div id="error-nombre" class="invalid-feedback"></div>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" required data-tipo="letras" data-min="5" data-max="45">                                    
                                 </div>
                                 <div class="mb-3">
                                     <label for="apellido" class="form-label">Apellido</label>
-                                    <input type="text" class="form-control" id="apellido" name="apellido" required>
-                                    <div id="error-apellido" class="invalid-feedback"></div>
+                                    <input type="text" class="form-control" id="apellido" name="apellido" required data-tipo="letras" data-min="5" data-max="45">                                    
                                 </div>
                                 <div class="mb-3">
                                     <label for="correo" class="form-label">Correo Electrónico</label>
-                                    <input type="email" class="form-control" id="correo" name="correo" required>
-                                    <div id="error-email" class="invalid-feedback"></div>
+                                    <input type="email" class="form-control" id="correo" name="correo" required data-min="5" data-max="45">                                    
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="password" class="form-label">Contraseña</label>
-                                    <input type="password" class="form-control" id="password" name="password" required>
-                                    <div id="error-password" class="invalid-feedback"></div>
+                                    <input type="password" class="form-control" id="password" name="password" required>                                    
                                 </div>
                                 <div class="mb-3">
                                     <label for="direccion" class="form-label">Dirección</label>
-                                    <input type="text" class="form-control" id="direccion" name="direccion" required>
-                                    <div id="error-direccion" class="invalid-feedback"></div>
+                                    <input type="text" class="form-control" id="direccion" name="direccion" required data-tipo="direccion" data-min="10" data-max="100">                                    
                                 </div>
                                 <div class="mb-3">
                                     <label for="telefono" class="form-label">Teléfono</label>
-                                    <input type="text" class="form-control" id="telefono" name="telefono" required>
-                                    <div id="error-telefono" class="invalid-feedback"></div>
+                                    <input type="text" class="form-control" id="telefono" name="telefono" required data-tipo="numeros" data-min="11" data-max="11">                                    
                                 </div>
                                 <div class="mb-3">
                                     <label for="fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
-                                    <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
-                                    <div id="error-frecha_nacimiento" class="invalid-feedback"></div>
+                                    <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>                                    
                                 </div>
                             </div>
                         </div>
@@ -216,29 +208,29 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="cedulaEditar" class="form-label">Cédula</label>
-                                    <input type="number" class="form-control" id="cedulaEditar" name="cedula" disabled required>
+                                    <input type="number" class="form-control" id="cedulaEditar" name="cedula" disabled required data-tipo="numeros" data-min="7" data-max="8">
                                 </div>
                                 <div class="mb-3">
                                     <label for="nombreEditar" class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" id="nombreEditar" name="nombre" required>
+                                    <input type="text" class="form-control" id="nombreEditar" name="nombre" required data-tipo="letras" data-min="5" data-max="45">
                                 </div>
                                 <div class="mb-3">
                                     <label for="apellidoEditar" class="form-label">Apellido</label>
-                                    <input type="text" class="form-control" id="apellidoEditar" name="apellido" required>
+                                    <input type="text" class="form-control" id="apellidoEditar" name="apellido" required data-tipo="letras" data-min="5" data-max="45">
                                 </div>
                                 <div class="mb-3">
                                     <label for="correoEditar" class="form-label">Correo Electrónico</label>
-                                    <input type="email" class="form-control" id="correoEditar" name="correo" required>
+                                    <input type="email" class="form-control" id="correoEditar" name="correo" required data-min="5" data-max="45">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="direccionEditar" class="form-label">Dirección</label>
-                                    <textarea name="direccion" id="direccionEditar" class="form-control" rows="3"></textarea>
+                                    <textarea name="direccion" id="direccionEditar" class="form-control" rows="3" required data-min="10" data-max="100"></textarea>
                                 </div>
                                 <div class="mb-3">
                                     <label for="telefonoEditar" class="form-label">Teléfono</label>
-                                    <input type="text" class="form-control" id="telefonoEditar" name="telefono" required>
+                                    <input type="text" class="form-control" id="telefonoEditar" name="telefono" required data-tipo="numeros" data-min="11" data-max="11">
                                 </div>
                                 <div class="mb-3">
                                     <label for="fecha_nacimientoEditar" class="form-label">Fecha de Nacimiento</label>
@@ -304,5 +296,15 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="<?php echo APP_URL; ?>/public/js/usuario.js" type="module"></script>
+    <script src="<?php echo APP_URL; ?>/public/js/validaciones.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Validaciones !== 'undefined') {
+                Validaciones.init('#formAgregarUsuario');
+                Validaciones.init('#editarUsuarioForm');
+                Validaciones.limitarCalendario('#fecha_nacimiento');
+            }
+        });
+    </script> 
 </body>
 </html>

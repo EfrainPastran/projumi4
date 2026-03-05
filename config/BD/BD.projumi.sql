@@ -491,7 +491,7 @@ CREATE TABLE IF NOT EXISTS `seguridad`.`t_usuario` (
   `correo` VARCHAR(45) NOT NULL,
   `password` VARCHAR(160) NOT NULL,
   `imgperfil` VARCHAR(100) NOT NULL DEFAULT '/public/img/default_profile.png',
-  `direccion` VARCHAR(60) NOT NULL,
+  `direccion` VARCHAR(100) NOT NULL,
   `telefono` VARCHAR(11) NOT NULL,
   `fecha_registro` DATETIME NOT NULL,
   `fecha_nacimiento` DATE NOT NULL,

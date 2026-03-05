@@ -134,11 +134,11 @@ include "views/navbar.php";
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="newRoleName" class="form-label">Nombre del Rol</label>
-                        <input type="text" class="form-control" id="newRoleName" name="nombre" required>
+                        <input type="text" class="form-control" id="newRoleName" name="nombre" required data-tipo="letras" data-min="5" data-max="45">
                     </div>
                     <div class="mb-3">
                         <label for="newRoleDescripcion" class="form-label">Descripción del Rol</label>
-                        <textarea class="form-control" id="newRoleDescripcion" name="descripcion_rol" rows="3" required></textarea>
+                        <textarea class="form-control" id="newRoleDescripcion" name="descripcion_rol" rows="3" required data-tipo="letras" data-min="5" data-max="45"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="newRoleEstatus" class="form-label">Estatus del Rol</label>
@@ -170,11 +170,11 @@ include "views/navbar.php";
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="editRoleName" class="form-label">Nombre del Rol</label>
-                        <input type="text" class="form-control" id="editRoleName" name="nombre" required>
+                        <input type="text" class="form-control" id="editRoleName" name="nombre" required data-tipo="letras" data-min="5" data-max="45">
                     </div>
                     <div class="mb-3">
                         <label for="editRoleDescription" class="form-label">Descripción del Rol</label>
-                        <textarea class="form-control" id="editRoleDescription" name="descripcion_rol" rows="3"></textarea>
+                        <textarea class="form-control" id="editRoleDescription" name="descripcion_rol" rows="3" required data-tipo="letras" data-min="5" data-max="45"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="editRoleStatus" class="form-label">Estatus del Rol</label>
@@ -261,6 +261,16 @@ include "views/navbar.php";
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="<?php echo APP_URL; ?>/public/js/validaciones.js"></script>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Validaciones !== 'undefined') {
+                Validaciones.init('#registerRoleForm');
+                Validaciones.init('#editRoleForm');
+                Validaciones.limitarCalendario('#fecha_nacimiento');
+            }
+        });
+</script> 
 <script>
     const todosLosModulos = <?php echo json_encode($modulos); ?>;
     const todosLosPermisos = ['consultar', 'registrar', 'actualizar', 'eliminar'];
