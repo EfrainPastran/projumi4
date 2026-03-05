@@ -9,9 +9,9 @@ function index() {
 
     $cedula = $_SESSION['user']['cedula'];
     $middleware = new Middleware();
-    //$tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
+    $tipoUsuario = $middleware->verificarTipoUsuario($cedula);
 
-    /*// Vista para el emprendedor
+    // Vista para el emprendedor
     if ($tipoUsuario[0] === 'emprendedor') {
         $title = "Mis envíos";
         $menu = "headerEmprendedor";
@@ -25,7 +25,7 @@ function index() {
     else {
         $title = "Gestión de envíos";
         $menu = "headeradmin";
-    }*/
+    }
 
     $rol = $_SESSION['user']['rol'];
     $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Eventos');
@@ -38,7 +38,10 @@ $model = new eventosModel();
 
 $data = $model->getAll();
 
-    render('eventos/index', ['data' => $data]);
+    render('eventos/index', [
+           'data'     => $data,
+           'permisos' => $permisos
+    ]);
 }
 
 

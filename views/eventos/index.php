@@ -45,9 +45,11 @@
         <i class="fas fa-calendar-alt me-2" style="color: var(--verde-projumi);"></i>
         Gestión de Eventos
       </h1>
+      <?php if (isset($permisos['registrar']) && $permisos['registrar'] === true): ?>
       <button class="btn btn-projumi" data-bs-toggle="modal" data-bs-target="#modalRegistrarEvento">
         <i class="fas fa-plus me-2"></i>Nuevo Evento
       </button>
+      <?php endif; ?>
     </div>
 
     <!-- Filtros -->
@@ -116,6 +118,7 @@
                     </span>
                   </td>
                   <td class="acciones-btn">
+                    <?php if (isset($permisos['actualizar']) && $permisos['actualizar'] === true): ?>
                     <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditarEvento" 
                       data-id_eventos="<?php echo $evento['id_eventos']; ?>"
                       data-nombre="<?php echo htmlspecialchars($evento['nombre']); ?>"
@@ -125,11 +128,14 @@
                       data-status="<?php echo $evento['status']; ?>">
                       <i class="fas fa-edit"></i>
                     </button>
+                    <?php endif; ?>
+                    <?php if (isset($permisos['eliminar']) && $permisos['eliminar'] === true): ?>
                     <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarEventoModal"
                       data-id_eventos="<?php echo $evento['id_eventos']; ?>"
                       data-nombre="<?php echo htmlspecialchars($evento['nombre']); ?>">
                       <i class="fas fa-trash"></i>
                     </button>
+                    <?php endif; ?>
                   </td>
                 </tr>
               <?php endforeach; ?>
