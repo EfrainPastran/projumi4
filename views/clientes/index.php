@@ -116,31 +116,31 @@
                     <h5 class="modal-title" id="agregarClienteModalLabel">Agregar Nuevo Cliente</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="<?php echo APP_URL; ?>/clientes/register" method="post">
+                <form id="formAgregar" action="<?php echo APP_URL; ?>/clientes/register" method="post">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="cedulaCliente" class="form-label">Cédula</label>
-                            <input type="number" class="form-control" id="cedulaCliente" name="cedula" required>
+                            <input type="number" class="form-control" id="cedulaCliente" name="cedula" required data-tipo="numeros" data-min="7" data-max="8">
                         </div>
                         <div class="mb-3">
                             <label for="nombreCliente" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombreCliente" name="nombre" required>
+                            <input type="text" class="form-control" id="nombreCliente" name="nombre" required data-tipo="letras" data-min="5" data-max="45">
                         </div>
                         <div class="mb-3">
                             <label for="apellidoCliente" class="form-label">Apellido</label>
-                            <input type="text" class="form-control" id="apellidoCliente" name="apellido" required>
+                            <input type="text" class="form-control" id="apellidoCliente" name="apellido" required data-tipo="letras" data-min="5" data-max="45">
                         </div>
                         <div class="mb-3">
                             <label for="correoCliente" class="form-label">Correo Electrónico</label>
-                            <input type="email" class="form-control" id="correoCliente" name="correo" required>
+                            <input type="email" class="form-control" id="correoCliente" name="correo" required data-tipo="correo" data-min="10" data-max="45">
                         </div>
                         <div class="mb-3">
                             <label for="telefonoCliente" class="form-label">Teléfono</label>
-                            <input type="tel" class="form-control" id="telefonoCliente" name="telefono" required>
+                            <input type="tel" class="form-control" id="telefonoCliente" name="telefono" required data-tipo="numeros" data-min="11" data-max="11">
                         </div>
                         <div class="mb-3">
                             <label for="fechaNacimientoCliente" class="form-label">Fecha de Nacimiento</label>
-                            <input type="date" class="form-control" id="fechaNacimientoCliente" name="fecha_nacimiento" required>
+                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
                         </div>
                         <div class="mb-3">
                             <label for="estatusCliente" class="form-label">Estado</label>
@@ -167,28 +167,28 @@
                     <h5 class="modal-title" id="editarClienteModalLabel">Editar Cliente</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="<?php echo APP_URL; ?>/clientes/clientes_update" method="post">
+                <form id="formEditar" action="<?php echo APP_URL; ?>/clientes/clientes_update" method="post">
                     <input type="hidden" id="idClienteEditar" name="id_cliente">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="cedulaClienteEditar" class="form-label">Cédula</label>
-                            <input type="number" class="form-control" id="cedulaClienteEditar" name="cedula" required>
+                            <input type="number" class="form-control" id="cedulaClienteEditar" name="cedula" required data-tipo="numeros" data-min="7" data-max="8">
                         </div>
                         <div class="mb-3">
                             <label for="nombreClienteEditar" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombreClienteEditar" name="nombre" required>
+                            <input type="text" class="form-control" id="nombreClienteEditar" name="nombre" required data-tipo="letras" data-min="5" data-max="45">
                         </div>
                         <div class="mb-3">
                             <label for="apellidoClienteEditar" class="form-label">Apellido</label>
-                            <input type="text" class="form-control" id="apellidoClienteEditar" name="apellido" required>
+                            <input type="text" class="form-control" id="apellidoClienteEditar" name="apellido" required data-tipo="letras" data-min="5" data-max="45">
                         </div>
                         <div class="mb-3">
                             <label for="correoClienteEditar" class="form-label">Correo Electrónico</label>
-                            <input type="email" class="form-control" id="correoClienteEditar" name="correo" required>
+                            <input type="email" class="form-control" id="correoClienteEditar" name="correo" required data-tipo="correo" data-min="10" data-max="45">
                         </div>
                         <div class="mb-3">
                             <label for="telefonoClienteEditar" class="form-label">Teléfono</label>
-                            <input type="tel" class="form-control" id="telefonoClienteEditar" name="telefono" required>
+                            <input type="tel" class="form-control" id="telefonoClienteEditar" name="telefono" required data-tipo="numeros" data-min="11" data-max="11">
                         </div>
                         <div class="mb-3">
                             <label for="fechaNacimientoClienteEditar" class="form-label">Fecha de Nacimiento</label>
@@ -236,6 +236,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="<?php echo APP_URL; ?>/public/js/validaciones.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Validaciones !== 'undefined') {
+                Validaciones.init('#formAgregar');
+                Validaciones.init('#formEditar');
+                Validaciones.limitarCalendario('#fecha_nacimiento');
+            }
+        });
+    </script> 
     <script>
         $(document).ready(function() {
             // Modal de edición

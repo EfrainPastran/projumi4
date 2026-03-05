@@ -127,15 +127,15 @@
                     <h5 class="modal-title" id="agregarCategoriaModalLabel">Agregar Nueva Categoría</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="<?php echo APP_URL; ?>/categorias/register" method="post">
+                <form id="formAgregar" action="<?php echo APP_URL; ?>/categorias/register" method="post">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="nombreCategoria" class="form-label">Nombre de la categoría</label>
-                            <input type="text" class="form-control" id="nombreCategoria" name="nombre" required>
+                            <input type="text" class="form-control" id="nombreCategoria" name="nombre" required data-tipo="letras" data-min="3" data-max="45">
                         </div>
                         <div class="mb-3">
                             <label for="descripcionCategoria" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="descripcionCategoria" name="descripcion" rows="3"></textarea>
+                            <textarea class="form-control" id="descripcionCategoria" name="descripcion" rows="3" data-tipo="letras" data-min="3" data-max="100"></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="estadoCategoria" class="form-label">Estado</label>
@@ -162,16 +162,16 @@
                     <h5 class="modal-title" id="editarCategoriaModalLabel">Editar Categoría</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="<?php echo APP_URL; ?>/categorias/categorias_update" method="post">
+                <form id="formEditar" action="<?php echo APP_URL; ?>/categorias/categorias_update" method="post">
                     <input type="hidden" id="idCategoriaEditar" name="id">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="nombreCategoriaEditar" class="form-label">Nombre de la categoría</label>
-                            <input type="text" class="form-control" id="nombreCategoriaEditar" name="nombre" required>
+                            <input type="text" class="form-control" id="nombreCategoriaEditar" name="nombre" required data-tipo="letras" data-min="3" data-max="45">
                         </div>
                         <div class="mb-3">
                             <label for="descripcionCategoriaEditar" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="descripcionCategoriaEditar" name="descripcion" rows="3"></textarea>
+                            <textarea class="form-control" id="descripcionCategoriaEditar" name="descripcion" rows="3" data-min="3" data-max="100"></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="estadoCategoriaEditar" class="form-label">Estado</label>
@@ -220,6 +220,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="<?php echo APP_URL; ?>/public/js/validaciones.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Validaciones !== 'undefined') {
+                Validaciones.init('#formAgregar');
+                Validaciones.init('#formEditar');
+            }
+        });
+    </script>  
     <script>
         // Script para manejar los modales de edición y eliminación
         $(document).ready(function() {

@@ -126,7 +126,7 @@
                     <h5 class="modal-title" id="agregarCuentaModalLabel">Agregar Nueva Cuenta Bancaria</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="<?php echo APP_URL; ?>/datos/register" method="post">
+                <form id="formAgregar" action="<?php echo APP_URL; ?>/datos/register" method="post">
                     <div class="modal-body">
                         <input type="hidden" name="fk_emprendedor" value="<?php echo $id_emprendedor; ?>">
                         <div class="mb-3">
@@ -138,7 +138,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="numero_cuenta" class="form-label">Número de Cuenta</label>
-                            <input type="text" class="form-control" id="numero_cuenta" name="numero_cuenta" required>
+                            <input type="text" class="form-control" id="numero_cuenta" name="numero_cuenta" required data-tipo="numeros">
                         </div>
                         <div class="mb-3">
                             <label for="telefono" class="form-label">Teléfono</label>
@@ -146,7 +146,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="correo" class="form-label">Correo Electrónico</label>
-                            <input type="email" class="form-control" id="correo" name="correo" required>
+                            <input type="email" class="form-control" id="correo" name="correo" required data-min="5" data-max="45">
                         </div>
                         <div class="mb-3">
                             <label for="metodo_pago" class="form-label">Método de Pago</label>
@@ -177,7 +177,7 @@
                     <h5 class="modal-title" id="editarCuentaModalLabel">Editar Cuenta Bancaria</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="<?php echo APP_URL; ?>/datos/update" method="post">
+                <form id="formEditar" action="<?php echo APP_URL; ?>/datos/update" method="post">
                     <input type="hidden" id="idCuentaEditar" name="id_datos_cuenta">
                     <input type="hidden" name="fk_emprendedor" value="<?php echo $id_emprendedor; ?>">
                     <div class="modal-body">
@@ -190,11 +190,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="numeroCuentaEditar" class="form-label">Número de Cuenta</label>
-                            <input type="text" class="form-control" id="numeroCuentaEditar" name="numero_cuenta" required>
+                            <input type="text" class="form-control" id="numeroCuentaEditar" name="numero_cuenta" required data-tipo="numeros">
                         </div>
                         <div class="mb-3">
                             <label for="telefonoEditar" class="form-label">Teléfono</label>
-                            <input type="tel" class="form-control" id="telefonoEditar" name="telefono" required>
+                            <input type="tel" class="form-control" id="telefonoEditar" name="telefono" required data-tipo="numeros">
                         </div>
                         <div class="mb-3">
                             <label for="correoEditar" class="form-label">Correo Electrónico</label>
@@ -247,6 +247,15 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="<?php echo APP_URL; ?>/public/js/validaciones.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Validaciones !== 'undefined') {
+                Validaciones.init('#formAgregar');
+                Validaciones.init('#formEditar');
+            }
+        });
+    </script>  
     <script>
         // Lista completa de bancos de Venezuela
         const bancosVenezuela = [

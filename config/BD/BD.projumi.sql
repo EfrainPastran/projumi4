@@ -33,7 +33,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 CREATE TABLE IF NOT EXISTS `projumi`.`t_categoria` (
   `id_categoria` INT(11) NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(35) NOT NULL,
-  `descripcion` VARCHAR(45) NOT NULL,
+  `descripcion` VARCHAR(100) NOT NULL,
   `estatus` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id_categoria`))
 ENGINE = InnoDB
@@ -148,10 +148,10 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `projumi`.`t_datos_cuenta` (
   `id_datos_cuenta` INT(11) NOT NULL AUTO_INCREMENT,
-  `telefono` VARCHAR(45) NOT NULL,
+  `telefono` VARCHAR(11) NOT NULL,
   `banco` VARCHAR(45) NOT NULL,
   `correo` VARCHAR(45) NOT NULL,
-  `numero_cuenta` VARCHAR(30) NOT NULL,
+  `numero_cuenta` VARCHAR(20) NOT NULL,
   `fk_emprendedor` INT(11) NOT NULL,
   `fk_metodo_pago` INT(11) NOT NULL,
   PRIMARY KEY (`id_datos_cuenta`),
@@ -485,14 +485,14 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `seguridad`.`t_usuario` (
   `id_usuario` INT(11) NOT NULL AUTO_INCREMENT,
-  `cedula` VARCHAR(50) NOT NULL,
+  `cedula` VARCHAR(8) NOT NULL,
   `nombre` VARCHAR(45) NOT NULL,
   `apellido` VARCHAR(45) NOT NULL,
   `correo` VARCHAR(45) NOT NULL,
   `password` VARCHAR(160) NOT NULL,
   `imgperfil` VARCHAR(100) NOT NULL DEFAULT '/public/img/default_profile.png',
   `direccion` VARCHAR(60) NOT NULL,
-  `telefono` VARCHAR(15) NOT NULL,
+  `telefono` VARCHAR(11) NOT NULL,
   `fecha_registro` DATETIME NOT NULL,
   `fecha_nacimiento` DATE NOT NULL,
   `estatus` INT(11) NOT NULL,
