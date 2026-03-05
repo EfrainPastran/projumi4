@@ -8,24 +8,26 @@ function index() {
         header('Location: ../home/index');
         exit;
     }
-    if (isset($_SESSION['user']['cedula'])) {
+   
         $cedula = $_SESSION['user']['cedula'];
-        $Middleware = new Middleware();
-        $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
+        $middleware = new Middleware();
+        $tipoUsuario = $middleware->verificarTipoUsuario($cedula);
 
-        $idModuloEmpresa = 18; //Asignación del id del módulo en este caso de "Empresa de envio" en t_modulo
+       $rol = $_SESSION['user']['rol'];
+       $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Empresa de envio');
+
+        if (!$permisos['consultar']) {
+                header('Location: ../home/principal');
+                exit;
+        }
+
         
-        // Obtenemos los permisos que el Middleware ya guardó en la sesión
-        // Esto devolverá algo como ['consultar', 'registrar']
-        $listaPermisos = $_SESSION['user']['rol']['permisos'][$idModuloEmpresa] ?? [];
-
-        // Lo convertimos a un formato más cómodo para la vista: ['registrar' => true]
-        $permisosMap = array_fill_keys($listaPermisos, true);
-
-    }
     $model = new EmpresaEnvioModel();
     $data = $model->getAll();
-    render('empresa/index', ['data' => $data, 'permisos' => $permisosMap]);
+    render('empresa/index', [
+           'data'     => $data,
+           'permisos' => $permisos
+    ]);
 }
 
 function register() {

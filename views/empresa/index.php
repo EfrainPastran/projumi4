@@ -31,7 +31,7 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-4">
-                            <?php if (!empty($permisos['registrar'])): ?>
+                            <?php if (isset($permisos['registrar']) && $permisos['registrar'] === true): ?>
                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarEmpresaModal">
                                     <i class="fas fa-plus me-2"></i>Nueva Empresa
                                 </button>
@@ -74,7 +74,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="acciones-btn">
-                                                    <?php if (!empty($permisos['actualizar'])): ?>
+                                                    <?php if (isset($permisos['actualizar']) && $permisos['actualizar'] === true): ?>
                                                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editarEmpresaModal"
                                                             data-id="<?php echo $empresa['id_empresa_envio']; ?>"
                                                             data-nombre="<?php echo htmlspecialchars($empresa['nombre']); ?>"
@@ -83,13 +83,12 @@
                                                             data-estado="<?php echo $empresa['estatus']; ?>">
                                                             <i class="fas fa-edit"></i>
                                                         </button>
-                                                    <?php endif; 
-                                                    if (!empty($permisos['eliminar'])):
-                                                    ?>
-                                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarEmpresaModal"
-                                                            data-id="<?php echo $empresa['id_empresa_envio']; ?>">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
+                                                    <?php endif;  ?>
+                                                    <?php if (isset($permisos['eliminar']) && $permisos['eliminar'] === true): ?>
+                                                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarEmpresaModal"
+                                                                data-id="<?php echo $empresa['id_empresa_envio']; ?>">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
                                                     <?php endif; ?>
                                                 </td>
                                             </tr>
