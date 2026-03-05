@@ -8,8 +8,8 @@ function index() {
         exit;
     }
     $cedula = $_SESSION['user']['cedula'];
-    $Middleware = new Middleware(); 
-    $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
+    $middleware = new Middleware(); 
+    $tipoUsuario = $middleware->verificarTipoUsuario($cedula);
     if ('emprendedor' == $tipoUsuario[0] || 'cliente' == $tipoUsuario[0]) {
         header('Location: ../home/index');
         exit;
@@ -18,7 +18,23 @@ function index() {
     $modulo = new modulosModel();
     $modulos =$modulo->getModulos();
     $roles = $model->getRoles();
-    render('roles/index', ['roles' => $roles, 'modulos' => $modulos]);
+
+    $rol = $_SESSION['user']['rol'];
+    $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Roles');
+
+    if (!$permisos['consultar']) {
+            header('Location: ../home/principal');
+            exit;
+    }
+
+
+
+
+    render('roles/index', [
+        'roles'    => $roles,
+        'modulos'  => $modulos,
+        'permisos' => $permisos
+    ]);
 }
 
 function register() {

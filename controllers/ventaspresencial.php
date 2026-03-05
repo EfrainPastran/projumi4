@@ -14,8 +14,8 @@ function index() {
         exit;
     }
     $cedula = $_SESSION['user']['cedula'];
-    $Middleware = new Middleware();
-    $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
+    $middleware = new Middleware();
+    $tipoUsuario = $middleware->verificarTipoUsuario($cedula);
     $MetodoPago = new MetodoModel();
     $metodos = $MetodoPago->obtenerMetodos();
     //Vista para el emprendedor
@@ -28,7 +28,21 @@ function index() {
         exit;
     }
 
-    render('ventas/presencial', ['metodos' => $metodos,'clientes' => $clientes]);
+
+    $rol = $_SESSION['user']['rol'];
+    $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Ventas presencial');
+
+    if (!$permisos['consultar']) {
+            header('Location: ../home/principal');
+            exit;
+    }
+
+
+    render('ventas/presencial', [
+           'metodos'  => $metodos,
+           'clientes' => $clientes,
+           'permisos' => $permisos
+    ]);
 }
 
 /*function registrarUsuario() {

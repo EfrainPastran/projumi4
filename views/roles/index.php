@@ -49,10 +49,11 @@ include "views/navbar.php";
 
                 <div class="d-flex justify-content-between mb-4">
                     <p class="text-muted mb-0">Gestiona los roles y sus permisos en el sistema</p>
-
+                    <?php if (isset($permisos['registrar']) && $permisos['registrar'] === true): ?>
                     <button class="btn btn-primary" id="addRoleBtn" data-bs-toggle="modal" data-bs-target="#registerRoleModal">
                         <i class="fas fa-plus me-2"></i>Nuevo Rol
                     </button>
+                    <?php endif; ?>
                 </div>
 
                 <div class="table-container">
@@ -74,6 +75,7 @@ include "views/navbar.php";
                                     <td><?php echo htmlspecialchars($rol['descripcion_rol']); ?></td>
 
                                     <td>
+                                        <?php if (isset($permisos['actualizar']) && $permisos['actualizar'] === true): ?>
                                         <button class="btn btn-sm btn-warning edit-role-btn"
                                             data-bs-toggle="modal" data-bs-target="#editRoleModal"
                                             data-id="<?php echo $rol['id_rol']; ?>"
@@ -81,10 +83,12 @@ include "views/navbar.php";
                                             data-descripcion="<?php echo htmlspecialchars($rol['descripcion_rol']); ?>">
                                             <i class="fas fa-edit"></i>
                                         </button>
+                                        <?php endif; ?>
                                     </td>
 
                                     <td>
                                         <?php if ($rol['estatus']): ?>
+                                            <?php if (isset($permisos['eliminar']) && $permisos['eliminar'] === true): ?>
                                             <button class="btn btn-sm btn-danger deactivate-role-btn"
                                                 data-bs-toggle="modal" data-bs-target="#deactivateRoleModal"
                                                 data-id="<?php echo $rol['id_rol']; ?>"
@@ -92,6 +96,7 @@ include "views/navbar.php";
                                                 data-descripcion="<?php echo htmlspecialchars($rol['descripcion_rol']); ?>">
                                                 <i class="fas fa-user-slash"></i>
                                             </button>
+                                            <?php endif; ?>
                                         <?php else: ?>
                                             <span class="badge bg-secondary">Inactivo</span>
                                         <?php endif; ?>

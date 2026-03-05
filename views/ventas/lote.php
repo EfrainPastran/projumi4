@@ -49,9 +49,11 @@ if (session_status() === PHP_SESSION_NONE) {
             </div>
         </div>
         <div class="col-md-6 d-flex align-items-center mb-4">
+            <?php if (isset($permisos['registrar']) && $permisos['registrar'] === true): ?>
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#registrarVentaModal">
                 <i class="fas fa-plus me-1"></i> Registrar Ventas
             </button>
+            <?php endif; ?>
         </div>
         <!-- Tabla de pedidos -->
         <div class="row">
