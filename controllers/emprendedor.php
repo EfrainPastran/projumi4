@@ -10,8 +10,8 @@ function index() {
     }
 
     $cedula = $_SESSION['user']['cedula'];
-    $Middleware = new Middleware();
-    $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
+    $middleware = new Middleware();
+    $tipoUsuario = $middleware->verificarTipoUsuario($cedula);
     if ($tipoUsuario[0] === 'emprendedor' || $tipoUsuario[0] === 'cliente') {
         header('Location: ../home/index');
         exit;
@@ -20,10 +20,21 @@ function index() {
     $municipios = $model->obtenerMunicipios();
     $municipiosConParroquias = $model->obtenerMunicipiosConParroquias();
     $data = $model->listarEmprendedores();
+
+    $rol = $_SESSION['user']['rol'];
+    $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Emprendedores');
+
+    if (!$permisos['consultar']) {
+            header('Location: ../home/principal');
+            exit;
+    }
+
+
     render('emprendedor/index', [
         'data' => $data, 
         'municipios' => $municipios, 
-        'municipiosConParroquias' => $municipiosConParroquias
+        'municipiosConParroquias' => $municipiosConParroquias,
+        'permisos' => $permisos
     ]);
 }
 

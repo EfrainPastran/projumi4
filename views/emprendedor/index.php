@@ -64,9 +64,11 @@
                         <h2 class="mb-0">Gestión de Emprendedores - PROJUMI</h2>
                     </div>
                     <div class="card-body">
-                        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAgregar">
-                            <i class="fas fa-plus"></i> Nuevo Emprendedor
-                        </button>
+                        <?php if (isset($permisos['registrar']) && $permisos['registrar'] === true): ?>
+                            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAgregar">
+                                <i class="fas fa-plus"></i> Nuevo Emprendedor
+                            </button>
+                        <?php endif; ?>
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
@@ -109,26 +111,30 @@
                                                     </button>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-warning btn-sm btnEditar"
-                                                        data-id="<?= htmlspecialchars($emprendedor['id_emprededor']) ?>"
-                                                        data-cedula="<?= htmlspecialchars($emprendedor['cedula']) ?>"
-                                                        data-nombre="<?= htmlspecialchars($emprendedor['nombre']) ?>"
-                                                        data-apellido="<?= htmlspecialchars($emprendedor['apellido']) ?>"
-                                                        data-emprendimiento="<?= htmlspecialchars($emprendedor['emprendimiento']) ?>"
-                                                        data-estatus="<?= $emprendedor['estatus'] ?>"
-                                                        data-aporte="<?= htmlspecialchars($emprendedor['aporte_projumi']) ?>"
-                                                        data-bs-toggle="modal" data-bs-target="#modalEditar">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
+                                                    <?php if (isset($permisos['actualizar']) && $permisos['actualizar'] === true): ?>
+                                                        <button class="btn btn-warning btn-sm btnEditar"
+                                                            data-id="<?= htmlspecialchars($emprendedor['id_emprededor']) ?>"
+                                                            data-cedula="<?= htmlspecialchars($emprendedor['cedula']) ?>"
+                                                            data-nombre="<?= htmlspecialchars($emprendedor['nombre']) ?>"
+                                                            data-apellido="<?= htmlspecialchars($emprendedor['apellido']) ?>"
+                                                            data-emprendimiento="<?= htmlspecialchars($emprendedor['emprendimiento']) ?>"
+                                                            data-estatus="<?= $emprendedor['estatus'] ?>"
+                                                            data-aporte="<?= htmlspecialchars($emprendedor['aporte_projumi']) ?>"
+                                                            data-bs-toggle="modal" data-bs-target="#modalEditar">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                    <?php endif; ?>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-danger btn-sm btnEliminar"
-                                                        data-id="<?= htmlspecialchars($emprendedor['id_emprededor']) ?>"
-                                                        data-cedula="<?= htmlspecialchars($emprendedor['cedula']) ?>"
-                                                        data-nombre="<?= htmlspecialchars($emprendedor['nombre']) . ' ' . htmlspecialchars($emprendedor['apellido']) ?>"
-                                                        data-bs-toggle="modal" data-bs-target="#modalEliminar">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
+                                                    <?php if (isset($permisos['eliminar']) && $permisos['eliminar'] === true): ?>
+                                                        <button class="btn btn-danger btn-sm btnEliminar"
+                                                            data-id="<?= htmlspecialchars($emprendedor['id_emprededor']) ?>"
+                                                            data-cedula="<?= htmlspecialchars($emprendedor['cedula']) ?>"
+                                                            data-nombre="<?= htmlspecialchars($emprendedor['nombre']) . ' ' . htmlspecialchars($emprendedor['apellido']) ?>"
+                                                            data-bs-toggle="modal" data-bs-target="#modalEliminar">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    <?php endif; ?>
                                                 </td>
                                                 <td>
                                                     <?php if ($emprendedor['estatus'] == 0 || $emprendedor['estatus'] == 2): ?>

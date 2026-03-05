@@ -11,7 +11,7 @@ function index() {
         exit;
     }
     $cedula = $_SESSION['user']['cedula'];
-    $Middleware = new Middleware();
+    $middleware = new Middleware();
     $tipoUsuario = $_SESSION['user']['tipo'][0];
     //Vista para el emprendedor
     if ('emprendedor' == $tipoUsuario) {
@@ -25,7 +25,19 @@ function index() {
     else {
         $title = "Gestión de Pagos";        
     }
-    render('pagos/index', ['title' => $title]);
+
+    $rol = $_SESSION['user']['rol'];
+    $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Pagos');
+
+    if (!$permisos['consultar']) {
+            header('Location: ../home/principal');
+            exit;
+    }
+    render('pagos/index', [
+        'title' => $title,
+        'permisos' => $permisos
+
+    ]);
 }
 
 function obtenerEstatusPago() {

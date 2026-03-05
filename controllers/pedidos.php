@@ -17,6 +17,8 @@ function index() {
     $empresa = new EmpresaEnvioModel();
     $empresas = $empresa->getAll();
     $cedula = $_SESSION['user']['cedula'];
+    $middleware = new Middleware();
+    $tipoUsuario = $middleware->verificarTipoUsuario($cedula);
     //Vista para el emprendedor
     if ('emprendedor' == $_SESSION['user']['tipo'][0]) {
         $title = "Pedidos solicitados";        
@@ -29,7 +31,22 @@ function index() {
     else {
         $title = "Gestión de Pedidos";        
     }
-    render('pedidos/index' , ['empresas' => $empresas, 'title' => $title]);
+
+    $rol = $_SESSION['user']['rol'];
+    $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Pedidos');
+
+    if (!$permisos['consultar']) {
+            header('Location: ../home/principal');
+            exit;
+    }
+
+
+
+    render('pedidos/index' , [
+           'empresas' => $empresas, 
+           'title' => $title,
+           'permisos' => $permisos
+    ]);
 }
 
  function registrar()
