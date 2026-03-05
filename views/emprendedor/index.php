@@ -56,7 +56,7 @@
         <?php if (isset($_SESSION['flash_error'])): ?>
             <div class="alert alert-danger"><?= $_SESSION['flash_error']; unset($_SESSION['flash_error']); ?></div>
         <?php endif; ?>
-<div class="container py-5">
+    <div class="container py-5">
         <div class="row">
             <div class="col-12">
                 <div class="card shadow">
@@ -65,97 +65,98 @@
                     </div>
                     <div class="card-body">
                         <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAgregar">
-            <i class="fas fa-plus"></i> Nuevo Emprendedor
-        </button>
-
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Cedula</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Emprendimiento</th>
-                    <th>Aporte Projumi</th>
-                    <th>Estado</th>
-                    <th>Detalles</th>
-                    <th></th>
-                    <th>Acciones</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($data)) : ?>
-                    <?php foreach ($data as $emprendedor) : ?>
-                        <tr>
-                            <td><?= htmlspecialchars($emprendedor['cedula']) ?></td>
-                            <td><?= htmlspecialchars($emprendedor['nombre']) ?></td>
-                            <td><?= htmlspecialchars($emprendedor['apellido']) ?></td>
-                            <td><?= htmlspecialchars($emprendedor['emprendimiento']) ?></td>
-                            <td><?= htmlspecialchars($emprendedor['aporte_projumi']) ?></td>
-                            <td>
-                                <?php if ($emprendedor['estatus'] == 1): ?>
-                                    <span class="badge bg-success">Activo</span>
-                                <?php elseif($emprendedor['estatus'] == 0): ?>
-                                    <span class="badge bg-warning">En proceso</span>
-                                <?php else: ?>
-                                    <span class="badge bg-danger">inactivo</span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <button class="btn bg-info btn-sm btnEditar"
-                                    data-bs-toggle="modal" data-bs-target="#modalEditar">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </td>
-                            <td>
-                                <button class="btn btn-warning btn-sm btnEditar"
-                                    data-id="<?= htmlspecialchars($emprendedor['id_emprededor']) ?>"
-                                    data-cedula="<?= htmlspecialchars($emprendedor['cedula']) ?>"
-                                    data-nombre="<?= htmlspecialchars($emprendedor['nombre']) ?>"
-                                    data-apellido="<?= htmlspecialchars($emprendedor['apellido']) ?>"
-                                    data-emprendimiento="<?= htmlspecialchars($emprendedor['emprendimiento']) ?>"
-                                    data-estatus="<?= $emprendedor['estatus'] ?>"
-                                    data-aporte="<?= htmlspecialchars($emprendedor['aporte_projumi']) ?>"
-                                    data-bs-toggle="modal" data-bs-target="#modalEditar">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                            </td>
-                            <td>
-                                <button class="btn btn-danger btn-sm btnEliminar"
-                                    data-id="<?= htmlspecialchars($emprendedor['id_emprededor']) ?>"
-                                    data-cedula="<?= htmlspecialchars($emprendedor['cedula']) ?>"
-                                    data-nombre="<?= htmlspecialchars($emprendedor['nombre']) . ' ' . htmlspecialchars($emprendedor['apellido']) ?>"
-                                    data-bs-toggle="modal" data-bs-target="#modalEliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                            <td>
-                                <?php if ($emprendedor['estatus'] == 0 || $emprendedor['estatus'] == 2): ?>
-                                    <button class="btn btn-success btn-sm btnAprobar"
-                                        data-id="<?= htmlspecialchars($emprendedor['id_emprededor']) ?>"
-                                        data-bs-toggle="modal" data-bs-target="#modalAprobar">
-                                        <i class="fas fa-check"></i> Aprobar
-                                    </button>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <?php if ($emprendedor['estatus'] == 0 || $emprendedor['estatus'] == 1): ?>
-                                    <button class="btn btn-danger btn-sm btnrechazar"
-                                        data-id="<?= htmlspecialchars($emprendedor['id_emprededor']) ?>"
-                                        data-bs-toggle="modal" data-bs-target="#modalrechazar">
-                                        <i class="fas fa-check"></i> Rechazar
-                                    </button>  
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else : ?>
-                    <tr><td colspan="8" class="text-center">No hay emprendedores registrados</td></tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </div>
+                            <i class="fas fa-plus"></i> Nuevo Emprendedor
+                        </button>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Cedula</th>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Emprendimiento</th>
+                                        <th>Aporte Projumi</th>
+                                        <th>Estado</th>
+                                        <th>Detalles</th>
+                                        <th></th>
+                                        <th>Acciones</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($data)) : ?>
+                                        <?php foreach ($data as $emprendedor) : ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($emprendedor['cedula']) ?></td>
+                                                <td><?= htmlspecialchars($emprendedor['nombre']) ?></td>
+                                                <td><?= htmlspecialchars($emprendedor['apellido']) ?></td>
+                                                <td><?= htmlspecialchars($emprendedor['emprendimiento']) ?></td>
+                                                <td><?= htmlspecialchars($emprendedor['aporte_projumi']) ?></td>
+                                                <td>
+                                                    <?php if ($emprendedor['estatus'] == 1): ?>
+                                                        <span class="badge bg-success">Activo</span>
+                                                    <?php elseif($emprendedor['estatus'] == 0): ?>
+                                                        <span class="badge bg-warning">En proceso</span>
+                                                    <?php else: ?>
+                                                        <span class="badge bg-danger">inactivo</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <button class="btn bg-info btn-sm btnEditar"
+                                                        data-bs-toggle="modal" data-bs-target="#modalEditar">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-warning btn-sm btnEditar"
+                                                        data-id="<?= htmlspecialchars($emprendedor['id_emprededor']) ?>"
+                                                        data-cedula="<?= htmlspecialchars($emprendedor['cedula']) ?>"
+                                                        data-nombre="<?= htmlspecialchars($emprendedor['nombre']) ?>"
+                                                        data-apellido="<?= htmlspecialchars($emprendedor['apellido']) ?>"
+                                                        data-emprendimiento="<?= htmlspecialchars($emprendedor['emprendimiento']) ?>"
+                                                        data-estatus="<?= $emprendedor['estatus'] ?>"
+                                                        data-aporte="<?= htmlspecialchars($emprendedor['aporte_projumi']) ?>"
+                                                        data-bs-toggle="modal" data-bs-target="#modalEditar">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-sm btnEliminar"
+                                                        data-id="<?= htmlspecialchars($emprendedor['id_emprededor']) ?>"
+                                                        data-cedula="<?= htmlspecialchars($emprendedor['cedula']) ?>"
+                                                        data-nombre="<?= htmlspecialchars($emprendedor['nombre']) . ' ' . htmlspecialchars($emprendedor['apellido']) ?>"
+                                                        data-bs-toggle="modal" data-bs-target="#modalEliminar">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <?php if ($emprendedor['estatus'] == 0 || $emprendedor['estatus'] == 2): ?>
+                                                        <button class="btn btn-success btn-sm btnAprobar"
+                                                            data-id="<?= htmlspecialchars($emprendedor['id_emprededor']) ?>"
+                                                            data-bs-toggle="modal" data-bs-target="#modalAprobar">
+                                                            <i class="fas fa-check"></i> Aprobar
+                                                        </button>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <?php if ($emprendedor['estatus'] == 0 || $emprendedor['estatus'] == 1): ?>
+                                                        <button class="btn btn-danger btn-sm btnrechazar"
+                                                            data-id="<?= htmlspecialchars($emprendedor['id_emprededor']) ?>"
+                                                            data-bs-toggle="modal" data-bs-target="#modalrechazar">
+                                                            <i class="fas fa-check"></i> Rechazar
+                                                        </button>  
+                                                    <?php endif; ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else : ?>
+                                        <tr><td colspan="8" class="text-center">No hay emprendedores registrados</td></tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -295,11 +296,11 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="alergia_medicamento" class="form-label">Alergias a medicamentos</label>
-                                <input type="text" name="alergia_medicamento" id="alergia_medicamento" class="form-control" data-tipo="texto" data-min="4" data-max="45">
+                                <input type="text" name="alergia_medicamento" id="alergia_medicamento" class="form-control" data-tipo="letras" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="alergia_alimento" class="form-label">Alergias a alimentos</label>
-                                <input type="text" name="alergia_alimento" id="alergia_alimento" class="form-control" data-tipo="texto" data-min="4" data-max="45">
+                                <input type="text" name="alergia_alimento" id="alergia_alimento" class="form-control" data-tipo="letras" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="operado" class="form-label">¿Ha sido operado?</label>
@@ -317,31 +318,31 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="titulo_academico" class="form-label">Título Académico</label>
-                                <input type="text" name="titulo_academico" id="titulo_academico" class="form-control" data-tipo="texto" data-min="4" data-max="45">
+                                <input type="text" name="titulo_academico" id="titulo_academico" class="form-control" data-tipo="letras" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="profesion" class="form-label">Profesión</label>
-                                <input type="text" name="profesion" id="profesion" class="form-control" data-tipo="texto" data-min="4" data-max="45">
+                                <input type="text" name="profesion" id="profesion" class="form-control" data-tipo="letras" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="oficio" class="form-label">Oficio</label>
-                                <input type="text" name="oficio" id="oficio" class="form-control" data-tipo="texto" data-min="4" data-max="45">
+                                <input type="text" name="oficio" id="oficio" class="form-control" data-tipo="letras" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="hobby" class="form-label">Hobby</label>
-                                <input type="text" name="hobby" id="hobby" class="form-control" data-tipo="texto" data-min="4" data-max="45">
+                                <input type="text" name="hobby" id="hobby" class="form-control" data-tipo="letras" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="religion" class="form-label">Religión</label>
-                                <input type="text" name="religion" id="religion" class="form-control" data-tipo="texto" data-min="4" data-max="45">
+                                <input type="text" name="religion" id="religion" class="form-control" data-tipo="letras" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="sacramento" class="form-label">Sacramentos</label>
-                                <input type="text" name="sacramento" id="sacramento" class="form-control" data-tipo="texto" data-min="4" data-max="45">
+                                <input type="text" name="sacramento" id="sacramento" class="form-control" data-tipo="letras" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="grupo_activo" class="form-label">Grupo Activo</label>
-                                <input type="text" name="grupo_activo" id="grupo_activo" class="form-control" data-tipo="texto" data-min="4" data-max="45">
+                                <input type="text" name="grupo_activo" id="grupo_activo" class="form-control" data-tipo="letras" data-min="4" data-max="45">
                             </div>
                         </div>
                     </div>
@@ -352,23 +353,23 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="emprendimiento" class="form-label">Nombre del Emprendimiento*</label>
-                                <input type="text" name="emprendimiento" id="emprendimiento" class="form-control" required data-tipo="texto" data-min="4" data-max="50">
+                                <input type="text" name="emprendimiento" id="emprendimiento" class="form-control" required data-tipo="letras" data-min="4" data-max="50">
                             </div>
                             <div class="col-md-6">
                                 <label for="imagen" class="form-label">Imagen del Emprendimiento</label>
-                                <input type="file" name="imagen" id="imagen" class="form-control">
+                                <input type="file" name="imagen" id="imagen" class="form-control" required accept="image/*">
                             </div>
                             <div class="col-md-6">
                                 <label for="conocimiento_projumi" class="form-label">¿Cómo conoció Projumi?</label>
-                                <input type="text" name="conocimiento_projumi" id="conocimiento_projumi" class="form-control" data-tipo="texto" data-min="4" data-max="60">
+                                <input type="text" name="conocimiento_projumi" id="conocimiento_projumi" class="form-control" data-tipo="letras" data-min="4" data-max="60">
                             </div>
                             <div class="col-md-6">
                                 <label for="motivo_projumi" class="form-label">Motivo de unirse</label>
-                                <input type="text" name="motivo_projumi" id="motivo_projumi" class="form-control" data-tipo="texto" data-min="4" data-max="60">
+                                <input type="text" name="motivo_projumi" id="motivo_projumi" class="form-control" data-tipo="letras" data-min="4" data-max="60">
                             </div>
                             <div class="col-md-6">
                                 <label for="aporte_projumi" class="form-label">Aporte a Projumi</label>
-                                <input type="text" name="aporte_projumi" id="aporte_projumi" class="form-control" data-tipo="texto" data-min="4" data-max="60">
+                                <input type="text" name="aporte_projumi" id="aporte_projumi" class="form-control" data-tipo="letras" data-min="4" data-max="60">
                             </div>
                             <div class="col-md-6">
                                 <label for="estatus" class="form-label">Estatus</label>
@@ -393,7 +394,7 @@
     <!-- Modal Editar -->
     <div class="modal fade" id="modalEditar" tabindex="-1" aria-labelledby="modalEditarLabel">
         <div class="modal-dialog modal-lg">
-            <form action="<?= APP_URL ?>/emprendedor/update" method="POST" class="modal-content" enctype="multipart/form-data">
+            <form id="formEditar" action="<?= APP_URL ?>/emprendedor/update" method="POST" class="modal-content" enctype="multipart/form-data">
                 <input type="hidden" name="id_emprendedor" id="edit_id_emprendedor" />
                 <input type="hidden" name="cedula" id="edit_cedula" />
                 <div class="modal-header">
@@ -412,11 +413,11 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="edit_nombre" class="form-label">Nombre*</label>
-                                <input type="text" name="nombre" id="edit_nombre" class="form-control" required>
+                                <input type="text" name="nombre" id="edit_nombre" class="form-control" required data-tipo="letras" data-min="2" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_apellido" class="form-label">Apellido*</label>
-                                <input type="text" name="apellido" id="edit_apellido" class="form-control" required>
+                                <input type="text" name="apellido" id="edit_apellido" class="form-control" required data-tipo="letras" data-min="2" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_fecha_nacimiento" class="form-label">Fecha de Nacimiento</label>
@@ -424,7 +425,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_lugar_nacimiento" class="form-label">Lugar de Nacimiento</label>
-                                <input type="text" name="lugar_nacimiento" id="edit_lugar_nacimiento" class="form-control">
+                                <input type="text" name="lugar_nacimiento" id="edit_lugar_nacimiento" class="form-control" data-tipo="letras" data-min="2" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_nacionalidad" class="form-label">Nacionalidad</label>
@@ -444,11 +445,11 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_correo" class="form-label">Correo</label>
-                                <input type="email" name="correo" id="edit_correo" class="form-control">
+                                <input type="email" name="correo" id="edit_correo" class="form-control" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_telefono" class="form-label">Teléfono</label>
-                                <input type="text" name="telefono" id="edit_telefono" class="form-control">
+                                <input type="text" name="telefono" id="edit_telefono" class="form-control" data-tipo="numeros" data-min="11" data-max="11">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_municipio" class="form-label">Municipio*</label>
@@ -484,11 +485,11 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_cantidad_hijos" class="form-label">Cantidad de Hijos</label>
-                                <input type="number" name="cantidad_hijos" id="edit_cantidad_hijos" class="form-control" min="0">
+                                <input type="number" name="cantidad_hijos" id="edit_cantidad_hijos" class="form-control" min="0" data-tipo="numeros" data-min="0" data-max="3">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_carga_familiar" class="form-label">Carga Familiar</label>
-                                <input type="number" name="carga_familiar" id="edit_carga_familiar" class="form-control" min="0">
+                                <input type="number" name="carga_familiar" id="edit_carga_familiar" class="form-control" min="0" data-tipo="numeros" data-min="0" data-max="3">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_casa_propia" class="form-label">¿Casa Propia?</label>
@@ -520,11 +521,11 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_alergia_medicamento" class="form-label">Alergias a medicamentos</label>
-                                <input type="text" name="alergia_medicamento" id="edit_alergia_medicamento" class="form-control">
+                                <input type="text" name="alergia_medicamento" id="edit_alergia_medicamento" class="form-control" data-tipo="letras" data-min="2" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_alergia_alimento" class="form-label">Alergias a alimentos</label>
-                                <input type="text" name="alergia_alimento" id="edit_alergia_alimento" class="form-control">
+                                <input type="text" name="alergia_alimento" id="edit_alergia_alimento" class="form-control" data-tipo="letras" data-min="2" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_operado" class="form-label">¿Ha sido operado?</label>
@@ -542,31 +543,31 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="edit_titulo_academico" class="form-label">Título Académico</label>
-                                <input type="text" name="titulo_academico" id="edit_titulo_academico" class="form-control">
+                                <input type="text" name="titulo_academico" id="edit_titulo_academico" class="form-control" data-tipo="letras" data-min="5" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_profesion" class="form-label">Profesión</label>
-                                <input type="text" name="profesion" id="edit_profesion" class="form-control">
+                                <input type="text" name="profesion" id="edit_profesion" class="form-control" data-tipo="letras" data-min="5" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_oficio" class="form-label">Oficio</label>
-                                <input type="text" name="oficio" id="edit_oficio" class="form-control">
+                                <input type="text" name="oficio" id="edit_oficio" class="form-control" data-tipo="letras" data-min="5" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_hobby" class="form-label">Hobby</label>
-                                <input type="text" name="hobby" id="edit_hobby" class="form-control">
+                                <input type="text" name="hobby" id="edit_hobby" class="form-control" data-tipo="letras" data-min="4" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_religion" class="form-label">Religión</label>
-                                <input type="text" name="religion" id="edit_religion" class="form-control">
+                                <input type="text" name="religion" id="edit_religion" class="form-control" data-tipo="letras" data-min="5" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_sacramento" class="form-label">Sacramentos</label>
-                                <input type="text" name="sacramento" id="edit_sacramento" class="form-control">
+                                <input type="text" name="sacramento" id="edit_sacramento" class="form-control" data-tipo="letras" data-min="5" data-max="45">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_grupo_activo" class="form-label">Grupo Activo</label>
-                                <input type="text" name="grupo_activo" id="edit_grupo_activo" class="form-control">
+                                <input type="text" name="grupo_activo" id="edit_grupo_activo" class="form-control" data-min="5" data-max="45">
                             </div>
                         </div>
                     </div>
@@ -577,7 +578,7 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="edit_emprendimiento" class="form-label">Nombre del Emprendimiento*</label>
-                                <input type="text" name="emprendimiento" id="edit_emprendimiento" class="form-control" required>
+                                <input type="text" name="emprendimiento" id="edit_emprendimiento" class="form-control" required data-min="5" data-max="50">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_imagen" class="form-label">Imagen del Emprendimiento</label>
@@ -586,15 +587,15 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_conocimiento_projumi" class="form-label">¿Cómo conoció Projumi?</label>
-                                <input type="text" name="conocimiento_projumi" id="edit_conocimiento_projumi" class="form-control">
+                                <input type="text" name="conocimiento_projumi" id="edit_conocimiento_projumi" class="form-control" data-min="5" data-max="50">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_motivo_projumi" class="form-label">Motivo de unirse</label>
-                                <input type="text" name="motivo_projumi" id="edit_motivo_projumi" class="form-control">
+                                <input type="text" name="motivo_projumi" id="edit_motivo_projumi" class="form-control" data-min="5" data-max="50">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_aporte_projumi" class="form-label">Aporte a Projumi</label>
-                                <input type="text" name="aporte_projumi" id="edit_aporte_projumi" class="form-control">
+                                <input type="text" name="aporte_projumi" id="edit_aporte_projumi" class="form-control" data-min="5" data-max="50">
                             </div>
                             <div class="col-md-6">
                                 <label for="edit_estatus" class="form-label">Estatus</label>
@@ -658,7 +659,19 @@
 
     <!-- Scripts Bootstrap y funcionalidad modales -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?php echo APP_URL; ?>/public/js/validaciones.js"></script>
     <script src="<?php echo APP_URL; ?>/public/js/emprendedor.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Validaciones !== 'undefined') {
+                Validaciones.init('#formAgregar');
+                Validaciones.init('#formEditar');
+            }
+
+            Validaciones.limitarCalendario('#fecha_nacimiento');
+        });
+    </script>  
     <script>
         // Función para cargar parroquias
         function cargarParroquias(municipioId, parroquiaSelectId) {

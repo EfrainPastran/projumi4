@@ -36,24 +36,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function validateForm(step) {
         let isValid = true;
-        const currentStepFields = steps[step].querySelectorAll('[required]');
+        // Seleccionamos los campos visibles del paso actual
+        const currentStepFields = steps[step].querySelectorAll('input, select, textarea');
         
         currentStepFields.forEach(field => {
-            if (!field.value.trim()) {
-                field.classList.add('is-invalid');
+            // Ejecutamos la validación de tu objeto global Validaciones
+            if (!Validaciones.validarCampo(field)) {
                 isValid = false;
-            } else {
-                field.classList.remove('is-invalid');
             }
         });
 
         if (!isValid) {
-            alert('Por favor complete todos los campos requeridos antes de continuar.');
+            // Usamos SweetAlert para un look más moderno, ya que lo tienes en el proyecto
+            Swal.fire({
+                icon: 'error',
+                title: 'Campos incompletos',
+                text: 'Por favor, corrija los errores en rojo antes de continuar.',
+                confirmButtonColor: '#0d6efd'
+            });
         }
 
         return isValid;
     }
-
     // Asignar eventos a los botones
     if (nextBtn) nextBtn.addEventListener('click', () => nextPrev(1));
     if (prevBtn) prevBtn.addEventListener('click', () => nextPrev(-1));

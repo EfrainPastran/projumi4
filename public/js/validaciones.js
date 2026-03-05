@@ -127,6 +127,23 @@ const Validaciones = {
                 }
             }
         }
+        else if (input.type === 'date' && input.id === 'fecha_nacimiento') {
+            const fechaSeleccionada = new Date(input.value);
+            const hoy = new Date();
+            const edad = hoy.getFullYear() - fechaSeleccionada.getFullYear();
+            const mes = hoy.getMonth() - fechaSeleccionada.getMonth();
+
+            // Ajuste por si aún no ha cumplido años este mes
+            if (mes < 0 || (mes === 0 && hoy.getDate() < fechaSeleccionada.getDate())) {
+                edad--;
+            }
+
+            if (edad < 18) {
+                mensaje = "Debe ser mayor de 18 años";
+            } else if (edad > 110) {
+                mensaje = "Edad no válida";
+            }
+        }
 
         this.mostrarMensaje(input, mensaje);
         return mensaje === "";
@@ -156,5 +173,15 @@ const Validaciones = {
                 errorSpan.style.display = 'none';
             }
         }
+    },
+
+    limitarCalendario: function(selector) {
+            const inputFecha = document.querySelector(selector);
+            if (inputFecha) {
+                const hoy = new Date();
+                const maxFecha = new Date(hoy.getFullYear() - 15, hoy.getMonth(), hoy.getDate());
+                // Formato YYYY-MM-DD para el atributo 'max' del input date
+                inputFecha.max = maxFecha.toISOString().split("T")[0];
+            }
     }
 };
