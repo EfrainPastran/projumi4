@@ -351,23 +351,35 @@ document.addEventListener('DOMContentLoaded', function () {
         const tbody = document.getElementById('tablaProductosVendidos');
         const tr = document.createElement('tr');
 
-        // Select de productos
+        // 1. Select de productos con validación de Stock
         const tdProducto = document.createElement('td');
         const select = document.createElement('select');
         select.className = 'form-select producto-select';
+
         select.innerHTML = `<option value="">Seleccione...</option>` +
-            productos.map(p => `<option value="${p.id_producto}" data-precio="${p.precio}">${p.nombre}</option>`).join('');
+            productos.map(p => {
+                const sinStock = p.stock <= 0;
+                return `<option value="${p.id_producto}" 
+                                data-precio="${p.precio}" 
+                                data-stock="${p.stock}"
+                                ${sinStock ? 'disabled style="color: #999;"' : ''}>
+                            ${p.nombre} ${sinStock ? '(Agotado)' : ''}
+                        </option>`;
+            }).join('');
+
         tdProducto.appendChild(select);
 
-        // Cantidad
+        // 2. Cantidad con límites dinámicos
         const tdCantidad = document.createElement('td');
         const inputCantidad = document.createElement('input');
         inputCantidad.type = 'number';
         inputCantidad.min = 1;
+        inputCantidad.value = 1;
         inputCantidad.className = 'form-control cantidad-input';
+        inputCantidad.disabled = true; // Bloqueado hasta elegir producto
         tdCantidad.appendChild(inputCantidad);
 
-        // Precio unitario
+        // 3. Precio unitario
         const tdPrecio = document.createElement('td');
         const inputPrecio = document.createElement('input');
         inputPrecio.type = 'text';
@@ -375,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function () {
         inputPrecio.readOnly = true;
         tdPrecio.appendChild(inputPrecio);
 
-        // Subtotal
+        // 4. Subtotal
         const tdSubtotal = document.createElement('td');
         const inputSubtotal = document.createElement('input');
         inputSubtotal.type = 'text';
@@ -383,7 +395,7 @@ document.addEventListener('DOMContentLoaded', function () {
         inputSubtotal.readOnly = true;
         tdSubtotal.appendChild(inputSubtotal);
 
-        // Botón eliminar
+        // 5. Botón eliminar
         const tdAccion = document.createElement('td');
         const btnEliminar = document.createElement('button');
         btnEliminar.type = 'button';
@@ -391,23 +403,64 @@ document.addEventListener('DOMContentLoaded', function () {
         btnEliminar.innerHTML = '<i class="fas fa-trash"></i>';
         tdAccion.appendChild(btnEliminar);
 
+        // Ensamblaje de la fila
         tr.appendChild(tdProducto);
         tr.appendChild(tdCantidad);
         tr.appendChild(tdPrecio);
         tr.appendChild(tdSubtotal);
         tr.appendChild(tdAccion);
-
         tbody.appendChild(tr);
 
-        // Eventos
+        // --- LÓGICA DE EVENTOS ---
+
         select.addEventListener('change', function () {
-            const precio = this.selectedOptions[0].getAttribute('data-precio') || 0;
-            inputPrecio.value = precio;
+            const selectedOption = this.options[this.selectedIndex];
+            
+            // Seguridad: evitar seleccionar deshabilitados
+            if (selectedOption.disabled) {
+                this.value = "";
+                return;
+            }
+
+            const precio = parseFloat(selectedOption.getAttribute('data-precio')) || 0;
+            const stock = parseInt(selectedOption.getAttribute('data-stock')) || 0;
+
+            if (this.value !== "") {
+                inputPrecio.value = precio;
+                inputCantidad.disabled = false;
+                inputCantidad.max = stock; // Definimos el límite máximo real
+                
+                // Si la cantidad previa era mayor al nuevo stock, ajustamos
+                if (parseInt(inputCantidad.value) > stock) {
+                    inputCantidad.value = stock;
+                }
+            } else {
+                inputPrecio.value = '';
+                inputCantidad.disabled = true;
+                inputCantidad.value = 1;
+            }
+
             calcularSubtotal();
             validarUltimaFilaProducto();
         });
 
         inputCantidad.addEventListener('input', function () {
+            const maxStock = parseInt(this.max) || 0;
+            const valorActual = parseInt(this.value) || 0;
+
+            // Validamos que no escriban manualmente más del stock
+            if (valorActual > maxStock) {
+                this.value = maxStock;
+                if (window.Alertas) {
+                    Alertas.warning(`Solo hay ${maxStock} unidades en stock.`);
+                }
+            }
+            
+            // Validamos que no sea menor a 1
+            if (valorActual < 1 && this.value !== "") {
+                this.value = 1;
+            }
+
             calcularSubtotal();
             validarUltimaFilaProducto();
         });
@@ -417,12 +470,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const precio = parseFloat(inputPrecio.value) || 0;
             const subtotal = cantidad * precio;
             inputSubtotal.value = subtotal ? subtotal.toFixed(2) : '';
-            actualizarTotal();
+            
+            if (window.actualizarTotal) actualizarTotal();
         }
 
         btnEliminar.addEventListener('click', function () {
             tr.remove();
-            actualizarTotal();
+            if (window.actualizarTotal) actualizarTotal();
             validarUltimaFilaProducto();
         });
 

@@ -106,33 +106,47 @@ fetch( API_CONFIG + '/productos/mostrarProductos')
         const productCard = document.createElement('div');
         productCard.className = isFeatured ? 'product-card featured-product' : 'product-card';
 
+        // Lógica para determinar el estado del stock
+        const hasStock = product.stock > 0;
+        const stockBadge = hasStock 
+            ? '' 
+            : '<span class="badge bg-secondary position-absolute top-0 end-0 m-2">Sin stock</span>';
+        
+        const imageStyle = hasStock 
+            ? 'object-fit: cover; height: 200px;' 
+            : 'object-fit: cover; height: 200px; filter: grayscale(100%); opacity: 0.6;';
+
+        const buttonHtml = hasStock 
+            ? `<button class="btn btn-view-details w-100" data-id="${product.id}">
+                    <i class="fas fa-eye"></i> Ver detalles
+            </button>`
+            : `<button class="btn btn-view-details w-100" disabled>
+                    <i class="fas fa-times-circle"></i> Agotado
+            </button>`;
+
         productCard.innerHTML = `
-            <div class="card shadow-sm h-100">
-                <img src="${product.image}" class="card-img-top" alt="${product.name}" style="object-fit: cover; height: 200px;">
+            <div class="card shadow-sm h-100 position-relative">
+                ${stockBadge}
+                <img src="${product.image}" class="card-img-top" alt="${product.name}" style="${imageStyle}">
                 <div class="card-body d-flex flex-column justify-content-between">
                     <div>
-                    <p class="text-muted mb-2">Emprendimiento: <strong>${product.emprendedor}</strong></p>
-                        <h5 class="card-title mb-1">${product.name}</h5>
+                        <p class="text-muted mb-2">Emprendimiento: <strong>${product.emprendedor}</strong></p>
+                        <h5 class="card-title mb-1 ${hasStock ? '' : 'text-muted'}">${product.name}</h5>
                         <p class="card-text small text-truncate">${product.description}</p>
                     </div>
-                    <div>
-                        <p class="fw-bold text-success mb-2">$${product.price.toFixed(2)}</p>
-                        <button class="btn btn-view-details" data-id="${product.id}">
-                            <i class="fas fa-eye"></i> Ver detalles
-                        </button>
+                    <div class="mt-3">
+                        <p class="fw-bold ${hasStock ? 'text-success' : 'text-muted'} mb-2">
+                            $${product.price.toFixed(2)}
+                        </p>
+                        ${buttonHtml}
                     </div>
                 </div>
             </div>
         `;
 
-        if (isFeatured) {
-            col.appendChild(productCard);
-            return col;
-        } else {
-            productCard.classList.add('h-100');
-            col.appendChild(productCard);
-            return col;
-        }
+        productCard.classList.add('h-100');
+        col.appendChild(productCard);
+        return col;
     }
 
     // Configurar paginación
