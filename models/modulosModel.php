@@ -53,7 +53,7 @@ class modulosModel extends Model {
     // Obtener todos los modulos
     public function getModulos() {
         try {
-            $stmt = $this->query("SELECT * FROM t_modulo");
+            $stmt = $this->query("SELECT * FROM t_modulo WHERE ruta != '#' AND ruta !='roles/index'");
             return $stmt->fetchAll();
         } catch (Exception $e) {
             throw $e;

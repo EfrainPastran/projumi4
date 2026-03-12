@@ -215,7 +215,7 @@ class permisosModel extends Model {
                 INNER JOIN t_rol r ON prm.fk_rol = r.id_rol
                 WHERE r.nombre = :rol 
                 AND m.nombre = :modulo 
-                AND prm.estatus = 1";
+                AND prm.estatus = 1 AND m.estatus=1 ";
                 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':rol' => $nombre_rol, ':modulo' => $nombre_modulo]);

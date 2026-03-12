@@ -3,8 +3,8 @@
  */
 const Validaciones = {
     patterns: {
-        soloLetras: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
-        soloNumeros: /^[0-9]+$/
+        soloLetras: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, //Expresiones regulares para solo letras
+        soloNumeros: /^[0-9]+$/ //Expresiones regulares para solo números
     },
 
     init: function(formSelector) {
