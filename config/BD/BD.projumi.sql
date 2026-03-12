@@ -379,7 +379,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `projumi`.`t_envio` (
   `id_envio` INT(11) NOT NULL AUTO_INCREMENT,
-  `direccion_envio` VARCHAR(45) NOT NULL,
+  `direccion_envio` VARCHAR(100) NOT NULL,
   `estatus` VARCHAR(45) NOT NULL,
   `numero_seguimiento` VARCHAR(45) NOT NULL,
   `fk_empresa_envio` INT(11) NOT NULL,

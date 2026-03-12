@@ -48,6 +48,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
   <!-- Carrusel de pasos -->
   <div id="formCarrusel" class="carousel slide" data-bs-interval="false">
+    <form id="formCompra" novalidate>
     <div class="carousel-inner">
 
       <!-- Paso 1 -->
@@ -70,25 +71,25 @@ if (session_status() === PHP_SESSION_NONE) {
 
     <!-- Productos en el carrito (tabla) -->
     <div class="carrito-section">
-<div class="table-responsive">
-    <table class="table table-hover align-middle">
-        <thead>
-            <tr>
-                <th>Imagen</th>
-                <th>Nombre</th>
-                <th>Categoría</th>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Stock</th>
-                <th>Subtotal</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-<tbody id="carritoBody"></tbody>
-    </table>
-</div>
-<!-- Total del carrito -->
+      <div class="table-responsive">
+          <table class="table table-hover align-middle">
+              <thead>
+                  <tr>
+                      <th>Imagen</th>
+                      <th>Nombre</th>
+                      <th>Categoría</th>
+                      <th>Descripción</th>
+                      <th>Precio</th>
+                      <th>Cantidad</th>
+                      <th>Stock</th>
+                      <th>Subtotal</th>
+                      <th>Acciones</th>
+                  </tr>
+              </thead>
+      <tbody id="carritoBody"></tbody>
+          </table>
+      </div>
+      <!-- Total del carrito -->
     <div class="row align-items-center pt-5">
     <!-- Total de carrito alineado a la derecha -->
     <div class="col-md-12 text-md-end text-center">
@@ -96,6 +97,7 @@ if (session_status() === PHP_SESSION_NONE) {
     </div>
     </div>
     </div>
+  </form>    
 </div>
 
 <div class="modal fade" id="modalEliminarProducto" tabindex="-1" aria-hidden="true">
@@ -177,7 +179,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <label for="direccionEnvio" class="form-label fw-semibold">
                   <i class="bi bi-geo-alt me-1"></i> Dirección de entrega
                 </label>
-                <textarea class="form-control shadow-sm" id="direccionEnvio" rows="2" placeholder="Escribe la dirección exacta..."></textarea>
+                <textarea class="form-control shadow-sm" id="direccionEnvio" rows="2" placeholder="Escribe la dirección exacta..." data-min="5" data-max="100"></textarea>
                 <div class="form-text text-muted">
                   Especifica la dirección donde deseas recibir tu pedido.
                 </div>
@@ -197,21 +199,21 @@ if (session_status() === PHP_SESSION_NONE) {
             <label for="telefono_destinatario" class="form-label fw-semibold">
             <i class="bi bi-telephone me-1"></i> Teléfono destinatario
             </label>
-            <input type="text" class="form-control shadow-sm" id="telefono_destinatario" maxlength="45" placeholder="Ej: 0414-1234567">
+            <input type="text" class="form-control shadow-sm" id="telefono_destinatario" maxlength="45" placeholder="Ej: 0414-1234567" data-min="11" data-max="11">
             <span id="telefono_destinatarioError" class="text-danger"></span>
           </div>
         <div class="col-md-6">
             <label for="correo_destinatario" class="form-label fw-semibold">
             <i class="bi bi-envelope me-1"></i> Correo destinatario
             </label>
-            <input type="email" class="form-control shadow-sm" id="correo_destinatario" maxlength="45" placeholder="correo@ejemplo.com">
+            <input type="email" class="form-control shadow-sm" id="correo_destinatario" maxlength="45" placeholder="correo@ejemplo.com" data-min="12" data-max="45">
             <span id="correo_destinatarioError" class="text-danger"></span>
           </div>
         <div class="col-md-6">
             <label for="direccion_exacta" class="form-label fw-semibold">
             <i class="bi bi-geo-alt me-1"></i> Dirección exacta
             </label>
-            <textarea class="form-control shadow-sm" id="direccion_exacta" maxlength="60" rows="2" placeholder="Escribe la dirección exacta de entrega..."></textarea>
+            <textarea class="form-control shadow-sm" id="direccion_exacta" maxlength="60" rows="2" placeholder="Escribe la dirección exacta de entrega..." data-min="5" data-max="100"></textarea>
             <span id="direccion_exactaError" class="text-danger"></span>
             <div class="form-text text-muted">
             Especifica la dirección donde deseas recibir tu pedido.
@@ -297,7 +299,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                         <input type="number" class="form-control monto-desglose" min="0" step="0.01" required>
                                     </td>
                                     <td class="col-referencia">
-                                        <input type="text" class="form-control referencia-desglose" disabled>
+                                        <input type="text" class="form-control referencia-desglose" disabled data-tipo="numeros" data-min="5" data-max="15">
                                     </td>
                                     <td>
                                       <input type="file" class="form-control form-control-sm comprobante-desglose" accept="image/*,application/pdf" disabled>
@@ -408,5 +410,13 @@ if (session_status() === PHP_SESSION_NONE) {
     </script>
     <script src="<?php echo APP_URL; ?>/public/js/alertas.js" type="module"></script>
     <script src="<?php echo APP_URL; ?>/public/js/carrito.js" type="module"></script>
+    <script src="<?php echo APP_URL; ?>/public/js/validaciones.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Validaciones !== 'undefined') {
+                Validaciones.init('#formCompra');
+            }
+        });
+    </script> 
 </body>
 </html>

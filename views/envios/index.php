@@ -158,7 +158,7 @@ if (session_status() === PHP_SESSION_NONE) {
             </div>
             <div class="col-md-6">
               <label class="form-label fw-semibold"><i class="fas fa-barcode text-success"></i> N° Seguimiento</label>
-              <input type="text" class="form-control" id="envio_seguimiento" placeholder="Ingrese o edite el número de seguimiento">
+              <input type="text" class="form-control" id="envio_seguimiento" placeholder="Ingrese o edite el número de seguimiento" data-tipo="numeros" data-min="5" data-max="15" >
             </div>
           </div>
         </form>
@@ -220,7 +220,7 @@ if (session_status() === PHP_SESSION_NONE) {
             </div>
             <div class="col-md-6">
               <label class="form-label fw-semibold"><i class="fas fa-phone-volume text-success"></i> Teléfono Delivery</label>
-              <input type="text" class="form-control" id="delivery_telefono_delivery">
+              <input type="text" class="form-control" id="delivery_telefono_delivery" data-tipo="numeros" data-min="11" data-max="11" disabled>
             </div>
             <div class="col-md-6">
               <label class="form-label fw-semibold"><i class="fas fa-info-circle text-success"></i> Estatus</label>
@@ -249,6 +249,15 @@ if (session_status() === PHP_SESSION_NONE) {
     <!-- JavaScript personalizado -->
         <script src="<?php echo APP_URL; ?>/public/js/alertas.js" type="module"></script>
     <script src="<?php echo APP_URL; ?>/public/js/envios.js" type="module"></script>
+    <script src="<?php echo APP_URL; ?>/public/js/validaciones.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Validaciones !== 'undefined') {
+                Validaciones.init('#formEnvio');
+                Validaciones.init('#formDelivery');
+            }
+        });
+    </script> 
     
 <script>
 

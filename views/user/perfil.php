@@ -85,52 +85,64 @@ if (session_status() === PHP_SESSION_NONE) {
                 
                 <div class="col-lg-8 mt-4 mt-lg-0">
                     <div class="profile-card">
-                        <h4 class="mb-4">Información personal</h4>
-                        
-                        <form action="<?php echo APP_URL; ?>/home/perfil" method="post">
-                        
-                            <div class="row mb-3">
+                        <h4 class="mb-4">Información personal</h4>                                                    
+                            <form action="<?php echo APP_URL; ?>/home/perfil" method="post" id="formPerfil">
+                                
+                                <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($_SESSION['user']['id_usuario'] ?? ''); ?>">
 
-                            <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($_SESSION['user']['id_usuario'] ?? ''); ?>">
+                                <div class="row mb-3">
+                                    <div class="col-md-6 mb-3 mb-md-0">
+                                        <label class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" name="nombre" 
+                                            value="<?php echo htmlspecialchars($_SESSION['user']['nombre'] ?? ''); ?>"
+                                            data-tipo="letras" data-min="3" data-max="50" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Apellido</label>
+                                        <input type="text" class="form-control" name="apellido" 
+                                            value="<?php echo htmlspecialchars($_SESSION['user']['apellido'] ?? ''); ?>"
+                                            data-tipo="letras" data-min="3" data-max="50" required>
+                                    </div>
+                                </div>
 
-                                <div class="col-md-6 mb-3 mb-md-0">
-                                    <label class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" name="nombre" value="<?php echo htmlspecialchars($_SESSION['user']['nombre'] ?? ''); ?>">
+                                <div class="mb-3">
+                                    <label class="form-label">Cédula</label>
+                                    <input type="text" class="form-control" name="cedula" 
+                                        value="<?php echo htmlspecialchars($_SESSION['user']['cedula'] ?? ''); ?>"
+                                        data-tipo="numeros" data-min="7" data-max="9" required>
                                 </div>
-                             <div class="col-md-6">
-                                    <label class="form-label">Apellido</label>
-                                    <input type="text" class="form-control" name="apellido"  value="<?php echo htmlspecialchars($_SESSION['user']['apellido'] ?? ''); ?>">
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Correo electrónico</label>
+                                    <input type="email" class="form-control" name="email" 
+                                        value="<?php echo htmlspecialchars($_SESSION['user']['email'] ?? ''); ?>"
+                                         required>
                                 </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Teléfono</label>
-                                <input type="tel" class="form-control" name="cedula" value="<?php echo htmlspecialchars($_SESSION['user']['cedula'] ?? ''); ?>">
-                            </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Teléfono</label>
+                                    <input type="tel" class="form-control" name="telefono" 
+                                        value="<?php echo htmlspecialchars($_SESSION['user']['telefono'] ?? ''); ?>"
+                                        data-tipo="numeros" data-min="11" data-max="11" placeholder="Ej: 04141234567" required>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Dirección</label>
+                                    <input type="text" class="form-control" name="direccion" 
+                                        value="<?php echo htmlspecialchars($_SESSION['user']['direccion'] ?? ''); ?>"
+                                        data-min="10" data-max="100" required>
+                                </div>
                             
-                            <div class="mb-3">
-                                <label class="form-label">Correo electrónico</label>
-                                <input type="email" class="form-control" name="email" value="<?php echo htmlspecialchars($_SESSION['user']['email'] ?? ''); ?>">
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Teléfono</label>
-                                <input type="tel" class="form-control" name="cedula" value="<?php echo htmlspecialchars($_SESSION['user']['telefono'] ?? ''); ?>">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Direccion</label>
-                                <input type="text" class="form-control" name="direccion" value="<?php echo htmlspecialchars($_SESSION['user']['direccion'] ?? ''); ?>">
-                            </div>
-                           
-                            <div class="mb-4">
-                                <label class="form-label">Fecha de nacimiento</label>
-                                <input type="date" class="form-control" name="fecha_nacimiento" value="<?php echo htmlspecialchars($_SESSION['user']['fecha_nacimiento'] ?? ''); ?>">
-                            </div>
-                            
-                            <div class="d-flex justify-content-end">
-                                <input type="submit" class="btn btn-custom" name="actualizar" value="Guardar cambios">
-                            </div>
-                        </form>
-                        
+                                <div class="mb-4">
+                                    <label class="form-label">Fecha de nacimiento</label>
+                                    <input type="date" class="form-control" name="fecha_nacimiento" id="fecha_nacimiento"
+                                        value="<?php echo htmlspecialchars($_SESSION['user']['fecha_nacimiento'] ?? ''); ?>" required>
+                                </div>
+                                
+                                <div class="d-flex justify-content-end">
+                                    <input type="submit" class="btn btn-custom" name="actualizar" value="Guardar cambios">
+                                </div>
+                            </form>                        
                         <hr class="my-4">
                         
                         <h4 class="mb-4">Cambiar contraseña</h4>
@@ -194,7 +206,14 @@ if (session_status() === PHP_SESSION_NONE) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
+    <script src="<?php echo APP_URL; ?>/public/js/validaciones.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Validaciones !== 'undefined') {
+                Validaciones.init('#formPerfil');
+            }
+        });
+    </script> 
     
 </body>
 </html>
