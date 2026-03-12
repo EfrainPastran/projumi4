@@ -18,7 +18,7 @@ function index() {
     //Vista para el emprendedor
     if ('emprendedor' == $tipoUsuario[0] || 'super_usuario' == $tipoUsuario[0]) {
         $evento =  new eventosModel();
-        $eventos = $evento->getAll();
+        $eventos = $evento->cargarEventosActuales();
     }    
     else {
         header('Location: ../home/index');

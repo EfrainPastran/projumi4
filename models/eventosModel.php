@@ -87,6 +87,11 @@ class eventosModel extends Model {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function cargarEventosActuales() {
+        $stmt = $this->query("SELECT * FROM t_evento WHERE DATE(fecha_fin) >= CURDATE() AND DATE(fecha_inicio) <= CURDATE() AND status = 1");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
     public function getByName(string $nombre) {
         $stmt = $this->query(
