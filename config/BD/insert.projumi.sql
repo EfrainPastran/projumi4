@@ -110,7 +110,9 @@ INSERT INTO `t_categoria` (`id_categoria`, `nombre`, `descripcion`, `estatus`) V
 
 INSERT INTO `t_cliente` (`id_cliente`, `cedula`, `fecha_registro`, `estatus`) VALUES
 (25, 7363406, '2025-07-14', 1),
-(26, 26502663, '2025-07-15', 1);
+(26, 27759045, '2025-07-14', 1),
+(27, 26274075, '2025-07-14', 1),
+(28, 26502663, '2025-07-15', 1);
 
 --
 -- empresa_envio

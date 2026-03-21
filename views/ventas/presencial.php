@@ -100,17 +100,17 @@ if (session_status() === PHP_SESSION_NONE) {
                         <div class="row">
                             <div class="mb-3 col-md-6">
                             <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" name="nombre" required data-tipo="letras" data-min="5" data-max="45">
+                            <input type="text" class="form-control" id="nombre" name="nombre" required data-tipo="letras" data-min="4" data-max="45">
                             <span id="nombreError" class="text-danger"></span>
                             </div>
                             <div class="mb-3 col-md-6">
                             <label for="apellido" class="form-label">Apellido</label>
-                            <input type="text" class="form-control" id="apellido" name="apellido" required data-tipo="letras" data-min="5" data-max="45">
+                            <input type="text" class="form-control" id="apellido" name="apellido" required data-tipo="letras" data-min="4" data-max="45">
                             <span id="apellidoError" class="text-danger"></span>
                             </div>
                             <div class="mb-3 col-md-6">
                             <label for="correo" class="form-label">Correo electrónico</label>
-                            <input type="email" class="form-control" id="correo" name="correo" required data-tipo="letras" data-min="5" data-max="45">
+                            <input type="email" class="form-control" id="correo" name="correo" required data-min="5" data-max="45">
                             <span id="correoError" class="text-danger"></span>
                             </div>
                             <div class="mb-3 col-md-6">
@@ -149,7 +149,7 @@ if (session_status() === PHP_SESSION_NONE) {
                             </tbody>
                             <tfoot>
                             <tr>
-                                <th colspan="4" class="text-end">Total a pagar:</th>
+                                <th colspan="3" class="text-end">Total a pagar:</th>
                                 <th id="totalPagarPedido">$0.00</th>
                             </tr>
                             </tfoot>

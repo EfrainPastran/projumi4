@@ -263,7 +263,7 @@ INSERT INTO seguridad.t_permiso_rol_modulo (fk_rol, fk_modulo, fk_permiso, estat
 
 INSERT INTO `t_usuario` (`id_usuario`, `cedula`, `nombre`, `apellido`, `correo`, `password`, `direccion`, `telefono`, `fecha_registro`, `fecha_nacimiento`, `estatus`, `fk_rol`) VALUES
 (1, '27759045', 'Efrain', 'Pastran', 'efrain_pastran@gmail.com', '$2y$10$Qh3CtEJrZmv2B5fstc1ypOnybC7262FAl1rTw.5JspQzmE9HJVP6C', 'avenida tuya', '04165567448', '2025-05-13 23:24:57', '1997-05-01', 1, 3),
-(2, '28123456', 'Rosmery', 'Mejia', 'rosmerydelvalle@gmail.com', '$2y$10$QP4NnioumUvUW5d2dZKJ9O3zoGgFyy0zCJQfoLYSUlrE8TWvKvs7G', '', '', '2025-05-17 01:13:58', '1997-05-01', 1, 3),
+(2, '26274075', 'Rosmery', 'Mejia', 'rosmerydelvalle@gmail.com', '$2y$10$QP4NnioumUvUW5d2dZKJ9O3zoGgFyy0zCJQfoLYSUlrE8TWvKvs7G', '', '', '2025-05-17 01:13:58', '1997-05-01', 1, 3),
 (3, '20123456', 'Jesus', 'Rivas', 'rivas@gmail.com', '$2y$10$QP4NnioumUvUW5d2dZKJ9O3zoGgFyy0zCJQfoLYSUlrE8TWvKvs7G', 'avenida Vargas', '04245623516', '2025-07-14 12:49:30', '1999-04-29', 1, 2),
 (4, '7363406', 'Edgar', 'Leal', 'eleal@gmail.com', '$2y$10$QP4NnioumUvUW5d2dZKJ9O3zoGgFyy0zCJQfoLYSUlrE8TWvKvs7G', '', '04245623516', '2025-07-14 14:14:36', '1999-03-13', 1, 1),
 (5, '26502663', 'Luis', 'Sivira', 'rivas@gmail.com', '$2y$10$FPIXCT0LF3mGGqOz6kmEjOddyogO66gGBWRGZf8JFbORsrQ.Ytwpq', 'garagatal', '04245623516', '2025-07-15 00:00:00', '1999-04-29', 1, 4);

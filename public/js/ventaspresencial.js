@@ -462,9 +462,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const cantidad = parseInt(inputCantidad.value) || 0;
             const precio = parseFloat(inputPrecio.value) || 0;
             const subtotal = cantidad * precio;
-            inputSubtotal.value = subtotal ? subtotal.toFixed(2) : '';
             
-            if (window.actualizarTotal) actualizarTotal();
+            // Es mejor asignar 0 si no hay subtotal para que actualizarTotal no falle
+            inputSubtotal.value = subtotal > 0 ? subtotal.toFixed(2) : "0.00";
+            
+            actualizarTotal(); 
         }
 
         btnEliminar.addEventListener('click', function () {
@@ -498,10 +500,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function actualizarTotal() {
         let total = 0;
-        document.querySelectorAll('.subtotal-input').forEach(input => {
-            total += parseFloat(input.value) || 0;
+        // Seleccionamos todos los inputs de subtotal
+        const subtotales = document.querySelectorAll('.subtotal-input');
+        
+        subtotales.forEach(input => {
+            // Convertimos a número, si no es válido usamos 0
+            const valor = parseFloat(input.value);
+            if (!isNaN(valor)) {
+                total += valor;
+            }
         });
-        document.getElementById('totalPagarPedido').textContent = '$' + total.toFixed(2);
+
+        // Buscamos el elemento del DOM
+        const elTotal = document.getElementById('totalPagarPedido');
+        if (elTotal) {
+            elTotal.textContent = '$' + total.toFixed(2);
+        }
     }
 
     // --- PRODUCTOS VENDIDOS ---
