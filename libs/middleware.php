@@ -11,10 +11,10 @@ class Middleware extends Model
      */
     public function verificarTipoUsuario($cedula): array
     {
-        // Si ya está en sesión, evitar volver a consultar
-        if (!empty($_SESSION['user']['tipo']) && !empty($_SESSION['user']['rol'])) {
-            return $_SESSION['user']['tipo'];
-        }
+        // Si ya está en sesión, evitar volver a consultar (en tiempo real)
+        //if (!empty($_SESSION['user']['tipo']) && !empty($_SESSION['user']['rol'])) {
+        //    return $_SESSION['user']['tipo'];
+        //}
 
         try {
             $conn_projumi = Database::getInstance('projumi');
