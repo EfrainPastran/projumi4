@@ -61,7 +61,7 @@
                 nuestro sistema y poder ser parte de ello, mostraremos paso a paso como
                 seria el proceso de su uso y acceso.
                 </p>
-                <img src="<?php echo APP_URL; ?>/public/ayuda/introduccion.jpeg" alt="Captura de pantalla">
+                <img src="<?php echo APP_URL; ?>/public/ayuda/introduccion_nueva.jpeg" alt="Captura de pantalla">
             </section>
             
             <section id="sobre-nosotros" class="seccion">
