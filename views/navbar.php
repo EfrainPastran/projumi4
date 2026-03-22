@@ -43,6 +43,49 @@ function generarMenuDesdeSesion() {
 }
 
 $menu = generarMenuDesdeSesion();
+$modulosSesion = $_SESSION['user']['rol']['modulos'] ?? [];
+
+$modulosFinal = [];
+$hijosHuérfanos = [];
+
+foreach ($menu as $id => $item) {
+    $idPadre = $modulosSesion[$id]['menu_padre'] ?? 0;
+
+    if ($idPadre != 0) {
+        // Es un hijo. Lo guardamos temporalmente.
+        $hijosHuérfanos[$idPadre][$id] = $item;
+    } else {
+        // Es un padre. Lo inicializamos.
+        $item['orden'] = $modulosSesion[$id]['orden'] ?? 0;
+        $item['hijos'] = [];
+        $modulosFinal[$id] = $item;
+    }
+}
+
+// Ahora asignamos los hijos a sus padres, y si el padre NO existe, lo creamos
+foreach ($hijosHuérfanos as $idPadre => $hijos) {
+    if (!isset($modulosFinal[$idPadre])) {
+        // Recuperamos la info del padre que guardamos en el Middleware
+        $primerHijoId = array_key_first($hijos);
+        $infoPadre = $modulosSesion[$primerHijoId]['padre_info'];
+
+        $modulosFinal[$idPadre] = [
+            'id_modulo' => $idPadre,
+            'nombre'    => $infoPadre['nombre'] ?? 'Menu',
+            'icono'     => $infoPadre['icono'] ?? 'fas fa-folder',
+            'ruta'      => '#',
+            'orden'     => $infoPadre['orden'] ?? 99,
+            'hijos'     => $hijos
+        ];
+    } else {
+        $modulosFinal[$idPadre]['hijos'] = $hijos;
+    }
+}
+
+// Ordenar por el campo 'orden'
+uasort($modulosFinal, function($a, $b) {
+    return (int)$a['orden'] <=> (int)$b['orden'];
+});
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark-green fixed-top">
@@ -59,86 +102,30 @@ $menu = generarMenuDesdeSesion();
         <div class="collapse navbar-collapse" id="navbarMain">
             
             <ul class="navbar-nav me-auto">
-
-<?php
-// Primero separamos módulos padres e hijos
-$modulosPadre = [];
-$modulosHijos = [];
-
-foreach ($menu as $id => $item) {
-    if (!empty($_SESSION['user']['rol']['modulos'][$id]['menu_padre'])) {
-        $modulosHijos[$item['id_modulo']] = $item;
-        $padreId = $_SESSION['user']['rol']['modulos'][$id]['menu_padre'];
-        $modulosPadre[$padreId]['hijos'][$id] = $item;
-    } else {
-        $modulosPadre[$id] = $item;
-    }
-}
-
-// Ordenamos por 'orden'
-uasort($modulosPadre, function($a, $b) {
-    return ($a['orden'] ?? 0) <=> ($b['orden'] ?? 0);
-});
-
-// Recorremos los módulos padre
-foreach ($modulosPadre as $id => $item):
-
-    // Si tiene hijos, hacemos dropdown
-    if (!empty($item['hijos']) && $item['hijos'] != 0): ?>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                <i class="<?php echo $item['icono']; ?>"></i>
-                <?php echo $item['nombre']; ?>
-            </a>
-            <ul class="dropdown-menu">
-                <?php foreach ($item['hijos'] as $hijo): ?>
-                    <li>
-                        <a class="dropdown-item" href="<?php echo APP_URL . '/' . $hijo['ruta']; ?>">
-                            <i class="<?php echo $hijo['icono']; ?>"></i>
-                            <?php echo $hijo['nombre']; ?>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </li>
-    <?php
-    // Si no tiene hijos, módulo normal
-    elseif ($item['ruta'] !== "#"): ?>
-        <li class="nav-item">
-            <a class="nav-link" href="<?php echo APP_URL . '/' . $item['ruta']; ?>">
-                <i class="<?php echo $item['icono']; ?>"></i>
-                <?php echo $item['nombre']; ?>
-            </a>
-        </li>
-    <?php
-    // Si no tiene hijos, pero es nulo modal
-    elseif ($item['hijos'] = 0): ?>
-        <li class="nav-item">
-            <a class="nav-link" href="<?php echo $item['ruta']; ?>">
-                <i class="<?php echo $item['icono']; ?>"></i>
-                <?php echo $item['nombre']; ?>
-            </a>
-        </li>
-    <?php
-    // Si no tiene ruta, pero no tiene hijos, mostramos permisos
-    else: ?>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                <i class="<?php echo $item['icono']; ?>"></i>
-                <?php echo $item['nombre']; ?>
-            </a>
-            <?php if (!empty($item['permisos'])): ?>
+    <?php foreach ($modulosFinal as $item): ?>
+        <?php if (!empty($item['hijos'])): ?>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                    <i class="<?php echo $item['icono']; ?> me-1"></i> <?php echo $item['nombre']; ?>
+                </a>
                 <ul class="dropdown-menu">
-                    <?php foreach ($item['permisos'] as $permiso): ?>
-                        <li><span class="dropdown-item disabled"><?php echo ucfirst($permiso); ?></span></li>
+                    <?php foreach ($item['hijos'] as $hijo): ?>
+                        <li>
+                            <a class="dropdown-item" href="<?php echo APP_URL . '/' . $hijo['ruta']; ?>">
+                                <i class="<?php echo $hijo['icono']; ?> me-2"></i> <?php echo $hijo['nombre']; ?>
+                            </a>
+                        </li>
                     <?php endforeach; ?>
                 </ul>
-            <?php endif; ?>
-        </li>
-    <?php endif; ?>
-
-<?php endforeach; ?>
-
+            </li>
+        <?php else: ?>
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo APP_URL . '/' . $item['ruta']; ?>">
+                    <i class="<?php echo $item['icono']; ?> me-1"></i> <?php echo $item['nombre']; ?>
+                </a>
+            </li>
+        <?php endif; ?>
+    <?php endforeach; ?>
 </ul>
 
             <!-- Carrito y notificaciones -->

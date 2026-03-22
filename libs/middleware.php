@@ -100,46 +100,55 @@ class Middleware extends Model
         try {
             $sql = "
                 SELECT 
-                r.id_rol,
-                r.nombre AS rol,
-                m.id_modulo,
-                m.nombre AS modulo,
-                m.ruta,
-                m.icono,
-                m.orden,
-                m.menu_padre,
-                p.id_permisos,
-                p.nombre AS permiso
-            FROM t_permiso_rol_modulo prm
-            INNER JOIN t_rol r ON prm.fk_rol = r.id_rol
-            INNER JOIN t_modulo m ON prm.fk_modulo = m.id_modulo
-            INNER JOIN t_permisos p ON prm.fk_permiso = p.id_permisos
-            WHERE prm.fk_rol = ? AND prm.estatus = 1
-            ORDER BY m.orden ASC;
-        ";
+                    r.id_rol,
+                    r.nombre AS rol,
+                    m.id_modulo,
+                    m.nombre AS modulo,
+                    m.ruta,
+                    m.icono,
+                    m.orden,
+                    m.menu_padre,
+                    -- Traemos info del padre incluso si el rol no tiene permiso directo al padre
+                    p_padre.nombre AS nombre_padre_real,
+                    p_padre.icono AS icono_padre_real,
+                    p_padre.orden AS orden_padre_real,
+                    p.id_permisos,
+                    p.nombre AS permiso
+                FROM t_permiso_rol_modulo prm
+                INNER JOIN t_rol r ON prm.fk_rol = r.id_rol
+                INNER JOIN t_modulo m ON prm.fk_modulo = m.id_modulo
+                INNER JOIN t_permisos p ON prm.fk_permiso = p.id_permisos
+                -- Join para obtener datos del padre desde la tabla de módulos
+                LEFT JOIN t_modulo p_padre ON m.menu_padre = p_padre.id_modulo
+                WHERE prm.fk_rol = ? AND prm.estatus = 1
+                ORDER BY m.orden ASC;
+            ";
 
             $stmt = $conn->prepare($sql);
             $stmt->execute([$idRol]);
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            $rolData = [
-                'rol' => null,
-                'modulos' => [],
-                'permisos' => []
-            ];
+            $rolData = ['rol' => null, 'modulos' => [], 'permisos' => []];
 
             foreach ($result as $row) {
                 $rolData['rol'] = $row['rol'];
                 $rolData['modulos'][$row['id_modulo']] = [
-                    'nombre' => $row['modulo'],
-                    'ruta' => $row['ruta'],
-                    'icono' => $row['icono'],
-                    'orden' => $row['orden'],
-                    'menu_padre' => $row['menu_padre']
+                    'nombre'     => $row['modulo'],
+                    'ruta'       => $row['ruta'],
+                    'icono'      => $row['icono'],
+                    'orden'      => $row['orden'],
+                    'menu_padre' => $row['menu_padre'],
+                    // Guardamos los datos del padre para el Navbar
+                    'padre_info' => [
+                        'nombre' => $row['nombre_padre_real'],
+                        'icono'  => $row['icono_padre_real'],
+                        'orden'  => $row['orden_padre_real']
+                    ]
                 ];
                 $rolData['permisos'][$row['id_modulo']][] = $row['permiso'];
             }
-            // Reordenar permisos por módulo
+
+            // Reordenar permisos (tu lógica actual)
             $ordenPermisos = ['consultar','registrar','actualizar','eliminar'];
             foreach ($rolData['permisos'] as $moduloId => $permisos) {
                 $rolData['permisos'][$moduloId] = array_values(array_intersect($ordenPermisos, $permisos));
