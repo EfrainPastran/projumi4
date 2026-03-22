@@ -13,7 +13,7 @@
 </head>
 <body>
     <header>
-    	<img class="img_logo rounded-circle me-2"src="<?php echo APP_URL; ?>/public/ayuda/projumi.jpg" alt="Projecto juvenil misionero">
+    	<img class="img_logo rounded-circle me-2"src="<?php echo APP_URL; ?>/public/ayuda/logoh.jpg" alt="Projecto juvenil misionero">
         <br>
         <h1>Manual de Usuario</h1>
         <h2>Guía completa para el uso de Nuestro Sistema Projumi</h2>
