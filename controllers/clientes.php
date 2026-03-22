@@ -16,7 +16,8 @@ function index() {
     $permisos = $middleware->obtenerPermisosDinamicos($rol['rol'], 'Clientes');
 
     if (!$permisos['consultar']) {
-            header('Location: ../home/principal');
+            //header('Location: ../home/principal');
+            renderError('No cuentas con permisos para continuar', 401);
             exit;
     }
     // 3. Carga de datos y renderizado
