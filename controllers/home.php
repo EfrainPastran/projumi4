@@ -19,39 +19,47 @@ function principal() {
 
 
 function api_login() {
+    header('Content-Type: application/json; charset=utf-8');
+
     // Solo aceptar POST
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        http_response_code(405); // Método no permitido
-        echo json_encode(['success' => false, 'message' => 'Método no permitido.']);
+        http_response_code(405);
+        echo json_encode(['success' => false, 'message' => 'Metodo no permitido.']);
         exit;
     }
 
-    // Verificar que haya datos
-    if (empty($_POST['cedula']) || empty($_POST['password'])) {
+    $rawBody = file_get_contents('php://input');
+    $jsonBody = [];
+
+    if (!empty($rawBody)) {
+        $decodedBody = json_decode($rawBody, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decodedBody)) {
+            $jsonBody = $decodedBody;
+        }
+    }
+
+    $cedula = trim($jsonBody['cedula'] ?? $_POST['cedula'] ?? '');
+    $password = trim($jsonBody['password'] ?? $_POST['password'] ?? '');
+
+    if ($cedula === '' || $password === '') {
         http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Faltan datos de inicio de sesión.']);
+        echo json_encode(['success' => false, 'message' => 'Faltan datos de inicio de sesion.']);
         exit;
     }
-
-
-    $cedula = $_POST['cedula'];
-    $password = $_POST['password'];
-
     $loginModel = new LoginModel();
     $user = $loginModel->session($cedula, $password);
 
     if ($user) {
         $_SESSION['user'] = $user;
         $_SESSION['logged_in'] = true;
-        header('Content-Type: application/json');
         echo json_encode(['success' => true]);
         exit;
-    } else {
-        header('Content-Type: application/json');
-        http_response_code(401); // No autorizado
-        echo json_encode(['success' => false, 'message' => 'Credenciales incorrectas.']);
-        exit;
     }
+
+    // LOGIN FALLIDO
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Credenciales incorrectas.']);
+    exit;
 }
 
 function index() {
