@@ -240,6 +240,31 @@ use App\Models\Usermodel;
         return;
     }
 
+    // API móvil: obtener productos con JWT.
+    // Este endpoint valida el token Bearer antes de devolver la lista.
+    function api_list() {
+        header('Content-Type: application/json');
+
+        $token = get_bearer_token();
+        if (!$token) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => 'Token no enviado.']);
+            exit;
+        }
+
+        $payload = jwt_decode_rs256($token);
+        if ($payload === false) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => 'Token inválido o expirado.']);
+            exit;
+        }
+
+        $Producto = new ProductosModel();
+        $productos = $Producto->getProductos();
+        echo json_encode($productos);
+        return;
+    }
+
     //Mostrar productos del emprendedor
     function mostrarProductosPorEmprendedor() {
         

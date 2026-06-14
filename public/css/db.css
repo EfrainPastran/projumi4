@@ -148,8 +148,25 @@ body {
     border-top-color: var(--sky-blue);
 }
 
+.partial-backup-card {
+    border-top-color: #f7b801;
+}
+
 .restore-card {
     border-top-color: var(--earth-brown);
+}
+
+.partial-backup-card .db-action-btn {
+    background-color: #f7b801;
+    color: #333;
+}
+
+.partial-backup-card .db-action-btn:hover {
+    background-color: #e0a600;
+}
+
+.partial-backup-card .db-icon-container {
+    background-color: rgba(247, 184, 1, 0.1);
 }
 
 .db-icon-container {

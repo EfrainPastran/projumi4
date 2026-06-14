@@ -35,6 +35,14 @@ define('DB_OPTIONS', [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES => false
 ]);
+
+// Configuración de JWT/RSA para autenticación de la app móvil.
+// Se usan claves RSA para firmar y validar tokens JWT con algoritmo RS256.
+define('JWT_KEYS_DIR', APP_PATH . '/config/keys');
+define('JWT_PRIVATE_KEY_FILE', JWT_KEYS_DIR . '/jwt_private.pem');
+define('JWT_PUBLIC_KEY_FILE', JWT_KEYS_DIR . '/jwt_public.pem');
+define('JWT_ALGORITHM', 'RS256');
+define('JWT_EXPIRATION_SECONDS', 3600);
 // Configuración de seguridad
 //define('HASH_ALGO', 'sha256');
 //define('HASH_KEY', 'hash777');

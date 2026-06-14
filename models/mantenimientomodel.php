@@ -154,6 +154,124 @@ public function generateBackup($database = 'main') {
     }
 }
 
+private function appendTableBackup(PDO $db, string $table, string $whereClause = '', array $params = []): string {
+    $sql = "\n\n-- --------------------------------------------------------\n";
+    $sql .= "-- Estructura para tabla `{$table}`\n";
+
+    $createResult = $db->query("SHOW CREATE TABLE `{$table}`");
+    if (!$createResult) {
+        error_log("No se pudo obtener estructura para la tabla {$table}");
+        return '';
+    }
+
+    $createTable = $createResult->fetch(PDO::FETCH_ASSOC);
+    $createTableSQL = $createTable['Create Table'] ?? null;
+    if (!$createTableSQL) {
+        error_log("Estructura no válida para la tabla {$table}");
+        return '';
+    }
+
+    $sql .= "DROP TABLE IF EXISTS `{$table}`;\n";
+    $sql .= $createTableSQL . ";\n\n";
+
+    $query = "SELECT * FROM `{$table}`";
+    if ($whereClause !== '') {
+        $query .= " WHERE {$whereClause}";
+    }
+
+    $stmt = $db->prepare($query);
+    $stmt->execute($params);
+    $rows = $stmt->fetchAll(PDO::FETCH_NUM);
+
+    if (!empty($rows)) {
+        $sql .= "-- Datos para la tabla `{$table}`\n";
+        $columnsResult = $db->query("SHOW COLUMNS FROM `{$table}`");
+        $columns = $columnsResult->fetchAll(PDO::FETCH_COLUMN);
+
+        $chunks = array_chunk($rows, 100);
+        foreach ($chunks as $chunk) {
+            $sql .= "INSERT INTO `{$table}` (`" . implode('`,`', $columns) . "`) VALUES \n";
+            $values = [];
+            foreach ($chunk as $row) {
+                $rowValues = array_map(function($value) use ($db) {
+                    if ($value === null) {
+                        return 'NULL';
+                    }
+                    return $db->quote($value);
+                }, $row);
+                $values[] = "(" . implode(',', $rowValues) . ")";
+            }
+            $sql .= implode(",\n", $values) . ";\n";
+        }
+    }
+
+    return $sql;
+}
+
+public function generatePartialBackup($database = 'projumi', string $dateFrom, string $dateTo) {
+    if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateTo)) {
+        throw new InvalidArgumentException('Las fechas deben tener el formato YYYY-MM-DD.');
+    }
+
+    if ($dateFrom > $dateTo) {
+        throw new InvalidArgumentException('La fecha inicial no puede ser mayor que la fecha final.');
+    }
+
+    $db = ($database === 'projumi') ? $this->db_projumi : $this->db;
+    $db->exec("SET NAMES 'utf8'");
+    $db->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_NATURAL);
+
+    try {
+        $sqlScript = "-- Backup parcial de la base de datos " . strtoupper($database) . "\n";
+        $sqlScript .= "-- Rango: {$dateFrom} a {$dateTo}\n";
+        $sqlScript .= "-- Generado el: " . date('Y-m-d H:i:s') . "\n\n";
+        $sqlScript .= "SET FOREIGN_KEY_CHECKS = 0;\n\n";
+
+        $tables = [
+            't_pedidos' => 'DATE(fecha_pedido) BETWEEN :from AND :to',
+            't_detalle_pedido' => 'pedidos_ID_PEDIDO IN (SELECT id_pedidos FROM t_pedidos WHERE DATE(fecha_pedido) BETWEEN :from AND :to)',
+            't_delivery' => 'fk_pedido IN (SELECT id_pedidos FROM t_pedidos WHERE DATE(fecha_pedido) BETWEEN :from AND :to)',
+            't_envio' => 'fk_pedido IN (SELECT id_pedidos FROM t_pedidos WHERE DATE(fecha_pedido) BETWEEN :from AND :to)',
+            't_pagos' => 'fk_pedido IN (SELECT id_pedidos FROM t_pedidos WHERE DATE(fecha_pedido) BETWEEN :from AND :to)',
+            't_detalle_pago' => 'fk_pago IN (SELECT id_pagos FROM t_pagos WHERE fk_pedido IN (SELECT id_pedidos FROM t_pedidos WHERE DATE(fecha_pedido) BETWEEN :from AND :to))',
+            't_bitacora' => 'DATE(fecha_registro) BETWEEN :from AND :to',
+        ];
+
+        foreach ($tables as $table => $where) {
+            $sqlScript .= $this->appendTableBackup($db, $table, $where, [':from' => $dateFrom, ':to' => $dateTo]);
+        }
+
+        $sqlScript .= "\nSET FOREIGN_KEY_CHECKS = 1;\n";
+
+        $backupDir = 'backups';
+        if (!file_exists($backupDir)) {
+            if (!mkdir($backupDir, 0755, true)) {
+                throw new RuntimeException("No se pudo crear el directorio de backups: {$backupDir}");
+            }
+        }
+
+        $backupFile = $backupDir . '/backup_partial_' . $database . '_' . $dateFrom . '_to_' . $dateTo . '.sql';
+        if (file_put_contents($backupFile, $sqlScript) === false) {
+            throw new RuntimeException("No se pudo escribir el archivo de backup parcial en: {$backupFile}");
+        }
+
+        return $backupFile;
+    } catch (PDOException $e) {
+        error_log("Error en backup parcial (" . $database . "): " . $e->getMessage());
+        throw new RuntimeException("Error al generar el backup parcial: " . $e->getMessage());
+    }
+}
+
+public function generateScheduledBackup($database = 'projumi') {
+    $weekday = (int) date('N');
+    if ($weekday === 5) {
+        return $this->generateBackup($database);
+    }
+
+    $today = date('Y-m-d');
+    return $this->generatePartialBackup($database, $today, $today);
+}
+
 public function restoreDatabase($filePath, $database = 'main') {
     // Validar parámetro de base de datos
     if (!in_array($database, ['main', 'projumi'])) {

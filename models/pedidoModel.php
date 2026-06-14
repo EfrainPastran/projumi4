@@ -149,16 +149,31 @@ class PedidoModel extends Model {
                 return ['success' => false, 'message' => 'El cliente no existe en el sistema.'];
             }
 
-            // Verificar productos
+            // Verificar productos y preparar bloqueo de inventario
             $Producto = new ProductosModel();
+            $productQuantities = [];
+            $productIds = [];
+
             foreach ($detallePedido['detalle'] as $item) {
-                $Producto->set_id_producto($item['id']);
-                $producto = $Producto->getProducto($item['id']);
-                if (!$producto) {
-                    return ['success' => false, 'message' => "Producto con ID {$item['id']} no encontrado."];
+                $productId = (int) ($item['id'] ?? 0);
+                $quantity = (int) ($item['cantidad'] ?? 0);
+
+                if ($productId <= 0 || $quantity <= 0) {
+                    return ['success' => false, 'message' => 'El detalle del pedido contiene un producto o cantidad inválida.'];
                 }
-                if ($producto['stock'] < $item['cantidad']) {
-                    return ['success' => false, 'message' => "Stock insuficiente para '{$producto['nombre']}'."];
+
+                $productQuantities[$productId] = ($productQuantities[$productId] ?? 0) + $quantity;
+                $productIds[] = $productId;
+            }
+
+            $productIds = array_unique($productIds);
+
+            // Validar existencia de productos antes de bloquear filas
+            foreach ($productIds as $productId) {
+                $Producto->set_id_producto($productId);
+                $producto = $Producto->getProducto($productId);
+                if (!$producto) {
+                    return ['success' => false, 'message' => "Producto con ID {$productId} no encontrado."];
                 }
             }
 
@@ -189,7 +204,28 @@ class PedidoModel extends Model {
             // ==============================
             //  INICIO DE TRANSACCIÓN
             // ==============================
+            $this->openConnection();
             $this->beginTransaction();
+
+            $placeholders = implode(',', array_fill(0, count($productIds), '?'));
+            $stmtStock = $this->queryForUpdate(
+                "SELECT id_producto, stock FROM t_producto WHERE id_producto IN ({$placeholders})",
+                $productIds
+            );
+
+            $stocks = $stmtStock->fetchAll(PDO::FETCH_KEY_PAIR);
+            foreach ($productQuantities as $productId => $quantity) {
+                if (!isset($stocks[$productId])) {
+                    $this->rollBack();
+                    $this->closeConnection();
+                    return ['success' => false, 'message' => "El producto con ID {$productId} no existe o no está disponible."];
+                }
+                if ($stocks[$productId] < $quantity) {
+                    $this->rollBack();
+                    $this->closeConnection();
+                    return ['success' => false, 'message' => "Stock insuficiente para el producto ID {$productId}." ];
+                }
+            }
 
             // ==============================
             //  REGISTRAR PEDIDO

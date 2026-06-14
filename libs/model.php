@@ -76,6 +76,45 @@ class Model {
     }
 
     /**
+     * Ejecuta una consulta con bloqueo de filas FOR UPDATE
+     */
+    public function queryForUpdate(string $sql, array $params = []) {
+        return $this->query($sql . ' FOR UPDATE', $params);
+    }
+
+    /**
+     * Ejecuta una consulta con bloqueo de lectura en modo compartido
+     */
+    public function queryLockInShareMode(string $sql, array $params = []) {
+        return $this->query($sql . ' LOCK IN SHARE MODE', $params);
+    }
+
+    /**
+     * Bloquea tablas explícitamente en la conexión actual.
+     * Ejemplo: ['t_producto' => 'WRITE', 't_pedidos' => 'READ']
+     */
+    public function lockTables(array $tables): void {
+        $this->openConnection();
+        $parts = [];
+        foreach ($tables as $table => $mode) {
+            $mode = strtoupper(trim($mode));
+            if (!in_array($mode, ['READ', 'WRITE'], true)) {
+                throw new Exception("Modo de bloqueo inválido: {$mode}");
+            }
+            $parts[] = "`{$table}` {$mode}";
+        }
+        $this->db->exec('LOCK TABLES ' . implode(', ', $parts));
+    }
+
+    /**
+     * Desbloquea todas las tablas.
+     */
+    public function unlockTables(): void {
+        $this->openConnection();
+        $this->db->exec('UNLOCK TABLES');
+    }
+
+    /**
      * Obtiene la instancia de PDO (para casos específicos)
      */
     public function getDb() {

@@ -22,13 +22,25 @@ function index() {
 function backup(){
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $userModel = new mantenimientomodel();
-    // Generar backup para la base de datos principal
-    $backupFileMain = $userModel->generateBackup('main');
-    
-    // Generar backup para la base de datos projumi
-    $backupFileProjumi = $userModel->generateBackup('projumi');
-    
-    if ($backupFileMain && $backupFileProjumi) {
+        $backupType = $_POST['backup_type'] ?? 'full';
+        $backupFileMain = null;
+        $backupFileProjumi = null;
+
+        if ($backupType === 'partial') {
+            $fromDate = $_POST['from_date'] ?? '';
+            $toDate = $_POST['to_date'] ?? '';
+            $backupFileMain = $userModel->generatePartialBackup('main', $fromDate, $toDate);
+            $backupFileProjumi = $userModel->generatePartialBackup('projumi', $fromDate, $toDate);
+        } elseif ($backupType === 'scheduled') {
+            $backupFileMain = $userModel->generateScheduledBackup('main');
+            $backupFileProjumi = $userModel->generateScheduledBackup('projumi');
+        } else {
+            // Backup completo por defecto
+            $backupFileMain = $userModel->generateBackup('main');
+            $backupFileProjumi = $userModel->generateBackup('projumi');
+        }
+
+        if ($backupFileMain && $backupFileProjumi) {
         // Crear un archivo ZIP que contenga ambos backups
         $zip = new ZipArchive();
         $zipFileName = 'backups/backup_dual_' . date('Y-m-d_H-i-s') . '.zip';

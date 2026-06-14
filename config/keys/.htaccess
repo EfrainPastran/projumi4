@@ -1,0 +1,8 @@
+# Evitar el acceso público a las claves JWT.
+# No se debe exponer la clave privada.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Deny from all
+</IfModule>

@@ -88,16 +88,7 @@ class ProductosModel extends Model {
                 return ['success' => false, 'message' => 'El id del producto no es válido.'];
             }
 
-            // Verificar existencia
-            $stmtCheck = $this->query("SELECT id_producto FROM t_producto WHERE id_producto = :id", [
-                ':id' => $this->id_producto
-            ]);
-            if ($stmtCheck->rowCount() === 0) {
-                $this->closeConnection();
-                return ['success' => false, 'message' => 'El producto que intenta eliminar no existe.'];
-            }
-
-            // Verificar pedidos
+            // Verificar pedidos antes de iniciar la transacción
             if ($this->porDetallePedido($this->id_producto)) {
                 $this->closeConnection();
                 return ['success' => false, 'message' => 'No se puede eliminar este producto porque está en un pedido.'];
@@ -105,6 +96,16 @@ class ProductosModel extends Model {
 
             $this->openConnection();
             $this->beginTransaction();
+
+            // Bloqueo de fila para evitar que otro proceso modifique/elimine el mismo producto simultáneamente.
+            $stmtCheck = $this->queryForUpdate("SELECT id_producto FROM t_producto WHERE id_producto = :id", [
+                ':id' => $this->id_producto
+            ]);
+            if ($stmtCheck->rowCount() === 0) {
+                $this->rollBack();
+                $this->closeConnection();
+                return ['success' => false, 'message' => 'El producto que intenta eliminar no existe.'];
+            }
 
             // Obtener rutas de imágenes
             $stmtImgs = $this->query("SELECT ruta FROM t_galeria WHERE fk_producto = :id", [
@@ -125,6 +126,7 @@ class ProductosModel extends Model {
             return ['success' => true, 'message' => 'Producto eliminado correctamente.'];
         } catch (Exception $e) {
             $this->rollBack();
+            $this->closeConnection();
             return ['success' => false, 'message' => 'Error al eliminar producto: ' . $e->getMessage()];
         }
     }
@@ -196,38 +198,50 @@ class ProductosModel extends Model {
         }
     }
 
+    private function ensureProductosView(): void
+    {
+        $this->openConnection();
+
+        $sql = "CREATE VIEW IF NOT EXISTS vw_productos_completo AS
+            SELECT
+                p.id_producto,
+                p.nombre,
+                p.precio,
+                p.descripcion,
+                p.stock,
+                p.fecha_ingreso,
+                p.status,
+                c.id_categoria,
+                c.nombre AS categoria,
+                e.id_emprededor,
+                CONCAT(u.nombre, ' ', u.apellido) AS emprendedor,
+                GROUP_CONCAT(DISTINCT g.ruta SEPARATOR '||') AS imagenes
+            FROM t_producto p
+            INNER JOIN t_categoria c ON p.fk_categoria = c.id_categoria
+            INNER JOIN t_emprendedor e ON e.id_emprededor = p.fk_emprendedor
+            INNER JOIN " . BD_SEGURIDAD . ".t_usuario u ON u.cedula = e.cedula
+            LEFT JOIN t_galeria g ON g.fk_producto = p.id_producto
+            GROUP BY p.id_producto";
+
+        $this->db->exec($sql);
+    }
+
     public function getProductos()
     {
         try {
-            $stmt = $this->query("
-                SELECT 
-                    e.id_emprededor, 
-                    CONCAT(u.nombre, ' ', u.apellido) AS emprendedor,
-                    p.id_producto, 
-                    p.nombre, 
-                    p.precio, 
-                    p.descripcion, 
-                    p.stock,
-                    p.fecha_ingreso, 
-                    c.nombre AS categoria, 
-                    c.id_categoria, 
-                    p.status
-                FROM " . BD_PROJUMI . ".t_producto p
-                INNER JOIN " . BD_PROJUMI . ".t_categoria c ON p.fk_categoria = c.id_categoria
-                INNER JOIN " . BD_PROJUMI . ".t_emprendedor e ON e.id_emprededor = p.fk_emprendedor
-                INNER JOIN " . BD_SEGURIDAD . ".t_usuario u ON u.cedula = e.cedula
-                ORDER BY p.fecha_ingreso DESC
-            ");
+            $this->ensureProductosView();
+
+            $stmt = $this->query(
+                "SELECT * FROM vw_productos_completo ORDER BY fecha_ingreso DESC"
+            );
 
             $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Cargar imágenes asociadas
             foreach ($productos as &$producto) {
-                $stmtImg = $this->query(
-                    "SELECT ruta FROM t_galeria WHERE fk_producto = :id",
-                    [':id' => $producto['id_producto']]
-                );
-                $producto['imagenes'] = $stmtImg->fetchAll(PDO::FETCH_COLUMN);
+                $producto['imagenes'] = [];
+                if (!empty($producto['imagenes'])) {
+                    $producto['imagenes'] = explode('||', $producto['imagenes']);
+                }
             }
 
             $this->closeConnection();

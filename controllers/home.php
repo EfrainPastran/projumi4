@@ -19,37 +19,70 @@ function principal() {
 
 
 function api_login() {
-    // Solo aceptar POST
+    // Endpoint API móvil para iniciar sesión y devolver JWT.
+    // Este método acepta JSON con cedula/password y devuelve un token RS256.
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         http_response_code(405); // Método no permitido
+        header('Content-Type: application/json');
         echo json_encode(['success' => false, 'message' => 'Método no permitido.']);
         exit;
     }
 
-    // Verificar que haya datos
-    if (empty($_POST['cedula']) || empty($_POST['password'])) {
+    $data = get_json_request_body();
+    $cedula = trim($data['cedula'] ?? '');
+    $password = trim($data['password'] ?? '');
+
+    if ($cedula === '' || $password === '') {
         http_response_code(400);
+        header('Content-Type: application/json');
         echo json_encode(['success' => false, 'message' => 'Faltan datos de inicio de sesión.']);
         exit;
     }
 
-
-    $cedula = $_POST['cedula'];
-    $password = $_POST['password'];
-
     $loginModel = new LoginModel();
     $user = $loginModel->session($cedula, $password);
 
-    if ($user) {
-        $_SESSION['user'] = $user;
-        $_SESSION['logged_in'] = true;
-        header('Content-Type: application/json');
-        echo json_encode(['success' => true]);
-        exit;
-    } else {
+    if (!$user) {
         header('Content-Type: application/json');
         http_response_code(401); // No autorizado
         echo json_encode(['success' => false, 'message' => 'Credenciales incorrectas.']);
+        exit;
+    }
+
+    unset($user['password']);
+
+    try {
+        $payload = [
+            'iss' => APP_URL,
+            'aud' => APP_URL,
+            'iat' => time(),
+            'exp' => time() + JWT_EXPIRATION_SECONDS,
+            'sub' => $user['id_usuario'],
+            'cedula' => $user['cedula'],
+            'correo' => $user['correo'] ?? null
+        ];
+
+        $token = jwt_encode_rs256($payload);
+        if ($token === false) {
+            throw new Exception('No se pudo generar el token.');
+        }
+
+        // Iniciar sesión PHP para el acceso web tradicional.
+        $_SESSION['user'] = $user;
+        $_SESSION['logged_in'] = true;
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'token' => $token,
+            'user' => $user
+        ]);
+        exit;
+    } catch (Exception $e) {
+        error_log('JWT generation error: ' . $e->getMessage());
+        header('Content-Type: application/json');
+        http_response_code(500);
+        echo json_encode(['success' => false, 'message' => 'Error interno al generar el token.']);
         exit;
     }
 }

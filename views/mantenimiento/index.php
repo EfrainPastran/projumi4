@@ -42,10 +42,26 @@ if (session_status() === PHP_SESSION_NONE) {
                         <i class="fas fa-database"></i>
                         <i class="fas fa-arrow-up"></i>
                     </div>
-                    <h3>Respaldo de BD</h3>
-                    <p>Crea una copia de seguridad completa de la base de datos actual</p>
+                    <h3>Respaldo completo</h3>
+                    <p>Crea una copia de seguridad completa de la base de datos actual.</p>
                     <button class="btn db-action-btn" id="backupBtn" data-bs-toggle="modal" data-bs-target="#confirmBackupModal">
                         <i class="fas fa-play"></i> Ejecutar Respaldo
+                    </button>
+                    <button class="btn btn-outline-primary mt-3" id="partialBackupBtnInline" data-bs-toggle="modal" data-bs-target="#confirmPartialBackupModal">
+                        <i class="fas fa-clock"></i> Respaldo Parcial
+                    </button>
+                </div>
+
+                <!-- Tarjeta de Respaldo Parcial -->
+                <div class="db-action-card partial-backup-card">
+                    <div class="db-icon-container">
+                        <i class="fas fa-calendar-day"></i>
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <h3>Respaldo parcial</h3>
+                    <p>Respalda los datos modificados entre dos fechas.</p>
+                    <button class="btn db-action-btn" id="partialBackupBtn" data-bs-toggle="modal" data-bs-target="#confirmPartialBackupModal">
+                        <i class="fas fa-play"></i> Respaldo Parcial
                     </button>
                 </div>
 
@@ -100,10 +116,43 @@ if (session_status() === PHP_SESSION_NONE) {
                     <div class="alert alert-warning">
                         <i class="fas fa-info-circle"></i> Esta operación puede tomar varios minutos dependiendo del tamaño de la base de datos.
                     </div>
+                    <input type="hidden" name="backup_type" value="full">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <input type="submit" class="btn btn-primary" id="confirmBackup" name="backup" value="Confirmar Respaldo">
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Respaldo Parcial -->
+    <div class="modal fade" id="confirmPartialBackupModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <form action="<?php echo APP_URL; ?>/mantenimiento/backup" method="post">
+                    <h5 class="modal-title"><i class="fas fa-exclamation-triangle"></i> Respaldo Parcial</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="fromDate" class="form-label">Fecha desde</label>
+                        <input type="date" class="form-control" id="fromDate" name="from_date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="toDate" class="form-label">Fecha hasta</label>
+                        <input type="date" class="form-control" id="toDate" name="to_date" required>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> El respaldo parcial incluirá los datos transaccionales dentro del rango de fechas seleccionado.
+                    </div>
+                    <input type="hidden" name="backup_type" value="partial">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <input type="submit" class="btn btn-primary" value="Crear respaldo parcial">
                 </div>
             </form>
             </div>
