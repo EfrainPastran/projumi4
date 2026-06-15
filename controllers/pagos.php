@@ -67,7 +67,19 @@ function obtenerEstatusPago() {
 function actualizarEstadoPago()
 {
     header('Content-Type: application/json; charset=utf-8');
+    $token = get_bearer_token();
+    if (!$token) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Token no enviado.']);
+        exit;
+    }
 
+    $payload = jwt_decode_rs256($token);
+    if ($payload === false) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Token inválido o expirado.']);
+        exit;
+    }
     try {
         $data = json_decode(file_get_contents('php://input'), true);
 

@@ -7,33 +7,48 @@ let currentPage = 1;
 const productsPerPage = 9;
 
 // Cargar productos desde la API
-fetch( API_CONFIG + '/productos/mostrarProductos')
-    .then(response => response.json())
-    .then(data => {
-        products = data.map(p => ({
-            id: p.id_producto,
-            name: p.nombre,
-            price: parseFloat(p.precio),
-            description: p.descripcion,
-            stock: parseInt(p.stock),
-            category: p.categoria,
-            idCategory: p.id_categoria,
-            status: p.stock === 0 ? 'soldout' : 'active',
-            // Si hay imágenes, toma la primera como principal, si no, usa un placeholder
-            image: (p.imagenes && p.imagenes.length > 0) 
-                ? (p.imagenes[0].startsWith('http') ? p.imagenes[0] : `../${p.imagenes[0]}`) 
-                : 'https://via.placeholder.com/400x300?text=Sin+imagen',
-            imagenes: p.imagenes || [],
-            id_emprendedor: p.id_emprededor,
-            emprendedor: p.emprendedor
-        }));
-        filteredProducts = [...products];
-        displayAllProducts();
-        setupPagination();
-    })
-    .catch(error => {
-        console.error('Error al cargar productos:', error);
-    });
+const token = localStorage.getItem('jwt_token');
+
+fetch(API_CONFIG + '/productos/mostrarProductos', {
+    method: 'GET',
+    headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
+    return response.json();
+})
+.then(data => {
+    products = data.map(p => ({
+        id: p.id_producto,
+        name: p.nombre,
+        price: parseFloat(p.precio),
+        description: p.descripcion,
+        stock: parseInt(p.stock),
+        category: p.categoria,
+        idCategory: p.id_categoria,
+        status: p.stock === 0 ? 'soldout' : 'active',
+        image: (p.imagenes && p.imagenes.length > 0)
+            ? (p.imagenes[0].startsWith('http')
+                ? p.imagenes[0]
+                : `../${p.imagenes[0]}`)
+            : 'https://via.placeholder.com/400x300?text=Sin+imagen',
+        imagenes: p.imagenes || [],
+        id_emprendedor: p.id_emprededor,
+        emprendedor: p.emprendedor
+    }));
+
+    filteredProducts = [...products];
+    displayAllProducts();
+    setupPagination();
+})
+.catch(error => {
+    console.error('Error al cargar productos:', error);
+});
 
 
     // Evento de búsqueda

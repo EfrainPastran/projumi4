@@ -234,15 +234,6 @@ use App\Models\Usermodel;
 
     //Productos que se cargan en el catalago para el carrito
     function mostrarProductos() {
-        $Producto = new ProductosModel();
-        $productos = $Producto->getProductos();
-        echo json_encode($productos);
-        return;
-    }
-
-    // API móvil: obtener productos con JWT.
-    // Este endpoint valida el token Bearer antes de devolver la lista.
-    function api_list() {
         header('Content-Type: application/json');
 
         $token = get_bearer_token();

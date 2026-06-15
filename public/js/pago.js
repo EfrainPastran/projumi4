@@ -538,10 +538,12 @@ function ocultarCamposPago() {
 }
 
 function actualizarEstadoPago(id_pago, estatus, id_pedido) {
+  const token = localStorage.getItem('jwt_token');
   fetch( API_CONFIG + "/pagos/actualizarEstadoPago", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
     },
     body: JSON.stringify({
       estatus: estatus,

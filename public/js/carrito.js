@@ -939,10 +939,13 @@ document.getElementById('formRegistrarPago').addEventListener('submit', function
   const idEmprendedor = localStorage.getItem('id_emprendedor');
   // Agregar el id_emprendedor al body de la petición
   formData.append('id_emprendedor', idEmprendedor);
-
+  const token = localStorage.getItem('jwt_token');
   fetch( API_CONFIG + '/pedidos/registrar', {
     method: 'POST',
     credentials: 'include',
+    headers: {
+      "Authorization": `Bearer ${token}`
+    },
     body: formData
   })
     .then(response => response.json())

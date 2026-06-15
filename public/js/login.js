@@ -16,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json()) // Esperamos JSON
         .then(data => {
             if (data.success) {
+                // Guardar JWT
+                localStorage.setItem(
+                    'jwt_token',
+                    data.token
+                );
                 // Mostrar modal de éxito
                 mostrarAlertalogin('¡Éxito!', 'Sesión iniciada correctamente', 'success');            
                 setTimeout(() => {
