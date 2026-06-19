@@ -168,3 +168,26 @@ function getEmpresaEnvioById() {
         ]);
     }
 }
+
+function getAllEmpresasEnvio() {
+    try {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            $model = new EmpresaEnvioModel();
+            $empresas = $model->getAll();
+
+            if ($empresas) {
+                echo json_encode([
+                    'success' => true,
+                    'data' => $empresas
+                ]);
+            } else {
+                throw new Exception('No se encontraron empresas de envío');
+            }
+        }
+    } catch(Exception $e) {
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
+}

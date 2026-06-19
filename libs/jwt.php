@@ -205,3 +205,107 @@ if (!function_exists('get_bearer_token')) {
         return null;
     }
 }
+
+if (!function_exists('projumi_rate_limit_client_ip')) {
+    function projumi_rate_limit_client_ip(): string {
+        $candidates = [
+            $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null,
+            $_SERVER['HTTP_CLIENT_IP'] ?? null,
+            $_SERVER['REMOTE_ADDR'] ?? null,
+        ];
+
+        foreach ($candidates as $candidate) {
+            if (!$candidate) {
+                continue;
+            }
+
+            $parts = explode(',', $candidate);
+            $ip = trim($parts[0]);
+            if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                return $ip;
+            }
+        }
+
+        return 'unknown';
+    }
+}
+
+if (!function_exists('projumi_rate_limit_storage_path')) {
+    function projumi_rate_limit_storage_path(): string {
+        return defined('RATE_LIMIT_STORAGE_FILE')
+            ? RATE_LIMIT_STORAGE_FILE
+            : APP_PATH . '/storage/rate_limits.json';
+    }
+}
+
+if (!function_exists('projumi_rate_limit_check')) {
+    function projumi_rate_limit_check(string $scope, int $maxAttempts, int $windowSeconds, ?string $identifier = null): array {
+        if ($maxAttempts <= 0 || $windowSeconds <= 0) {
+            return ['allowed' => true, 'remaining' => PHP_INT_MAX, 'retry_after' => 0];
+        }
+
+        $identifier = $identifier ?: projumi_rate_limit_client_ip();
+        $key = hash('sha256', $scope . '|' . $identifier);
+        $now = time();
+        $path = projumi_rate_limit_storage_path();
+        $dir = dirname($path);
+
+        if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
+            return ['allowed' => true, 'remaining' => $maxAttempts, 'retry_after' => 0];
+        }
+
+        $data = [];
+        if (is_file($path)) {
+            $raw = file_get_contents($path);
+            if ($raw !== false) {
+                $decoded = json_decode($raw, true);
+                if (is_array($decoded)) {
+                    $data = $decoded;
+                }
+            }
+        }
+
+        $bucket = $data[$key] ?? [];
+        $bucket = array_values(array_filter($bucket, static function ($timestamp) use ($now, $windowSeconds) {
+            return is_numeric($timestamp) && ((int) $timestamp) > ($now - $windowSeconds);
+        }));
+
+        if (count($bucket) >= $maxAttempts) {
+            $oldest = min($bucket);
+            $retryAfter = max(1, ($oldest + $windowSeconds) - $now);
+
+            $data[$key] = $bucket;
+            file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
+
+            return [
+                'allowed' => false,
+                'remaining' => 0,
+                'retry_after' => $retryAfter,
+            ];
+        }
+
+        $bucket[] = $now;
+        $data[$key] = $bucket;
+        file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), LOCK_EX);
+
+        return [
+            'allowed' => true,
+            'remaining' => max(0, $maxAttempts - count($bucket)),
+            'retry_after' => 0,
+        ];
+    }
+}
+
+if (!function_exists('projumi_rate_limit_response')) {
+    function projumi_rate_limit_response(int $retryAfter, string $message = 'Demasiadas solicitudes. Intenta de nuevo mas tarde.'): void {
+        http_response_code(429);
+        header('Content-Type: application/json; charset=utf-8');
+        header('Retry-After: ' . max(1, $retryAfter));
+        echo json_encode([
+            'success' => false,
+            'message' => $message,
+            'retry_after' => max(1, $retryAfter),
+        ]);
+        exit;
+    }
+}

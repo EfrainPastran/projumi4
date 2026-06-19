@@ -80,6 +80,17 @@ function actualizarEstadoPago()
         echo json_encode(['success' => false, 'message' => 'Token inválido o expirado.']);
         exit;
     }
+
+    $rateLimit = projumi_rate_limit_check(
+        'pagos_actualizar_estado',
+        RATE_LIMIT_API_MAX,
+        RATE_LIMIT_API_WINDOW,
+        (string) ($payload['cedula'] ?? 'anon')
+    );
+    if (!$rateLimit['allowed']) {
+        projumi_rate_limit_response((int) $rateLimit['retry_after'], 'Demasiadas solicitudes para actualizar pagos. Intenta de nuevo más tarde.');
+    }
+
     try {
         $data = json_decode(file_get_contents('php://input'), true);
 

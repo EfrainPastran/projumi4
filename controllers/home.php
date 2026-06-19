@@ -28,6 +28,11 @@ function api_login() {
         exit;
     }
 
+    $rateLimit = projumi_rate_limit_check('login', RATE_LIMIT_LOGIN_MAX, RATE_LIMIT_LOGIN_WINDOW);
+    if (!$rateLimit['allowed']) {
+        projumi_rate_limit_response((int) $rateLimit['retry_after'], 'Demasiados intentos de inicio de sesión. Intenta de nuevo más tarde.');
+    }
+
     $data = get_json_request_body();
     $cedula = trim($data['cedula'] ?? '');
     $password = trim($data['password'] ?? '');

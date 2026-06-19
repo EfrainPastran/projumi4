@@ -8,6 +8,28 @@ use App\Middleware;
 use App\Models\ClienteModel;
 use App\Models\ProductosModel;  
 
+function pedidos_get_auth_cedula(): ?string {
+    if (session_status() !== PHP_SESSION_ACTIVE) {
+        @session_start();
+    }
+
+    if (!empty($_SESSION['user']['cedula'])) {
+        return $_SESSION['user']['cedula'];
+    }
+
+    $token = get_bearer_token();
+    if (!$token) {
+        return null;
+    }
+
+    $payload = jwt_decode_rs256($token);
+    if ($payload === false) {
+        return null;
+    }
+
+    return $payload['cedula'] ?? null;
+}
+
 function index() {
     if (!isset($_SESSION['user']['cedula'])) {
         header('Location: ../home/index');
@@ -65,6 +87,17 @@ function index() {
         echo json_encode(['success' => false, 'message' => 'Token inválido o expirado.']);
         exit;
     }
+
+    $rateLimit = projumi_rate_limit_check(
+        'pedidos_registrar',
+        RATE_LIMIT_API_MAX,
+        RATE_LIMIT_API_WINDOW,
+        (string) ($payload['cedula'] ?? 'anon')
+    );
+    if (!$rateLimit['allowed']) {
+        projumi_rate_limit_response((int) $rateLimit['retry_after'], 'Demasiadas solicitudes para registrar pedidos. Intenta de nuevo más tarde.');
+    }
+
     try {
         // === Verificar método HTTP ===
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -193,7 +226,17 @@ function mostrarPedidos() {
     $Pedido = new PedidoModel();
 
     try {
-        $cedula = $_SESSION['user']['cedula'];
+        $cedula = pedidos_get_auth_cedula();
+        if (!$cedula) {
+            header('Content-Type: application/json');
+            http_response_code(401);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'No se pudo identificar al usuario autenticado.'
+            ]);
+            return;
+        }
+
         $Middleware = new Middleware();
         $tipoUsuario = $Middleware->verificarTipoUsuario($cedula);
         //Vista para el emprendedor
@@ -237,6 +280,13 @@ function consultarPedido()
     header('Content-Type: application/json; charset=utf-8');
 
     try {
+        $cedula = pedidos_get_auth_cedula();
+        if (!$cedula) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => 'No se pudo identificar al usuario autenticado.']);
+            return;
+        }
+
         if (!isset($_GET['idPedido'])) {
             http_response_code(400);
             echo json_encode(['success' => false, 'message' => 'Debe proporcionar un ID de pedido.']);
