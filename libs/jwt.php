@@ -189,11 +189,28 @@ if (!function_exists('get_bearer_token')) {
             $headers = getallheaders();
         }
 
+        if (empty($headers) && function_exists('apache_request_headers')) {
+            $headers = apache_request_headers();
+        }
+
         if (empty($headers) && isset($_SERVER['HTTP_AUTHORIZATION'])) {
             $headers['Authorization'] = $_SERVER['HTTP_AUTHORIZATION'];
         }
         if (empty($headers) && isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
             $headers['Authorization'] = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+        }
+        if (empty($headers) && isset($_SERVER['HTTP_X_AUTHORIZATION'])) {
+            $headers['Authorization'] = $_SERVER['HTTP_X_AUTHORIZATION'];
+        }
+        if (empty($headers) && isset($_SERVER['HTTP_X_ACCESS_TOKEN'])) {
+            $headers['Authorization'] = 'Bearer ' . $_SERVER['HTTP_X_ACCESS_TOKEN'];
+        }
+
+        if (!empty($_GET['token']) && is_string($_GET['token'])) {
+            return trim($_GET['token']);
+        }
+        if (!empty($_POST['token']) && is_string($_POST['token'])) {
+            return trim($_POST['token']);
         }
 
         if (!empty($headers['Authorization'])) {
