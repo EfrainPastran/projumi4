@@ -266,6 +266,67 @@ if (session_status() === PHP_SESSION_NONE) {
   </div>
 </div>
 
+    <div class="modal fade" id="passwordResetModal" tabindex="-1" aria-labelledby="passwordResetModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title" id="passwordResetModalLabel">Recuperar contraseña</h5>
+                        <small class="text-white" id="passwordResetDescription">Te enviaremos un código al correo asociado a la cedula.</small>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="passwordResetAlert" class="alert d-none" role="alert"></div>
+                    <div id="passwordResetEmailHint" class="small text-muted mb-3 d-none"></div>
+
+                    <form id="passwordResetRequestForm" data-reset-step="1" novalidate>
+                        <div class="mb-3">
+                            <label for="passwordResetCedula" class="form-label">Cédula</label>
+                            <input type="text" class="form-control" id="passwordResetCedula" maxlength="10" inputmode="numeric" autocomplete="username" required>
+                            <div class="form-text">Usaremos esta cédula para buscar el correo registrado.</div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary" id="passwordResetRequestButton">Enviar código</button>
+                        </div>
+                    </form>
+
+                    <form id="passwordResetVerifyForm" data-reset-step="2" class="d-none" novalidate>
+                        <div class="mb-3">
+                            <label for="passwordResetCodigo" class="form-label">Código de verificación</label>
+                            <input type="text" class="form-control" id="passwordResetCodigo" maxlength="6" inputmode="numeric" autocomplete="one-time-code" required>
+                            <div class="form-text">Ingresa el código de 6 digitos enviado a tu correo.</div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary" id="passwordResetVerifyButton">Verificar código</button>
+                            <button type="button" class="btn btn-outline-secondary" id="passwordResetResendButton">Reenviar código</button>
+                        </div>
+                    </form>
+
+                    <form id="passwordResetCompleteForm" data-reset-step="3" class="d-none" novalidate>
+                        <div class="mb-3">
+                            <label for="passwordResetPassword" class="form-label">Nueva contraseña</label>
+                            <input type="password" class="form-control" id="passwordResetPassword" autocomplete="new-password" required>
+                            <div class="form-text">La contraseña debe tener al menos 8 caracteres.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="passwordResetPasswordConfirm" class="form-label">Confirmar contraseña</label>
+                            <input type="password" class="form-control" id="passwordResetPasswordConfirm" autocomplete="new-password" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary" id="passwordResetCompleteButton">Guardar nueva contraseña</button>
+                        </div>
+                    </form>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <button type="button" class="btn btn-link px-0 d-none" id="passwordResetChangeCedulaButton">Cambiar cédula</button>
+                        <button type="button" class="btn btn-link px-0" id="passwordResetCloseToLoginButton">Volver al inicio de sesión </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!--<?php
     /*include "views/componentes/close.php";*/
     ?>-->
@@ -447,6 +508,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <script src="<?php echo APP_URL; ?>/public/js/npm/sweetalert2@11.js"></script>
     <script>
         const APP_URL = "<?php echo APP_URL; ?>";
+        window.APP_URL = APP_URL;
     </script>
     <!-- JavaScript personalizado -->
     <script src="<?php echo APP_URL; ?>/public/js/clienthome.js" type="module"></script>

@@ -458,6 +458,70 @@ class UsuariosModel extends Model {
         }
     }
 
+    public function updatePasswordById($id_usuario, $newPassword)
+    {
+        try {
+            if (!is_numeric($id_usuario) || (int) $id_usuario <= 0) {
+                return [
+                    'success' => false,
+                    'message' => 'El usuario especificado no es valido.'
+                ];
+            }
+
+            $newPassword = trim((string) $newPassword);
+            if ($newPassword === '' || strlen($newPassword) < 8) {
+                return [
+                    'success' => false,
+                    'message' => 'La nueva contraseña debe tener al menos 8 caracteres.'
+                ];
+            }
+
+            $sql = "SELECT password FROM t_usuario WHERE id_usuario = :id_usuario LIMIT 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([':id_usuario' => (int) $id_usuario]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$user) {
+                return [
+                    'success' => false,
+                    'message' => 'El usuario no existe.'
+                ];
+            }
+
+            if (password_verify($newPassword, $user['password'])) {
+                return [
+                    'success' => false,
+                    'message' => 'La nueva contraseña debe ser diferente a la actual.'
+                ];
+            }
+
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+            $update = $this->db->prepare("UPDATE t_usuario SET password = :password WHERE id_usuario = :id_usuario");
+            $update->execute([
+                ':password' => $hashedPassword,
+                ':id_usuario' => (int) $id_usuario
+            ]);
+
+            if ($update->rowCount() <= 0) {
+                return [
+                    'success' => false,
+                    'message' => 'No se pudo actualizar la contraseña.'
+                ];
+            }
+
+            return [
+                'success' => true,
+                'message' => 'Contraseña actualizada correctamente.'
+            ];
+        } catch (PDOException $e) {
+            error_log("Error en updatePasswordById (PDO): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Error al actualizar la contraseña.'
+            ];
+        }
+    }
+
     public function activarUsuarioPorCedula($cedula) {
         try {
             $sql = "UPDATE t_usuario SET estatus = 1 WHERE cedula = :cedula";

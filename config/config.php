@@ -88,6 +88,20 @@ define('RATE_LIMIT_LOGIN_WINDOW', (int) projumi_env_value($env, 'RATE_LIMIT_LOGI
 define('RATE_LIMIT_API_MAX', (int) projumi_env_value($env, 'RATE_LIMIT_API_MAX', 60));
 define('RATE_LIMIT_API_WINDOW', (int) projumi_env_value($env, 'RATE_LIMIT_API_WINDOW', 60));
 
+// Configuracion de correo SMTP y recuperacion de contrasena.
+define('MAIL_HOST', projumi_env_value($env, 'MAIL_HOST', 'smtp.gmail.com'));
+define('MAIL_PORT', (int) projumi_env_value($env, 'MAIL_PORT', 587));
+define('MAIL_USERNAME', projumi_env_value($env, 'MAIL_USERNAME', ''));
+define('MAIL_PASSWORD', projumi_env_value($env, 'MAIL_PASSWORD', ''));
+define('MAIL_ENCRYPTION', strtolower((string) projumi_env_value($env, 'MAIL_ENCRYPTION', 'tls')));
+define('MAIL_FROM_ADDRESS', projumi_env_value($env, 'MAIL_FROM_ADDRESS', ''));
+define('MAIL_FROM_NAME', projumi_env_value($env, 'MAIL_FROM_NAME', 'PROJUMI'));
+define('MAIL_TIMEOUT', (int) projumi_env_value($env, 'MAIL_TIMEOUT', 15));
+define('PASSWORD_RESET_CODE_TTL', (int) projumi_env_value($env, 'PASSWORD_RESET_CODE_TTL', 600));
+define('PASSWORD_RESET_VERIFIED_TTL', (int) projumi_env_value($env, 'PASSWORD_RESET_VERIFIED_TTL', 900));
+define('PASSWORD_RESET_RESEND_COOLDOWN', (int) projumi_env_value($env, 'PASSWORD_RESET_RESEND_COOLDOWN', 60));
+define('PASSWORD_RESET_MAX_ATTEMPTS', (int) projumi_env_value($env, 'PASSWORD_RESET_MAX_ATTEMPTS', 5));
+
 // Configuración de la base de datos HOST
 /*define('BD_HOST', 'sql306.infinityfree.com');
 define('BD_SEGURIDAD', 'if0_38376431_seguridad');
