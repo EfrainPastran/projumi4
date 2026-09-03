@@ -746,6 +746,7 @@ function actualizarDesglose() {
 
     // Comparar con el total de productos vendidos (en dólares)
     const totalProductos = parseFloat(document.getElementById('totalPagarPedido').textContent.replace('$', '')) || 0;
+    const limitePago = totalProductos * 2;
     const fondoFaltante = totalProductos - totalDesglose;
     const fondoFaltanteInput = document.getElementById('fondoFaltanteDolar');
     const fondoFaltanteLabel = document.querySelector('label[for="fondoFaltanteDolar"]');
@@ -758,12 +759,27 @@ function actualizarDesglose() {
     const advertencia = document.getElementById('desgloseAdvertencia');
     const btnRegistrar = document.querySelector('#formRegistrarVenta button[type="submit"]');
 
-    if (Math.abs(fondoFaltante) > 0.009) {
+    if (totalProductos > 0 && totalDesglose > limitePago) {
+        btnRegistrar.disabled = true;
+        advertencia.style.display = 'none';
+        advertencia.textContent = 'El total del desglose debe coincidir con el total del fondo.';
+        fondoFaltanteInput.classList.add('is-invalid');
+        fondoFaltanteInput.classList.remove('is-valid');
+        fondoFaltanteLabel.textContent = 'Monto excedido';
+        fondoFaltanteLabel.classList.add('text-danger');
+        fondoFaltanteLabel.classList.remove('text-success');
+        fondofaltantebsInput.classList.add('is-invalid');
+        fondofaltantebsInput.classList.remove('is-valid');
+        fondoFaltanteLabelbs.textContent = 'Monto excedido';
+        fondoFaltanteLabelbs.classList.add('text-danger');
+        fondoFaltanteLabelbs.classList.remove('text-success');
+    } else if (Math.abs(fondoFaltante) > 0.009) {
         btnRegistrar.disabled = true;
         
         if (fondoFaltante > 0) {
             // Falta dinero
             advertencia.style.display = '';
+            advertencia.textContent = 'El total del desglose debe coincidir con el total del fondo.';
             fondoFaltanteInput.classList.add('is-invalid');
             fondoFaltanteInput.classList.remove('is-valid');
             fondoFaltanteLabel.textContent = 'Monto faltante';
@@ -778,6 +794,7 @@ function actualizarDesglose() {
             // Sobra dinero
             btnRegistrar.disabled = false;
             advertencia.style.display = 'none';
+            advertencia.textContent = 'El total del desglose debe coincidir con el total del fondo.';
             fondoFaltanteInput.classList.add('is-valid');
             fondoFaltanteInput.classList.remove('is-invalid');
             fondoFaltanteLabel.textContent = 'Monto';
@@ -791,6 +808,7 @@ function actualizarDesglose() {
         }
     } else {
         advertencia.style.display = 'none';
+        advertencia.textContent = 'El total del desglose debe coincidir con el total del fondo.';
         btnRegistrar.disabled = false;
         fondoFaltanteInput.classList.remove('is-invalid', 'is-valid');
         fondoFaltanteLabel.textContent = 'Monto cuadrado';
@@ -800,6 +818,59 @@ function actualizarDesglose() {
         fondoFaltanteLabelbs.classList.remove('text-danger', 'text-success');
     }
 }
+
+function obtenerTotalProductosDolares() {
+    return parseFloat(document.getElementById('totalPagarPedido').textContent.replace('$', '')) || 0;
+}
+
+function obtenerTotalDesgloseDolares() {
+    let totalDesglose = 0;
+
+    document.querySelectorAll('#desglosePagoBody tr').forEach(tr => {
+        const montoInput = tr.querySelector('.monto-desglose');
+        const monedaSelect = tr.querySelector('.moneda-desglose');
+        let monto = parseFloat(montoInput?.value) || 0;
+        const simbolo = monedaSelect?.options[monedaSelect.selectedIndex]?.text?.trim() || '';
+
+        if (simbolo === 'Bs' && valorDolar > 0) {
+            monto = monto / valorDolar;
+        }
+
+        totalDesglose += monto;
+    });
+
+    return totalDesglose;
+}
+
+function pagoExcedeDobleDelTotal() {
+    const totalProductos = obtenerTotalProductosDolares();
+    const totalDesglose = obtenerTotalDesgloseDolares();
+
+    return totalProductos > 0 && totalDesglose > totalProductos * 2;
+}
+
+function limpiarFormularioVentaRegistrada() {
+    const form = document.getElementById('formRegistrarVenta');
+    form.reset();
+
+    ['nombre', 'apellido', 'correo', 'telefono', 'direccion', 'fecha_nacimiento'].forEach(id => {
+        const field = document.getElementById(id);
+        if (field) {
+            field.value = '';
+            field.disabled = false;
+        }
+    });
+
+    const mensaje = document.getElementById('mensaje');
+    if (mensaje) mensaje.innerHTML = '';
+
+    limpiarTablaProductosVendidos();
+    limpiarTablaDesglose();
+    agregarFilaProducto();
+    agregarFilaDesglose();
+    actualizarDesglose();
+}
+
 function obtenerProductosVendidos() {
     const productos = [];
     document.querySelectorAll('#tablaProductosVendidos tr').forEach(tr => {
@@ -854,6 +925,11 @@ document.getElementById('formRegistrarVenta').addEventListener('submit', functio
     const productos = obtenerProductosVendidos();  // debe devolver un array válido
     const metodos_pago = obtenerDesglosePago();    // debe devolver al menos un método
 
+    if (pagoExcedeDobleDelTotal()) {
+        actualizarDesglose();
+        return;
+    }
+
     // Construimos el objeto del cliente
     const datos_cliente = {
         cedula,
@@ -883,7 +959,7 @@ document.getElementById('formRegistrarVenta').addEventListener('submit', functio
         if (data.success) {
             mostrarAlerta('Venta','Registrado correctamente','success');
             cargarVentasPorEvento();
-            document.getElementById('cedula').value = '';
+            limpiarFormularioVentaRegistrada();
             const modal = bootstrap.Modal.getInstance(document.getElementById('registrarVentaModal'));
             modal.hide();
         } else {

@@ -4,6 +4,101 @@ use App\Models\UserModel;
 use App\Models\UsuariosModel;
 use App\Models\ClienteModel;
 
+function auth_json_response(array $payload, int $status = 200): void
+{
+    http_response_code($status);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($payload);
+    exit;
+}
+
+function auth_only_digits($value): string
+{
+    return preg_replace('/\D+/', '', (string) $value) ?? '';
+}
+
+function auth_calculate_age(string $date): ?int
+{
+    try {
+        $birthDate = new DateTime($date);
+        $today = new DateTime('today');
+
+        if ($birthDate > $today) {
+            return null;
+        }
+
+        return (int) $birthDate->diff($today)->y;
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
+function auth_validate_cliente_payload(array $data): array
+{
+    $errors = [];
+    $cedula = auth_only_digits($data['cedula'] ?? '');
+    $nombre = trim((string) ($data['nombre'] ?? ''));
+    $apellido = trim((string) ($data['apellido'] ?? ''));
+    $email = trim((string) ($data['email'] ?? ''));
+    $telefono = auth_only_digits($data['telefono'] ?? '');
+    $direccion = trim((string) ($data['direccion'] ?? ''));
+    $fechaNacimiento = trim((string) ($data['fecha_nacimiento'] ?? ''));
+    $password = (string) ($data['password'] ?? '');
+    $confirmPassword = (string) ($data['confirm_pass'] ?? '');
+
+    if (!preg_match('/^\d{7,10}$/', $cedula)) {
+        $errors[] = 'La cedula debe tener entre 7 y 10 digitos.';
+    }
+
+    $edad = auth_calculate_age($fechaNacimiento);
+    if ($edad === null || $edad < 18) {
+        $errors[] = 'El cliente debe ser mayor de edad.';
+    }
+
+    if (!preg_match('/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,45}$/u', $nombre)) {
+        $errors[] = 'El nombre debe contener solo letras y tener entre 2 y 45 caracteres.';
+    }
+
+    if (!preg_match('/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{2,45}$/u', $apellido)) {
+        $errors[] = 'El apellido debe contener solo letras y tener entre 2 y 45 caracteres.';
+    }
+
+    if (!preg_match('/^04(12|22|16|26|14|24)\d{7}$/', $telefono)) {
+        $errors[] = 'El telefono debe tener un codigo valido y 7 digitos adicionales.';
+    }
+
+    if (strlen($email) > 45 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'El correo debe ser valido y no superar 45 caracteres.';
+    }
+
+    if (strlen($direccion) < 5 || strlen($direccion) > 60) {
+        $errors[] = 'La direccion debe tener entre 5 y 60 caracteres.';
+    }
+
+    if (strlen($password) < 8) {
+        $errors[] = 'La contrasena debe tener minimo 8 caracteres.';
+    }
+
+    if ($password !== $confirmPassword) {
+        $errors[] = 'Las contrasenas no coinciden.';
+    }
+
+    return [
+        'success' => empty($errors),
+        'errors' => $errors,
+        'data' => [
+            'cedula' => $cedula,
+            'nombre' => preg_replace('/\s+/', ' ', $nombre),
+            'apellido' => preg_replace('/\s+/', ' ', $apellido),
+            'email' => $email,
+            'telefono' => $telefono,
+            'direccion' => $direccion,
+            'fecha_nacimiento' => $fechaNacimiento,
+            'password' => $password,
+        ],
+    ];
+}
+
 function register() { //esta demas el POST solo redirecciona
     $data = ['title' => 'Registro', 'error' => ''];
     $o = new UserModel(); // Este modelo solo manipula datos del formulario
@@ -80,62 +175,87 @@ function register() { //esta demas el POST solo redirecciona
 
 function registrarUsuarioCliente() {
     try {
-        header('Content-Type: application/json');
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            auth_json_response([
+                'success' => false,
+                'message' => 'Metodo no permitido.'
+            ], 405);
+        }
+
+        $validation = auth_validate_cliente_payload($_POST);
+        if (!$validation['success']) {
+            auth_json_response([
+                'success' => false,
+                'message' => implode(' ', $validation['errors']),
+                'errors' => $validation['errors']
+            ], 422);
+        }
+
+        $payload = $validation['data'];
         $Usuario = new UsuariosModel();
         $Cliente = new ClienteModel();
 
-        $verificarUsuario = $Usuario->getUsuarioByCedula($_POST['cedula']);
-
-        if (!$verificarUsuario) {
-            // Establecer datos para el usuario
-            $Usuario->setData(
-                $_POST['cedula'],
-                $_POST['nombre'],
-                $_POST['apellido'],
-                $_POST['email'],
-                $_POST['password'],
-                $_POST['direccion'],
-                $_POST['telefono'],
-                date('Y-m-d'),             // fecha_registro
-                $_POST['fecha_nacimiento'],
-                1,                                // estatus activo
-                4                                 // rol cliente
-            );
-
-            $Usuario->registerUsuario();
-        }
-
-        $verificarCliente = $Cliente->getByCedula($_POST['cedula']);
+        $verificarCliente = $Cliente->getByCedula($payload['cedula']);
         if ($verificarCliente && is_array($verificarCliente)) {
-            header('Content-Type: application/json');
-            echo json_encode([
+            auth_json_response([
                 'success' => false,
                 'message' => 'Cliente ya existe'
-            ]);
-            exit;
+            ], 409);
         }
 
-        // Establecer datos para el cliente
-        $Cliente->setData(
-            null,
-            $_POST['cedula'],
-            date('Y-m-d'),
-            1 // estatus
-        );
+        $verificarUsuario = $Usuario->getUsuarioByCedula($payload['cedula']);
 
-        // Registrar en DB
-        $id_cliente = $Cliente->registerCliente();
-        header('Content-Type: application/json');
-        echo json_encode([
+        if (!$verificarUsuario) {
+            $Usuario->setData(
+                $payload['cedula'],
+                $payload['nombre'],
+                $payload['apellido'],
+                $payload['email'],
+                $payload['password'],
+                $payload['direccion'],
+                $payload['telefono'],
+                date('Y-m-d H:i:s'),
+                $payload['fecha_nacimiento'],
+                1,
+                4
+            );
+
+            $resultadoUsuario = $Usuario->registerUsuario();
+            if (!is_array($resultadoUsuario) || !($resultadoUsuario['success'] ?? false)) {
+                auth_json_response([
+                    'success' => false,
+                    'message' => $resultadoUsuario['message'] ?? 'No se pudo registrar el usuario.'
+                ], 422);
+            }
+        }
+
+        $resultadoCliente = $Cliente->registerCliente([
+            'cedula' => $payload['cedula'],
+            'nombre' => $payload['nombre'],
+            'apellido' => $payload['apellido'],
+            'correo' => $payload['email'],
+            'direccion' => $payload['direccion'],
+            'telefono' => $payload['telefono'],
+            'fecha_nacimiento' => $payload['fecha_nacimiento'],
+        ]);
+
+        if (!is_array($resultadoCliente) || !($resultadoCliente['success'] ?? false)) {
+            auth_json_response([
+                'success' => false,
+                'message' => $resultadoCliente['message'] ?? 'No se pudo registrar el cliente.'
+            ], 422);
+        }
+
+        auth_json_response([
             'success' => true,
-            'id_cliente' => $id_cliente
+            'message' => $resultadoCliente['message'] ?? 'Cliente registrado exitosamente.',
+            'id_cliente' => $resultadoCliente['id_cliente'] ?? null
         ]);
     } catch (Exception $e) {
-        header('Content-Type: application/json');
-        echo json_encode([
+        auth_json_response([
             'success' => false,
             'message' => $e->getMessage()
-        ]);
+        ], 500);
     }
 }
 

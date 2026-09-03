@@ -121,7 +121,7 @@ window.APP_URL = "<?php echo APP_URL; ?>";
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label for="cedula" class="form-label required-field">Cedula</label>
-                                        <input type="number" class="form-control" id="cedula" name="cedula" required>
+                                        <input type="text" class="form-control" id="cedula" name="cedula" inputmode="numeric" maxlength="10" autocomplete="off" required>
                                         <div class="invalid-feedback" id="error-cedula"></div>
                                     </div>
                                     <div class="col-md-6">
@@ -131,17 +131,28 @@ window.APP_URL = "<?php echo APP_URL; ?>";
                                     </div>
                                     <div class="col-md-6">
                                         <label for="nombre" class="form-label required-field">Nombres</label>
-                                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                                        <input type="text" class="form-control" id="nombre" name="nombre" maxlength="45" autocomplete="given-name" required>
                                         <div class="invalid-feedback" id="error-nombre"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="apellido" class="form-label required-field">Apellidos</label>
-                                        <input type="text" class="form-control" id="apellido" name="apellido" required>
+                                        <input type="text" class="form-control" id="apellido" name="apellido" maxlength="45" autocomplete="family-name" required>
                                         <div class="invalid-feedback" id="error-apellido"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="telefono" class="form-label required-field">Telefono</label>
-                                        <input type="tel" class="form-control" id="telefono" name="telefono" required>
+                                        <div class="input-group">
+                                            <select class="form-select" id="telefono_codigo" style="max-width: 120px;" required>
+                                                <option value="0412">0412</option>
+                                                <option value="0422">0422</option>
+                                                <option value="0416">0416</option>
+                                                <option value="0426">0426</option>
+                                                <option value="0414">0414</option>
+                                                <option value="0424">0424</option>
+                                            </select>
+                                            <input type="text" class="form-control" id="telefono_numero" inputmode="numeric" maxlength="7" autocomplete="off" required>
+                                        </div>
+                                        <input type="hidden" id="telefono" name="telefono">
                                         <div class="invalid-feedback" id="error-telefono"></div>
                                     </div>
                                     <div class="col-md-6">
@@ -157,12 +168,12 @@ window.APP_URL = "<?php echo APP_URL; ?>";
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label for="email" class="form-label required-field">Correo Electronico</label>
-                                        <input type="email" class="form-control" id="email" name="email" required>
+                                        <input type="email" class="form-control" id="email" name="email" maxlength="45" autocomplete="email" required>
                                         <div class="invalid-feedback" id="error-email"></div>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="direccion" class="form-label required-field">Direccion</label>
-                                        <textarea class="form-control" id="direccion" name="direccion" rows="1" required></textarea>
+                                        <textarea class="form-control" id="direccion" name="direccion" rows="1" maxlength="60" required></textarea>
                                         <div class="invalid-feedback" id="error-direccion"></div>
                                     </div>
                                 </div>
