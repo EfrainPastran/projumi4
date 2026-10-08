@@ -279,8 +279,8 @@ class PedidoModel extends Model {
                 ]);
             } elseif ($modoEntrega === 'envio nacional') {
                 $this->query("
-                    INSERT INTO t_envio (fk_pedido, fk_empresa_envio, direccion_envio, estatus)
-                    VALUES (:fk_pedido, :empresa, :direccion, 'Pendiente')
+                    INSERT INTO t_envio (fk_pedido, fk_empresa_envio, direccion_envio, numero_seguimiento, estatus)
+                    VALUES (:fk_pedido, :empresa, :direccion, '', 'Pendiente')
                 ", [
                     ':fk_pedido' => $pedidoId,
                     ':empresa'   => $detalleEnvio['empresaEnvio'],
@@ -308,7 +308,7 @@ class PedidoModel extends Model {
                     ':fk_detalle_metodo_pago' => $pago['fk_detalle_metodo_pago'],
                     ':monto'                  => $pago['monto'],
                     ':referencia'             => $pago['referencia'] ?? '',
-                    ':comprobante'            => $pago['comprobante'] ?? null
+                    ':comprobante'            => $pago['comprobante'] ?? ''
                 ]);
             }
 
