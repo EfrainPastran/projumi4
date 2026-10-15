@@ -43,7 +43,7 @@ class loginModel extends Model {
 
     public function session($cedula, $password) {
         try {
-            $sql = 'SELECT id_usuario, cedula, fecha_nacimiento, nombre, apellido, telefono, correo, direccion, password
+            $sql = 'SELECT id_usuario, cedula, fecha_nacimiento, nombre, apellido, telefono, correo, direccion, fk_rol, imgperfil, password
                     FROM t_usuario 
                     WHERE cedula = :cedula 
                     LIMIT 1';

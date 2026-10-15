@@ -75,8 +75,9 @@ function auth_validate_cliente_payload(array $data): array
         $errors[] = 'La direccion debe tener entre 5 y 60 caracteres.';
     }
 
-    if (strlen($password) < 8) {
-        $errors[] = 'La contrasena debe tener minimo 8 caracteres.';
+    $passwordError = UsuariosModel::validarPasswordSegura($password);
+    if ($passwordError !== null) {
+        $errors[] = $passwordError;
     }
 
     if ($password !== $confirmPassword) {

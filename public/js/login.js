@@ -242,8 +242,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const password = resetPasswordInput ? resetPasswordInput.value.trim() : '';
       const confirmPassword = resetPasswordConfirmInput ? resetPasswordConfirmInput.value.trim() : '';
 
+      /* Legacy length-only validation.
       if (password.length < 8) {
         showResetAlert('La nueva contraseña debe tener al menos 8 caracteres.', 'danger');
+        return;
+      }
+
+      */
+      const isStrongPassword = password.length >= 8
+        && !/\s/.test(password)
+        && /[A-Za-z]/.test(password)
+        && /\d/.test(password)
+        && /[^A-Za-z0-9]/.test(password);
+
+      if (!isStrongPassword) {
+        showResetAlert('Usa al menos 8 caracteres con letras, numeros y un simbolo.', 'danger');
         return;
       }
 

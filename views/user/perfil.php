@@ -1,4 +1,4 @@
-<?php if (!isset($_SESSION['user']['cedula'])): ?>
+﻿<?php if (!isset($_SESSION['user']['cedula'])): ?>
     <script>window.location.href = '<?= APP_URL ?>home/index';</script>
     <?php exit(); ?>
 <?php endif; ?>
@@ -41,17 +41,14 @@ if (session_status() === PHP_SESSION_NONE) {
                     <div class="profile-card text-center">
                         <div class="position-relative mx-auto" style="width: fit-content;">
                             <?php
-                            $imagenPerfil = !empty($_SESSION['user']['imagen']) 
-                                ? APP_URL . htmlspecialchars($_SESSION['user']['imagen']) 
+                            $rutaPerfil = $_SESSION['user']['imgperfil'] ?? $_SESSION['user']['imagen'] ?? '';
+                            $imagenPerfil = !empty($rutaPerfil) 
+                                ? APP_URL . htmlspecialchars($rutaPerfil) 
                                 : APP_URL . '/public/img/default_profile.png';
                             ?>
                             <img src="<?= $imagenPerfil ?>" class="profile-img border border-light rounded-circle" style="object-fit: cover; width: 160px; height: 160px;" alt="Foto de perfil">
-                            <button class="btn btn-sm btn-primary position-absolute" style="bottom: 10px; right: 10px;">
-                                <i class="fas fa-camera"></i>
-                            </button>
                         </div>
                         <h3><?php echo htmlspecialchars($_SESSION['user']['nombre'] ?? ''); ?></h3>
-                        <p class="text-muted">miembro desde: <?php echo htmlspecialchars($_SESSION['user']['fecha'] ?? ''); ?></p>
                         
                         <div class="d-flex justify-content-center mb-3">
                             <div class="text-warning me-2">
@@ -85,10 +82,22 @@ if (session_status() === PHP_SESSION_NONE) {
                 
                 <div class="col-lg-8 mt-4 mt-lg-0">
                     <div class="profile-card">
+                        <?php if (!empty($_SESSION['flash_success'])): ?>
+                            <div class="alert alert-success"><?= htmlspecialchars($_SESSION['flash_success']); unset($_SESSION['flash_success']); ?></div>
+                        <?php endif; ?>
+                        <?php if (!empty($_SESSION['flash_error'])): ?>
+                            <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['flash_error']); unset($_SESSION['flash_error']); ?></div>
+                        <?php endif; ?>
                         <h4 class="mb-4">Información personal</h4>                                                    
-                            <form action="<?php echo APP_URL; ?>/home/perfil" method="post" id="formPerfil">
+                            <form action="<?php echo APP_URL; ?>/home/perfil" method="post" id="formPerfil" enctype="multipart/form-data">
                                 
                                 <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($_SESSION['user']['id_usuario'] ?? ''); ?>">
+
+                                <div class="mb-3">
+                                    <label class="form-label">Foto de perfil</label>
+                                    <input type="file" class="form-control" name="imgperfil" accept="image/jpeg,image/png,image/webp">
+                                    <small class="text-muted">Formatos permitidos: JPG, PNG o WEBP. Tamaño máximo: 3 MB.</small>
+                                </div>
 
                                 <div class="row mb-3">
                                     <div class="col-md-6 mb-3 mb-md-0">
@@ -115,7 +124,7 @@ if (session_status() === PHP_SESSION_NONE) {
                                 <div class="mb-3">
                                     <label class="form-label">Correo electrónico</label>
                                     <input type="email" class="form-control" name="email" 
-                                        value="<?php echo htmlspecialchars($_SESSION['user']['email'] ?? ''); ?>"
+                                        value="<?php echo htmlspecialchars($_SESSION['user']['correo'] ?? $_SESSION['user']['email'] ?? ''); ?>"
                                          required>
                                 </div>
                                 
@@ -151,6 +160,7 @@ if (session_status() === PHP_SESSION_NONE) {
                             
 
                             <input type="hidden" name="id_usuario" value="<?php echo htmlspecialchars($_SESSION['user']['id_usuario'] ?? ''); ?>">
+
                             <div class="mb-3">
                                 <label class="form-label">Contraseña actual</label>
                                 <input type="password" name="pass" class="form-control" required>
@@ -185,7 +195,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>¿Estás seguro que Salir?</p>
+                <p>¿Estás seguro que deseas salir?</p>
                 <p class="text-danger">Saldras del sistema.</p>
             </div>
             <div class="modal-footer border-top-0">
@@ -217,3 +227,5 @@ if (session_status() === PHP_SESSION_NONE) {
     
 </body>
 </html>
+
+

@@ -53,7 +53,7 @@ class VentaPresencialModel extends Model {
                     $r = $this->validarDecimal($pago['monto'], "monto[$i]", 1, 10000000);
                     if ($r !== true) $this->errores["monto_$i"] = $r;
                 }
-                if (isset($pago['referencia']) && strlen($pago['referencia']) < 3) {
+                if (!empty($pago['referencia']) && $pago['referencia'] !== '-' && strlen($pago['referencia']) < 3) {
                     $this->errores["referencia_$i"] = 'La referencia debe tener al menos 3 caracteres.';
                 }
             }

@@ -238,10 +238,10 @@ class ProductosModel extends Model {
             $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($productos as &$producto) {
-                $producto['imagenes'] = [];
-                if (!empty($producto['imagenes'])) {
-                    $producto['imagenes'] = explode('||', $producto['imagenes']);
-                }
+                $imagenes = $producto['imagenes'] ?? '';
+                $producto['imagenes'] = !empty($imagenes)
+                    ? array_values(array_filter(explode('||', $imagenes)))
+                    : [];
             }
 
             $this->closeConnection();

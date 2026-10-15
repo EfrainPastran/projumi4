@@ -69,8 +69,15 @@ function projumi_password_reset_validate_password(string $password, string $conf
         return 'Debes completar la nueva contraseña y su confirmacion.';
     }
 
+    /* Legacy length validation.
     if (strlen($password) < 8) {
         return 'La nueva contraseña debe tener al menos 8 caracteres.';
+    }
+
+    */
+    $passwordError = UsuariosModel::validarPasswordSegura($password);
+    if ($passwordError !== null) {
+        return $passwordError;
     }
 
     if ($password !== $confirmPassword) {
@@ -78,6 +85,46 @@ function projumi_password_reset_validate_password(string $password, string $conf
     }
 
     return null;
+}
+
+function home_guardar_imgperfil(string $fieldName): array
+{
+    if (empty($_FILES[$fieldName]) || ($_FILES[$fieldName]['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+        return ['success' => true, 'path' => null];
+    }
+
+    $file = $_FILES[$fieldName];
+    if (($file['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
+        return ['success' => false, 'message' => 'No se pudo subir la imagen.'];
+    }
+
+    if (($file['size'] ?? 0) > (3 * 1024 * 1024)) {
+        return ['success' => false, 'message' => 'La imagen no debe superar 3 MB.'];
+    }
+
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mime = $finfo->file($file['tmp_name']);
+    $allowedTypes = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/webp' => 'webp',
+    ];
+
+    if (!isset($allowedTypes[$mime])) {
+        return ['success' => false, 'message' => 'Solo se permiten imágenes JPG, PNG o WEBP.'];
+    }
+
+    $uploadDir = dirname(__DIR__) . '/public/img/perfiles/';
+    if (!is_dir($uploadDir) && !mkdir($uploadDir, 0775, true)) {
+        return ['success' => false, 'message' => 'No se pudo crear la carpeta de perfiles.'];
+    }
+
+    $fileName = 'perfil_' . date('YmdHis') . '_' . bin2hex(random_bytes(6)) . '.' . $allowedTypes[$mime];
+    if (!move_uploaded_file($file['tmp_name'], $uploadDir . $fileName)) {
+        return ['success' => false, 'message' => 'No se pudo guardar la imagen.'];
+    }
+
+    return ['success' => true, 'path' => '/public/img/perfiles/' . $fileName];
 }
 
 function principal() {    
@@ -409,22 +456,63 @@ function perfil() {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
         if (isset($_POST["actualizar"])) {
-            $id_usuario = $_POST['id_usuario'];
-            $cedula = $_POST['cedula'];
-            $nombre = $_POST['nombre'];
-            $email = $_POST['email'];
-            
-            // Llamar al modelo para actualizar
-            $userModel = new UserModel();
-            $result = $userModel->updateProfile($id_usuario, $cedula, $nombre, $email);
-            
-            if ($result) {
-               echo "USUARO ACTUALIZADO";
-               // header('Location: ' . BASE_URL . 'user/consultar');
-            } else {
-                // Mostrar error
-                echo "Error al actualizar el usuario";
+            $usuariosModel = new UsuariosModel();
+            $usuarioActual = $usuariosModel->getUsuarioById($_POST['id_usuario']);
+
+            if (!$usuarioActual) {
+                $_SESSION['flash_error'] = 'Usuario no encontrado.';
+                header('Location: ' . APP_URL . '/home/perfil');
+                exit;
             }
+
+            $usuariosModel->setData(
+                $usuarioActual['cedula'],
+                $_POST['nombre'] ?? $usuarioActual['nombre'],
+                $_POST['apellido'] ?? $usuarioActual['apellido'],
+                $_POST['email'] ?? $usuarioActual['correo'],
+                '',
+                $_POST['direccion'] ?? $usuarioActual['direccion'],
+                preg_replace('/\D+/', '', (string) ($_POST['telefono'] ?? $usuarioActual['telefono'])),
+                $usuarioActual['fecha_registro'] ?? date('Y-m-d'),
+                $_POST['fecha_nacimiento'] ?? $usuarioActual['fecha_nacimiento'],
+                (int) ($usuarioActual['estatus'] ?? 1),
+                (int) ($usuarioActual['fk_rol'] ?? 4),
+                $usuarioActual['id_usuario']
+            );
+
+            $result = $usuariosModel->updateUsuario();
+            if (!$result['success']) {
+                $_SESSION['flash_error'] = $result['message'] ?? 'Error al actualizar el usuario.';
+                header('Location: ' . APP_URL . '/home/perfil');
+                exit;
+            }
+
+            $upload = home_guardar_imgperfil('imgperfil');
+            if (!$upload['success']) {
+                $_SESSION['flash_error'] = $upload['message'] ?? 'No se pudo subir la foto de perfil.';
+                header('Location: ' . APP_URL . '/home/perfil');
+                exit;
+            }
+
+            if (!empty($upload['path'])) {
+                $imageResult = $usuariosModel->updateImgPerfil($usuarioActual['id_usuario'], $upload['path']);
+                if (!$imageResult['success']) {
+                    $_SESSION['flash_error'] = $imageResult['message'] ?? 'No se pudo actualizar la foto de perfil.';
+                    header('Location: ' . APP_URL . '/home/perfil');
+                    exit;
+                }
+            }
+
+            $usuarioActualizado = $usuariosModel->getUsuarioById($usuarioActual['id_usuario']);
+            if ($usuarioActualizado) {
+                unset($usuarioActualizado['password']);
+                $usuarioActualizado['imagen'] = $usuarioActualizado['imgperfil'] ?? '/public/img/default_profile.png';
+                $_SESSION['user'] = array_merge($_SESSION['user'], $usuarioActualizado);
+            }
+
+            $_SESSION['flash_success'] = 'Perfil actualizado correctamente.';
+            header('Location: ' . APP_URL . '/home/perfil');
+            exit;
         }
 
         if (isset($_POST["Cambiarpassword"])) {

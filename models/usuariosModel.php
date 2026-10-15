@@ -56,6 +56,24 @@ class UsuariosModel extends Model {
         $this->fk_rol = $fk_rol;
     }
 
+    public static function validarPasswordSegura(string $password): ?string
+    {
+        if (strlen($password) < 8) {
+            return 'La contrasena debe tener al menos 8 caracteres.';
+        }
+
+        if (preg_match('/\s/', $password)) {
+            return 'La contrasena no puede contener espacios.';
+        }
+
+        if (!preg_match('/[A-Za-z]/', $password) || !preg_match('/\d/', $password)
+            || !preg_match('/[^A-Za-z0-9]/', $password)) {
+            return 'La contrasena debe incluir letras, numeros y al menos un caracter especial.';
+        }
+
+        return null;
+    }
+
     // Métodos CRUD
     public function getUsuarios() {
         try {
@@ -136,6 +154,7 @@ class UsuariosModel extends Model {
         }
 
         // Solo exigir contraseña si NO es actualización
+        /* Legacy password length validation.
         if (!$esActualizacion) {
             if (empty($this->password) || strlen($this->password) < 6) {
                 return ['success' => false, 'message' => 'La contraseña debe tener al menos 6 caracteres.'];
@@ -144,6 +163,14 @@ class UsuariosModel extends Model {
             // Si se envía una nueva contraseña en la actualización, debe cumplir los requisitos
             if (!empty($this->password) && strlen($this->password) < 6) {
                 return ['success' => false, 'message' => 'La nueva contraseña debe tener al menos 6 caracteres.'];
+            }
+        }
+
+        */
+        if (!$esActualizacion || !empty($this->password)) {
+            $passwordError = self::validarPasswordSegura((string) $this->password);
+            if ($passwordError !== null) {
+                return ['success' => false, 'message' => $passwordError];
             }
         }
 
@@ -331,6 +358,38 @@ class UsuariosModel extends Model {
         }
     }
 
+    public function updateImgPerfil($idUsuario, $rutaImagen)
+    {
+        try {
+            if (empty($idUsuario) || !ctype_digit((string) $idUsuario)) {
+                return ['success' => false, 'message' => 'El ID de usuario es inválido.'];
+            }
+
+            $rutaImagen = trim((string) $rutaImagen);
+            if ($rutaImagen === '') {
+                return ['success' => false, 'message' => 'La ruta de imagen es obligatoria.'];
+            }
+
+            $sql = 'UPDATE t_usuario SET imgperfil = :imgperfil WHERE id_usuario = :id_usuario';
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([
+                ':imgperfil' => $rutaImagen,
+                ':id_usuario' => $idUsuario,
+            ]);
+
+            return [
+                'success' => true,
+                'message' => 'Foto de perfil actualizada correctamente.',
+            ];
+        } catch (PDOException $e) {
+            error_log('Error en updateImgPerfil(): ' . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Error al actualizar la foto de perfil: ' . $e->getMessage(),
+            ];
+        }
+    }
+
     public function deleteUsuario($id)
     {
         try {
@@ -469,10 +528,11 @@ class UsuariosModel extends Model {
             }
 
             $newPassword = trim((string) $newPassword);
-            if ($newPassword === '' || strlen($newPassword) < 8) {
+            $passwordError = self::validarPasswordSegura($newPassword);
+            if ($passwordError !== null) {
                 return [
                     'success' => false,
-                    'message' => 'La nueva contraseña debe tener al menos 8 caracteres.'
+                    'message' => $passwordError
                 ];
             }
 

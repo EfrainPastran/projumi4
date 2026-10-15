@@ -170,8 +170,13 @@ function validarPassword() {
   const confirmInput = getField('confirm_pass');
   if (!passInput || !confirmInput) return true;
 
-  if (passInput.value.length < 8) {
-    showError('password', 'La contrasena debe tener minimo 8 caracteres.');
+  const password = passInput.value;
+  const hasRequiredCharacters = /[A-Za-z]/.test(password)
+    && /\d/.test(password)
+    && /[^A-Za-z0-9]/.test(password);
+
+  if (password.length < 8 || /\s/.test(password) || !hasRequiredCharacters) {
+    showError('password', 'Use al menos 8 caracteres con letras, numeros y un caracter especial.');
     return false;
   }
   clearError('password');

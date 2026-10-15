@@ -71,6 +71,36 @@ class ClienteModel extends Model {
         }
     }
 
+    public function ensureByCedula($cedula) {
+        try {
+            $cedula = trim((string) $cedula);
+            if ($cedula === '' || !ctype_digit($cedula)) {
+                return false;
+            }
+
+            $cliente = $this->getByCedula($cedula);
+            if (!empty($cliente['id_cliente'])) {
+                return $cliente;
+            }
+
+            $sqlInsert = "INSERT INTO t_cliente (cedula, fecha_registro, estatus)
+                          VALUES (:cedula, :fecha_registro, :estatus)";
+            $stmt = $this->db->prepare($sqlInsert);
+            $stmt->execute([
+                ':cedula' => $cedula,
+                ':fecha_registro' => date('Y-m-d'),
+                ':estatus' => 1,
+            ]);
+
+            return [
+                'id_cliente' => $this->db->lastInsertId(),
+            ];
+        } catch (PDOException $e) {
+            error_log("Error en ensureByCedula (PDO): " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function getData($cedula) {
         try {
             $sql = 'SELECT u.cedula, u.nombre, u.apellido, u.correo, u.telefono, u.direccion, u.fecha_nacimiento FROM '.BD_PROJUMI.'.t_cliente c INNER JOIN '.BD_SEGURIDAD.'.t_usuario u ON c.cedula=u.cedula WHERE u.cedula = :cedula LIMIT 1';
@@ -109,18 +139,19 @@ class ClienteModel extends Model {
             
             if (!$usuarioExistente) {
                 // Crear usuario básico con rol de cliente (3)
+                $passwordTemporal = 'Projumi123*';
                 $Usuario->setData(
                     $clienteData['cedula'],
                     $clienteData['nombre'],
                     $clienteData['apellido'],
                     $clienteData['correo'],
-                    12345678,
+                    $passwordTemporal,
                     $clienteData['direccion'] ?? '',
                     $clienteData['telefono'] ?? '',
                     date('Y-m-d H:i:s'),
                     $clienteData['fecha_nacimiento'] ?? null,
                     1, // activo
-                    3  // rol cliente
+                    4  // rol cliente
                 );
 
                 // Aquí se valida todo automáticamente dentro del modelo de usuario

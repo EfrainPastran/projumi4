@@ -71,6 +71,45 @@ function index() {
     ]);
 }
 
+function pedidos_guardar_comprobante_pago(string $fieldName): ?string {
+    if (empty($_FILES[$fieldName]) || !is_array($_FILES[$fieldName])) {
+        return null;
+    }
+
+    $file = $_FILES[$fieldName];
+    if (($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+        return null;
+    }
+
+    $allowedMimeTypes = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/webp' => 'webp',
+        'application/pdf' => 'pdf',
+    ];
+
+    $mimeType = mime_content_type($file['tmp_name']);
+    if (!isset($allowedMimeTypes[$mimeType])) {
+        throw new Exception('Tipo de comprobante no permitido.');
+    }
+
+    $relativeDir = 'public/comprobantes/pedidos';
+    $absoluteDir = APP_PATH . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativeDir);
+
+    if (!is_dir($absoluteDir) && !mkdir($absoluteDir, 0775, true)) {
+        throw new Exception('No se pudo preparar la carpeta de comprobantes.');
+    }
+
+    $fileName = 'pedido_' . date('Ymd_His') . '_' . bin2hex(random_bytes(6)) . '.' . $allowedMimeTypes[$mimeType];
+    $absolutePath = $absoluteDir . DIRECTORY_SEPARATOR . $fileName;
+
+    if (!move_uploaded_file($file['tmp_name'], $absolutePath)) {
+        throw new Exception('No se pudo guardar el comprobante de pago.');
+    }
+
+    return $relativeDir . '/' . $fileName;
+}
+
  function registrar()
 {
     header('Content-Type: application/json; charset=utf-8');
@@ -124,7 +163,7 @@ function index() {
         }
 
         // === Validar datos mínimos ===
-        $cedula = $data['cedula'] ?? null;
+        $cedula = trim((string) ($payload['cedula'] ?? ($data['cedula'] ?? '')));
         $detallePedido = $data['detallePedido'] ?? null;
         $detallePago   = $data['detallePago'] ?? null;
         $detalleEnvio  = $data['detalleEnvio'] ?? null;
@@ -167,10 +206,23 @@ function index() {
             $detallePago = ['detalles' => $detallePago];
         }
 
+        if (!empty($detallePago['detalles']) && is_array($detallePago['detalles'])) {
+            foreach ($detallePago['detalles'] as &$pago) {
+                $fieldName = $pago['comprobante'] ?? null;
+                if (is_string($fieldName) && $fieldName !== '') {
+                    $rutaComprobante = pedidos_guardar_comprobante_pago($fieldName);
+                    if ($rutaComprobante) {
+                        $pago['comprobante'] = $rutaComprobante;
+                    }
+                }
+            }
+            unset($pago);
+        }
+
 
         // === Buscar cliente por cédula ===
         $clienteModel = new ClienteModel();
-        $clienteData = $clienteModel->getByCedula($cedula);
+        $clienteData = $clienteModel->ensureByCedula($cedula);
 
         if (empty($clienteData['id_cliente'])) {
             http_response_code(404);
@@ -271,6 +323,36 @@ function mostrarPedidos() {
         echo json_encode([
             'status' => 'error',
             'message' => 'Error al obtener los pedidos: ' . $e->getMessage()
+        ]);
+    }
+}
+
+function mostrarMisCompras() {
+    header('Content-Type: application/json');
+    $Pedido = new PedidoModel();
+
+    try {
+        $cedula = pedidos_get_auth_cedula();
+        if (!$cedula) {
+            http_response_code(401);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'No se pudo identificar al usuario autenticado.'
+            ]);
+            return;
+        }
+
+        $pedidos = $Pedido->mostrarPedidosPorCliente($cedula);
+
+        echo json_encode([
+            'status' => !empty($pedidos) ? 'success' : 'error',
+            'data' => $pedidos ?: [],
+            'tipo' => 'cliente'
+        ]);
+    } catch (Exception $e) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Error al obtener las compras: ' . $e->getMessage()
         ]);
     }
 }

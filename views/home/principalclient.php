@@ -238,12 +238,13 @@ if (session_status() === PHP_SESSION_NONE) {
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label for="password" class="form-label required-field">Contraseña</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
+                    <input type="password" class="form-control" id="password" name="password" minlength="8" autocomplete="new-password" required>
+                    <div class="form-text">Mínimo 8 caracteres, con letras, números y un símbolo.</div>
                     <div class="invalid-feedback" id="error-password"></div>                    
                   </div>
                   <div class="col-md-6">
                     <label for="confirm_pass" class="form-label required-field">Confirmar Contraseña</label>
-                    <input type="password" class="form-control" id="confirm_pass" name="confirm_pass" required>
+                    <input type="password" class="form-control" id="confirm_pass" name="confirm_pass" minlength="8" autocomplete="new-password" required>
                     <div class="invalid-feedback" id="error-confirm_pass"></div>                                        
                   </div>
                 </div>

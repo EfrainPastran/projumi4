@@ -85,12 +85,12 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="pass" class="form-label required-field">Contraseña</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                            <div class="form-text">Mínimo 8 caracteres</div>
+                            <input type="password" class="form-control" id="password" name="password" minlength="8" autocomplete="new-password" required>
+                            <div class="form-text">Mínimo 8 caracteres, con letras, números y un símbolo.</div>
                         </div>
                         <div class="col-md-6">
                             <label for="confirm_pass" class="form-label required-field">Confirmar Contraseña</label>
-                            <input type="password" class="form-control" id="confirm_pass" name="confirm_pass" required>
+                            <input type="password" class="form-control" id="confirm_pass" name="confirm_pass" minlength="8" autocomplete="new-password" required>
                         </div>
                     </div>
                 </div>

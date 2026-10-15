@@ -7,6 +7,130 @@ use App\Models\PedidoModel;
 use App\Models\UsuariosModel;
 use App\Models\ClienteModel;
 use App\Middleware;
+
+function ventaPresencialApiCedula() {
+    $token = get_bearer_token();
+    $payload = $token ? jwt_decode_rs256($token) : false;
+
+    if ($payload === false || empty($payload['cedula'])) {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Token no enviado, inválido o expirado.']);
+        return false;
+    }
+
+    $cedula = (string) $payload['cedula'];
+    $tipoUsuario = (new Middleware())->verificarTipoUsuario($cedula);
+    if (!in_array($tipoUsuario[0] ?? '', ['emprendedor', 'super_usuario'], true)) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => 'No tiene permisos para gestionar ventas presenciales.']);
+        return false;
+    }
+
+    return $cedula;
+}
+
+function apiProductos() {
+    header('Content-Type: application/json');
+    $cedula = ventaPresencialApiCedula();
+    if ($cedula === false) return;
+    echo json_encode((new ProductosModel())->getProductosPorEmprendedor($cedula) ?: []);
+}
+
+function apiMetodosPago() {
+    header('Content-Type: application/json');
+    if (ventaPresencialApiCedula() === false) return;
+    echo json_encode((new MetodoModel())->obtenerMetodos());
+}
+
+function apiMonedasPorMetodo() {
+    header('Content-Type: application/json');
+    if (ventaPresencialApiCedula() === false) return;
+    $monedas = (new MonedaModel())->obtenerPorMetodo((int) ($_GET['idMetodo'] ?? 0));
+    echo json_encode(['status' => $monedas ? 'success' : 'error', 'data' => $monedas ?: []]);
+}
+
+function apiConsultarCliente() {
+    header('Content-Type: application/json');
+    if (ventaPresencialApiCedula() === false) return;
+    $cliente = (new ClienteModel())->getData((string) ($_GET['cedula'] ?? ''));
+    if ($cliente) {
+        echo json_encode(['status' => 'success', 'data' => $cliente]);
+        return;
+    }
+    echo json_encode(['status' => 'error', 'message' => 'Cliente no encontrado.']);
+}
+
+function apiMostrarVentas() {
+    header('Content-Type: application/json');
+    $cedula = ventaPresencialApiCedula();
+    if ($cedula === false) return;
+    echo json_encode((new VentaPresencialModel())->getVentasPorEmprendedor($cedula));
+}
+
+function apiDetalleVenta() {
+    header('Content-Type: application/json');
+    $cedula = ventaPresencialApiCedula();
+    if ($cedula === false) return;
+
+    $data = json_decode(file_get_contents('php://input'), true);
+    $idPedido = (int) ($data['id_pedido'] ?? 0);
+    if ($idPedido <= 0) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Debe indicar una venta valida.']);
+        return;
+    }
+
+    $ventas = (new VentaPresencialModel())->getVentasPorEmprendedor($cedula);
+    $autorizada = is_array($ventas) && array_filter($ventas, fn ($venta) => (int) ($venta['id_pedidos'] ?? 0) === $idPedido);
+    if (!$autorizada) {
+        http_response_code(404);
+        echo json_encode(['success' => false, 'message' => 'La venta no existe o no pertenece al emprendedor.']);
+        return;
+    }
+
+    $pedido = new PedidoModel();
+    $pedidoInfo = $pedido->obtenerPedido($idPedido);
+    if (!$pedidoInfo) {
+        http_response_code(404);
+        echo json_encode(['success' => false, 'message' => 'Pedido no encontrado.']);
+        return;
+    }
+
+    $productos = $pedido->obtenerDetallePedido($idPedido) ?: [];
+    $total = array_reduce($productos, fn ($sum, $producto) => $sum + ((float) $producto['cantidad'] * (float) $producto['precio_unitario']), 0);
+    echo json_encode([
+        'success' => true,
+        'pedido' => $pedidoInfo,
+        'productos' => $productos,
+        'total' => $total,
+    ]);
+}
+
+function apiRegistrarVenta() {
+    header('Content-Type: application/json');
+    if (ventaPresencialApiCedula() === false) return;
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (empty($data['datos_cliente']) || empty($data['productos']) || empty($data['metodos_pago'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Datos incompletos para registrar la venta.']);
+        return;
+    }
+
+    $cliente = (new ClienteModel())->registerCliente($data['datos_cliente']);
+    if (empty($cliente['success']) || empty($cliente['id_cliente'])) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => $cliente['message'] ?? 'No se pudo obtener el cliente.']);
+        return;
+    }
+
+    $resultado = (new VentaPresencialModel())->registrarVenta(
+        $cliente['id_cliente'],
+        $data['productos'],
+        $data['metodos_pago']
+    );
+    http_response_code(!empty($resultado['success']) ? 200 : 400);
+    echo json_encode($resultado);
+}
 //Mostrar el modulo de venta presencial
 function index() {
     if (!isset($_SESSION['user']['cedula'])) {
